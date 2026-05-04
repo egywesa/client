@@ -1,0 +1,86 @@
+<section>
+    <div [ngClass]="[lang =='en' ?'endirect':'direc']">
+        <nav class="navbar navbar-expand-lg navbar-light" id="navbar" [ngClass]="[router.url =='/' ?'navlanding':'navbar']">
+            <div class="container-fluid">
+                <a class="navbar-brand"><img src="../../../assets/images/img/logo.png"></a>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#home">{{'header.home' | translate}}</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#about">{{'header.aboutus' | translate}}</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#subscription">{{'header.subscription' | translate}}</a>
+
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#price">{{'header.clients' | translate}}</a>
+
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#contact">{{'header.contactus' | translate}}</a>
+
+                        </li>
+                        <li class="nav-item" >
+                            <button class="btnnew" routerLink="/account/register" *ngIf="router.url=='/account/login'"> {{'header.signup' | translate}}</button>
+                            <button class="btnlogin" routerLink="/account/login" *ngIf="router.url=='/account/register' || router.url=='/account/companyProfile'"> {{'LOGIN' | translate}}</button>
+                              
+                        </li>
+                        <li class="nav-item"  >
+                            <button class="lang"> 
+                                <a *ngIf="lang=='ar'" href="javascript:void(0)" (click)="changeLanguage('en')"> EN</a> 
+                                <a *ngIf="lang=='en'" href="javascript:void(0)" (click)="changeLanguage('ar')"> عربى</a> 
+                            </button>
+                              
+                        </li>
+
+                    </ul>
+                </div>
+                <main fxHide.lg fxFlex.xl class="matmenu">
+                    <button mat-button [matMenuTriggerFor]="menu" class="matbuton">
+                        <mat-icon>reorder</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                        <div>
+                            <button mat-menu-item routerLinkActive="active-link">
+                                {{'header.home' | translate}}
+                            </button>
+                            <button mat-menu-item routerLinkActive="active-link">
+                                {{'header.aboutus' | translate}}
+                            </button>
+                            <button mat-menu-item routerLinkActive="active-link">
+                                {{'header.subscription' | translate}}
+                            </button>
+                            <button mat-menu-item routerLinkActive="active-link">
+                                {{'header.prices' | translate}}
+                            </button>
+                            <button mat-menu-item routerLinkActive="active-link">
+                                {{'header.contactus' | translate}}
+                            </button>
+                            <button mat-menu-item routerLinkActive="active-link">
+                                {{'header.signup' | translate}}
+                            </button>
+
+                            <!-- <button mat-menu-item [matMenuTriggerFor]="submenu">
+                                <i class="bi bi-globe2"></i>
+                                <span *ngIf="lang=='ar'">عربى</span>
+                                <span *ngIf="lang=='en'">English</span>
+                            </button> -->
+
+                        </div>
+
+                    </mat-menu>
+                    <!-- <mat-menu #submenu="matMenu">
+                        <button mat-menu-item (click)="translateLanguageTo('en')">English</button>
+                        <button mat-menu-item (click)="translateLanguageTo('ar')">عربى</button>
+
+                    </mat-menu> -->
+
+                </main>
+            </div>
+        </nav>
+    </div>
+
+</section>

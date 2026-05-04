@@ -1,0 +1,163 @@
+.card{
+    width: 30px;
+    margin: 1px 1%;
+    padding: 2%;
+    color: #8AB11B;
+    i{
+        font-size: 33px;
+        color: #19325A;
+    }
+}
+.name{
+    text-align: center;
+    color: #19325A;
+}
+p{
+    color: #19325A; 
+}
+small{
+    color:#a1aab2!important;
+}
+
+:host ::ng-deep  div.dataTables_wrapper div.dataTables_info{
+    display: none !important;
+}
+:host ::ng-deep .dataTables_length{
+    display: none !important;
+}
+
+
+
+:host ::ng-deep .dataTables_filter{
+    display: none !important;
+}
+.flex{
+    display: flex;
+    flex-wrap: wrap;
+   
+}
+.item{
+    flex: 0 19%;
+    margin:1%;
+    color: #19325A;
+    padding: 2%;
+   
+}
+.flexitem{
+    flex: 0 30%;
+    margin:1%;
+    color: #19325A;
+    padding: 2%;
+    text-align: center;
+    h2{
+        font-size:24px;
+        color: #8AB11B;
+    }
+    a{
+        background: #a1aab238;
+        color: #19325a;
+        text-decoration: none;
+        display: block;
+        width: 80%;
+        border-radius: 10px;
+        margin: auto;
+        margin-top:2%;
+        padding: 6px;
+        cursor: pointer;
+    }
+}
+
+  .accordion {
+    border-radius: 3px;
+    width: 90%;
+    box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255,   255, 255, 0.8) -6px -2px 16px 0px;
+    background: white;
+    color: black;
+    overflow: hidden;
+  }
+  
+  .accordion-header {
+    border-bottom: 2px solid #ccc;
+    position: relative;
+    overflow: hidden;
+    z-index: 2;
+  }
+  
+  .accordion-header-content {
+    padding: 10px;
+    overflow: hidden;
+    position: relative;
+    z-index: 9;
+    background-color: #19325a;
+    color:white;
+  }
+  
+  .accordion-header-content-label {
+    color: #ccc;
+  }
+  
+  .accordion-header-content-title {
+    margin-top: 10px;
+  }
+  
+  .accordion-content {
+    padding: 10px;
+    position: relative;
+    overflow: hidden;
+   
+  }
+  
+  .accordion-content-text {
+    color: #ccc;
+  }
+  
+  /* accordion open effect */
+  
+  details summary {
+    cursor: pointer;
+    transition: all 225ms ease-out;
+    position: relative;
+  }
+  
+  details[open] summary {
+    margin-bottom: 100px;
+    overflow: hidden;
+    position: relative;
+    background: #ccc;
+  }
+  
+  details[open] .accordion-content {
+    padding: 10px;
+    margin-top: -100px;
+  }
+  
+  details[open] .accordion-header-content-label {
+    color: black;
+  }
+  
+  /* remove marker */
+  
+  details > summary {
+      list-style: none;
+  }
+  
+  details > summary::-webkit-details-marker {
+      display: none;
+  }
+  
+  /* custom marker */
+  
+  summary::after {
+    content: '+';
+    position: absolute;
+    top: 6px;
+    left: 20px;
+    font-size: 26px;
+    z-index: 22;
+    color: white;
+  }
+  
+  details[open] summary::after {
+    content: '-';
+    font-size: 36px;
+  }

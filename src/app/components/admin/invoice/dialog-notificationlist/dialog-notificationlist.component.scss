@@ -1,0 +1,35 @@
+::ng-deep .mat-dialog-container {
+    margin: 4%;
+}
+
+.modal-header {
+    border: none;
+}
+.modal-content{
+width: 96%;
+}
+
+::ng-deep .mat-dialog-container::-webkit-scrollbar {
+    width: 15px;
+    /* width of the entire scrollbar */
+}
+
+::ng-deep .mat-dialog-container::-webkit-scrollbar-thumb {
+    background-color: #20303c;
+    /* color of the scroll thumb */
+    border-radius: 20px;
+    /* roundness of the scroll thumb */
+
+}
+
+.close {
+    font-size: 50px;
+    position: absolute;
+    top: 88px;
+    left: 16%;
+    color: red;
+}
+.new{
+    background-color: #20303c;
+    color: white;
+}

@@ -1,0 +1,113 @@
+<div class="block-header">
+  <div class="row">
+    <div class="col-lg-12 col-md-8 col-sm-12">
+      <h2>
+        <a
+          href="javascript:void(0);"
+          class="btn btn-xs btn-link btn-toggle-fullwidth"
+          ><i class="fa fa-arrow-right"></i></a
+        >{{ "home" | translate }}
+      </h2>
+      <ul class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a routerLink="/dashboard"><i class="icon-home"></i></a>
+        </li>
+        <li class="breadcrumb-item">
+          <a routerLink="/dashboard/banks">{{ "Banks" | translate }}</a>
+        </li>
+        <li class="breadcrumb-item active">{{ "Add New" | translate }}</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row clearfix">
+  <div class="col-lg-12 col-md-12">
+    <div class="card">
+      <div class="header">
+        <h2>{{ "Add New" | translate }}</h2>
+      </div>
+      <div class="body">
+        <form [formGroup]="bankForm" (submit)="onSubmit()">
+           <div class="col-12 form-group">
+              <input
+                type="checkbox"
+                id="pay-cash"
+                name="pay-cash"
+                [checked]="isCash"
+                (change)="onTogglePayCash($event)"
+              />
+              <label class="mx-1" for="pay-cash">{{
+                "pay-cash" | translate
+              }}</label>
+            </div>
+          <div class="row">
+            <div class="col-md-6 form-group">
+              <label>{{ "Bank Name" | translate }}</label>
+              <app-text-input
+                [label]="'Bank Name' | translate"
+                formControlName="bankName"
+              ></app-text-input>
+            </div>
+            <div class="col-md-6 form-group">
+              <label>{{ "bankAccountName" | translate }}</label>
+              <app-text-input
+                [label]="'bankAccountName' | translate"
+                formControlName="bankAccountName"
+              ></app-text-input>
+            </div>
+            <ng-container *ngIf="!isCash">
+              <div class="col-md-6 form-group">
+                <label>{{ "accountNumber" | translate }}</label>
+                <app-text-input
+                  [label]="'accountNumber' | translate"
+                  formControlName="accountNumber"
+                ></app-text-input>
+              </div>
+              <div class="col-md-6 form-group">
+                <label dir="auto">{{ "ibanNumber" | translate }}</label>
+                <app-text-input
+                  dir="auto"
+                  [label]="'ibanNumber' | translate"
+                  [(ngModel)]="DefaultText"
+                  formControlName="ibanNumber"
+                ></app-text-input>
+              </div>
+              <div class="col-md-6 form-group">
+                <label>{{ "swift" | translate }}</label>
+                <app-text-input
+                  [label]="'swift' | translate"
+                  formControlName="swift"
+                ></app-text-input>
+              </div>
+            </ng-container>
+            <div class="col-md-6 form-group">
+              <label>{{ "currency" | translate }}</label>
+              <select class="form-control" formControlName="currency">
+                <option value="EGP">{{ "EGP" | translate }}</option>
+                <option value="SAR">{{ "SAR" | translate }}</option>
+                <option value="USD">{{ "USD" | translate }}</option>
+                <option value="EUR">{{ "EUR" | translate }}</option>
+                <option value="CAD">{{ "CAD" | translate }}</option>
+              </select>
+            </div>
+           
+          </div>
+          <br />
+          <div class="input-group-prepend">
+            <button
+              class="btn btn-outline-success ml-1"
+              type="submit"
+              [disabled]="!bankForm.valid"
+            >
+              {{ "Save" | translate }}
+            </button>
+            <button class="btn btn-default" routerLink="/dashboard/banks">
+              {{ "Back" | translate }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

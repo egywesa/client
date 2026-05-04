@@ -1,0 +1,91 @@
+<div class="block-header">
+  <div class="row">
+    <div class="col-lg-12 col-md-8 col-sm-12">
+      <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth"><i class="fa fa-arrow-right"></i></a>{{'home'|translate}}</h2>
+      <ul class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/dashboard"><i class="icon-home"></i></a></li>
+        <li class="breadcrumb-item"><a routerLink="/dashboard/branches">{{'Branches'|translate}}</a></li>
+        <li class="breadcrumb-item active">{{ 'Add New'|translate }}</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row clearfix">
+  <div class="col-lg-12 col-md-12">
+    <div class="card">
+      <div class="header">
+        <h2> {{'Add New'|translate}}</h2>
+      </div>
+      <div class="body">
+        <form [formGroup]="branchForm" (submit)="onSubmit()">
+          <div class="row">
+            <div class="col-md-6 form-group">
+              <label>{{'Branch Name'|translate}}</label>
+              <app-text-input [label]="'Branch Name'|translate" formControlName="branchName"></app-text-input>
+            </div>
+            <div class="col-md-6 form-group">
+              <label dir="auto">{{ "commercialRegNumber" | translate }}</label>
+              <app-text-input
+                [label]="'commercialRegNumber' | translate"
+                formControlName="commercialRegNumber"
+              ></app-text-input>
+            </div>
+            <div class="col-md-6 form-group">
+              <label>{{'Branch Address'|translate}}</label>
+              <app-text-input [label]="'Branch Address'|translate" formControlName="address"></app-text-input>
+            </div>
+            <div class="col-md-6 form-group">
+              <label dir="auto">{{'BuildingNumber'|translate}}</label>
+              <app-text-input [label]="'BuildingNumber'|translate" formControlName="buildingNumber"></app-text-input>
+            </div>
+
+            <div class="col-md-6 form-group">
+              <label>{{'CitySubdivisionName'|translate}}</label>
+              <app-text-input [label]="'CitySubdivisionName'|translate"
+                formControlName="citySubdivisionName"></app-text-input>
+            </div>
+            <div class="col-md-6 form-group">
+              <label>{{'Country'|translate}}</label>
+              <select class="form-control" formControlName="countryId">
+                <option [value]="null">{{ 'Country' | translate }}</option>
+                <option [value]="country.id" *ngFor="let country of countries">{{ country.name }}</option>
+              </select>
+            </div>
+            <div class="col-md-6 form-group">
+              <label>{{'city'|translate}}</label>
+              <select class="form-control" formControlName="cityId">
+                <option [value]="null">{{ 'choose city' | translate }}</option>
+                <option [value]="city.id" *ngFor="let city of cities">{{ city.name }}</option>
+              </select>
+            </div>
+            <div class="col-md-6 form-group">
+              <label>{{'CountrySubentity'|translate}}</label>
+              <app-text-input [label]="'CountrySubentity'|translate"
+                formControlName="countrySubentity"></app-text-input>
+            </div>
+            <div class="col-md-6 form-group">
+              <label>{{'PlotIdentification'|translate}}</label>
+              <app-text-input [label]="'PlotIdentification'|translate"
+                formControlName="plotIdentification"></app-text-input>
+            </div>
+            <div class="col-md-6 form-group">
+              <label dir="auto">{{'PostalZone'|translate}}</label>
+              <app-text-input [label]="'PostalZone'|translate" formControlName="postalZone"></app-text-input>
+            </div>
+            <div class="col-md-6 form-group">
+              <label>{{'StreetName'|translate}}</label>
+              <app-text-input [label]="'StreetName'|translate" formControlName="streetName"></app-text-input>
+            </div>
+
+          </div>
+          <br>
+          <div class="input-group-prepend">
+            <button class="btn btn-outline-success ml-1" type="submit" [disabled]="!branchForm.valid">{{'Save'|translate}}</button>
+            <button class="btn btn-default" routerLink="/dashboard/branches">{{'Back'|translate}}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,181 @@
+<div class="card p-4 mt-2">
+  <form (ngSubmit)="onSearch()" [formGroup]="searchForm" class="row g-3 mb-4">
+    <div class="col-md-3">
+      <div class="form-group">
+        <label class="form-label">{{
+          "form-labels.from-date" | translate
+        }}</label>
+        <input type="date" class="form-control" formControlName="fromDate" />
+
+        <small
+          class="text-danger"
+          *ngIf="
+            searchForm.get('fromDate')?.invalid &&
+            searchForm.get('fromDate')?.touched
+          "
+        >
+          {{ "form-validations.required" | translate }}
+        </small>
+        <small
+          class="text-danger"
+          *ngIf="searchForm.hasError('dateRangeInvalid') && searchForm.touched"
+        >
+          {{ "form-validations.date-range" | translate }}
+        </small>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="form-group">
+        <label class="form-label">{{
+          "form-labels.to-date" | translate
+        }}</label>
+        <input type="date" class="form-control" formControlName="toDate" />
+
+        <small
+          class="text-danger"
+          *ngIf="
+            searchForm.get('toDate')?.invalid &&
+            searchForm.get('toDate')?.touched
+          "
+        >
+          {{ "form-validations.required" | translate }}
+        </small>
+      </div>
+    </div>
+
+    <div class="col">
+      <label class="form-label invisible d-block"> &nbsp; </label>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="searchForm.invalid"
+      >
+        <i class="fa fa-search mx-1"></i>
+        {{ "form-actions.search" | translate }}
+      </button>
+      <button
+        type="button"
+        class="btn btn-success mx-2"
+        [disabled]="searchForm.invalid"
+        (click)="onExport(fileTypeOptions.EXCEL)"
+      >
+        <i class="fa fa-file-excel-o mx-1"></i>
+        {{ "form-actions.export-excel" | translate }}
+      </button>
+      <button
+        type="button"
+        class="btn btn-light"
+        [disabled]="!profitAndLossReport"
+        (click)="onPrint()"
+      >
+        <i class="fa fa-print mx-1"></i>
+        {{ "form-actions.print" | translate }}
+      </button>
+    </div>
+  </form>
+
+  <div *ngIf="profitAndLossReport">
+    <div
+      class="d-flex justify-content-between align-items-center border p-3 rounded"
+    >
+      <div>
+        <small class="text-muted d-block">
+          {{ "form-labels.period" | translate }}
+        </small>
+        <span>{{ "form-labels.from" | translate }}</span>
+        <strong class="mx-1">{{ profitAndLossReport.from | date }}</strong>
+        <span>{{ "form-labels.to" | translate }}</span>
+        <strong class="mx-1">{{ profitAndLossReport.to | date }}</strong>
+      </div>
+
+      <div class="text-right">
+        <small class="text-muted d-block">
+          {{ "reports.net-profit" | translate }}
+        </small>
+        <strong class="h5 mb-0 text-primary">
+          {{ profitAndLossReport.netProfit | number : "1.2-2" }}
+        </strong>
+      </div>
+    </div>
+
+    <div class="card p-4 mt-2 shadow-sm">
+      <h5 class="mb-3 mt-0 text-success">
+        {{ "reports.revenues" | translate }}
+      </h5>
+      <div class="table-responsive mb-4">
+        <table class="table table-bordered text-center">
+          <thead class="thead-light">
+            <tr>
+              <th>{{ "form-labels.account" | translate }}</th>
+              <th>{{ "form-labels.amount" | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let rev of profitAndLossReport.revenues">
+              <td>{{ rev.account }}</td>
+              <td>{{ rev.total | number : "1.2-2" }}</td>
+            </tr>
+            <tr class="font-weight-bold bg-light text-success">
+              <td>{{ "reports.total" | translate }}</td>
+              <td>{{ profitAndLossReport.totalRevenue | number : "1.2-2" }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h5 class="mb-3 mt-4 text-danger">
+        {{ "reports.expenses" | translate }}
+      </h5>
+      <div class="table-responsive">
+        <table class="table table-bordered text-center">
+          <thead class="thead-light">
+            <tr>
+              <th>{{ "form-labels.account" | translate }}</th>
+              <th>{{ "form-labels.amount" | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let exp of profitAndLossReport.expenses">
+              <td>{{ exp.account }}</td>
+              <td>{{ exp.total | number : "1.2-2" }}</td>
+            </tr>
+            <tr class="font-weight-bold bg-light text-danger">
+              <td>{{ "reports.total" | translate }}</td>
+              <td>{{ profitAndLossReport.totalExpense | number : "1.2-2" }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div
+      class="d-flex justify-content-start align-items-center text-center mt-3"
+    >
+      <div class="px-4 py-2 rounded border">
+        <span class="text-muted d-block">{{
+          "reports.revenues" | translate
+        }}</span>
+        <strong class="text-success">
+          {{ profitAndLossReport.totalRevenue | number : "1.2-2" }}
+        </strong>
+      </div>
+      <div class="px-4 py-2 rounded border mx-4">
+        <span class="text-muted d-block">{{
+          "reports.expenses" | translate
+        }}</span>
+        <strong class="text-danger">
+          {{ profitAndLossReport.totalExpense | number : "1.2-2" }}
+        </strong>
+      </div>
+      <div class="px-4 py-2 rounded border">
+        <span class="text-muted d-block">{{
+          "reports.net-profit" | translate
+        }}</span>
+        <strong class="text-primary">
+          {{ profitAndLossReport.netProfit | number : "1.2-2" }}
+        </strong>
+      </div>
+    </div>
+  </div>
+</div>

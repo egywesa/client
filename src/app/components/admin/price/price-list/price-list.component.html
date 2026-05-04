@@ -1,0 +1,65 @@
+<div class="block-header">
+  <div class="row">
+    <div class="col-lg-6 col-md-8 col-sm-12">
+      <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth"><i
+            class="fa fa-arrow-right"></i></a>{{'home'|translate}}</h2>
+      <ul class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/dashboard"><i class="icon-home"></i></a></li>
+        <li class="breadcrumb-item active">{{ 'Prices'|translate }}</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row clearfix">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="header">
+        <h2>{{'Prices Table'|translate}}</h2>
+        <br />
+        <a class="btn btn-info" routerLink="/dashboard/prices/add-or-edit"><i class="fa fa-plus"></i> {{'Add New'|translate}}</a>
+      </div>
+      <div class="body">
+        <div class="table-responsive" *ngIf="prices?.length > 0">
+          <table datatable [dtOptions]="dtOptions" class="table table-hover dataTable table-custom">
+            <thead class="thead-light">
+              <tr>
+                <th>#</th>
+                <th>{{'Plan'|translate}}</th>
+                <th>{{'Invoice'|translate}}</th>
+                <th>{{'PriceMonthly'|translate}}</th>
+                <th>{{'PriceAnnual'|translate}}</th>
+                <th>{{'Operations'|translate}}</th>
+              </tr>
+            </thead>
+            <!--  <tfoot>
+            <tr>
+              <th>#</th>
+              <th>{{'Plan'|translate}}</th>
+              <th>{{'Invoice'|translate}}</th>
+              <th>{{'PriceMonthly'|translate}}</th>
+              <th>{{'PriceAnnual'|translate}}</th>
+              <th>{{'Operations'|translate}}</th>
+            </tr>
+            </tfoot> -->
+            <tbody>
+              <tr *ngFor="let price of prices;let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>{{ price.plan }}</td>
+                <td>{{ price.invoice | number }}</td>
+                <td>{{ price.priceMonthly | currency:'SAR ' }}</td>
+                <td>{{ price.priceAnnual| currency: 'SAR ' }}</td>
+                <td>
+                  <a class="btn btn-sm btn-default" routerLink="/dashboard/prices/add-or-edit/{{price.id}}"><i
+                      class="icon-pencil"></i></a>
+                  <a class="btn btn-sm btn-default" (click)="removePrice(price.id)"><i class="icon-trash"></i></a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <h2 *ngIf="prices?.length == 0">{{'There is no data'|translate}}</h2>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,341 @@
+<div class="block-header">
+  <div class="row">
+    <div class="col-lg-6 col-md-8 col-sm-12">
+      <h2>
+        <a
+          href="javascript:void(0);"
+          class="btn btn-xs btn-link btn-toggle-fullwidth"
+          ><i class="fa fa-arrow-right"></i></a
+        >{{ "home" | translate }}
+      </h2>
+      <ul class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a routerLink="/dashboard"><i class="icon-home"></i></a>
+        </li>
+        <li class="breadcrumb-item active">
+          {{ "chartOfAccounts.title" | translate }}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row clearfix">
+  <div class="container-fluid accounts-tabs">
+    <ul class="nav nav-pills justify-content-start top-tabs row">
+      <li class="nav-item col-3">
+        <a
+          class="nav-link"
+          [class.active]="activeTab === 'Expense'"
+          (click)="setTab('Expense')"
+        >
+          <div class="card p-3">
+            <div class="icon">
+              <i class="fa fa-usd"></i>
+            </div>
+            <div>{{ "chartOfAccounts.expenses" | translate }}</div>
+          </div>
+        </a>
+      </li>
+      <li class="nav-item col-3">
+        <a
+          class="nav-link"
+          [class.active]="activeTab === 'Revenue'"
+          (click)="setTab('Revenue')"
+        >
+          <div class="card p-3">
+            <div class="icon"><i class="fa fa-line-chart"></i></div>
+            <div>{{ "chartOfAccounts.revenues" | translate }}</div>
+          </div>
+        </a>
+      </li>
+      <li class="nav-item col-3">
+        <a
+          class="nav-link"
+          [class.active]="activeTab === 'Asset'"
+          (click)="setTab('Asset')"
+        >
+          <div class="card p-3">
+            <div class="icon"><i class="fa fa-briefcase"></i></div>
+            <div>{{ "chartOfAccounts.assets" | translate }}</div>
+          </div>
+        </a>
+      </li>
+      <li class="nav-item col-3">
+        <a
+          class="nav-link"
+          [class.active]="activeTab === 'Liability'"
+          (click)="setTab('Liability')"
+        >
+          <div class="card p-3">
+            <div class="icon"><i class="fa fa-balance-scale"></i></div>
+            <div>{{ "chartOfAccounts.liabilities" | translate }}</div>
+          </div>
+        </a>
+      </li>
+    </ul>
+
+    <!-- Accounts tree -->
+    <div class="card p-3 mt-3">
+      <div class="tab-header">
+        <mat-form-field class="text-start">
+          <mat-label>
+            {{ "search-in" | translate }}
+            {{
+              activeTab === "Expense"
+                ? ("chartOfAccounts.expenses" | translate)
+                : activeTab === "Revenue"
+                ? ("chartOfAccounts.revenues" | translate)
+                : activeTab === "Asset"
+                ? ("chartOfAccounts.assets" | translate)
+                : ("chartOfAccounts.liabilities" | translate)
+            }}
+          </mat-label>
+          <input matInput [(ngModel)]="searchKey" (keyup)="searchAccount()" />
+        </mat-form-field>
+
+        <div class="tab-actions d-inline-block">
+          <button class="btn btn-info" (click)="openModal()">
+            <i class="fa fa-plus mx-1"></i>
+            {{ "chartOfAccounts.add-new" | translate }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Account main headers  -->
+      <ul class="list-group">
+        <ng-container>
+          <ng-container *ngFor="let account of activeTabAccounts">
+            <li class="list-group-item">
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="cursor-pointer" (click)="toggleExpand(account.id)">
+                  <button
+                    *ngIf="account.children.length > 0"
+                    class="btn btn-sm btn-link"
+                  >
+                    <i
+                      [class]="
+                        expanded[account.id]
+                          ? 'fa fa-chevron-down'
+                          : 'fa fa-chevron-right'
+                      "
+                    ></i>
+                  </button>
+                  <strong>{{ account.name }}</strong> -
+                  <small class="text-muted">
+                    {{ account.code }}
+                    ( {{ "chartOfAccounts.opening-balance" | translate }} :
+                    {{ account.openingBalance | number : "1.2-2" }} /
+                    {{ "chartOfAccounts.current-balance" | translate }}:
+                    {{ account.currentBalance | number : "1.2-2" }})
+                  </small>
+                </div>
+               <div>
+  <button
+    class="btn btn-sm btn-primary"
+    (click)="openModal(account)"
+    title="تعديل - Edit"
+  >
+    <i class="fa fa-edit"></i>
+  </button>
+
+  <button
+    class="btn btn-sm btn-danger mx-2"
+    (click)="deleteAccount(account.id)"
+    title="حذف - Delete"
+  >
+    <i class="fa fa-trash"></i>
+  </button>
+
+  <button
+    class="btn btn-sm btn-success"
+    (click)="openModal(null, account.id)"
+    *ngIf="account.children"
+    title="اضافة فرعي - Add"
+  >
+    <i class="fa fa-plus"></i>
+  </button>
+</div>
+              </div>
+
+              <!-- Main header children -->
+              <ul
+                *ngIf="expanded[account.id] && account.children.length > 0"
+                class="list-group mt-2"
+              >
+                <ng-container *ngFor="let child of account.children">
+                  <li class="list-group-item">
+                    <div
+                      class="d-flex justify-content-between align-items-center"
+                    >
+                      <div>
+                        <strong>{{ child.name }}</strong> -
+                        <small class="text-muted">
+                          {{ child.code }}
+                          (
+                          {{ "chartOfAccounts.opening-balance" | translate }} :
+                          {{ child.openingBalance | number : "1.2-2" }} /
+                          {{ "chartOfAccounts.current-balance" | translate }}:
+                          {{ child.currentBalance | number : "1.2-2" }})
+                        </small>
+                      </div>
+                      <div>
+                        <button
+                          class="btn btn-sm btn-outline-primary mx-2"
+                          (click)="openModal(child)"
+                        >
+                          <i class="fa fa-edit"></i>
+                        </button>
+                        <button
+                          class="btn btn-sm btn-outline-danger"
+                          (click)="deleteAccount(child.id)"
+                        >
+                          <i class="fa fa-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </li>
+                </ng-container>
+              </ul>
+            </li>
+          </ng-container>
+        </ng-container>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div
+  class="modal fade show"
+  tabindex="-1"
+  role="dialog"
+  [ngClass]="{ 'd-block': modalVisible }"
+  *ngIf="modalVisible"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <form (ngSubmit)="saveModal(modalForm.value)" [formGroup]="modalForm">
+        <div class="modal-header">
+          <button type="button" class="close" (click)="closeModal()">
+            <span>&times;</span>
+          </button>
+          <h5 class="modal-title">
+            {{
+              modalForm.value.editing
+                ? ("form-actions.edit" | translate)
+                : ("form-actions.add-new" | translate)
+            }}
+          </h5>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group">
+                <label>{{ "Name" | translate }}</label>
+                <input class="form-control" formControlName="name" />
+
+                <div
+                  *ngIf="
+                    modalForm.get('name').invalid &&
+                    modalForm.get('name').touched
+                  "
+                >
+                  <small
+                    class="text-danger"
+                    *ngIf="modalForm.get('name')?.errors?.['required']"
+                  >
+                    {{ "form-validations.required" | translate }}
+                  </small>
+                  <small
+                    class="text-danger"
+                    *ngIf="
+                      modalForm.get('name')?.errors?.['whitespace'] &&
+                      !modalForm.get('name')?.errors?.['required']
+                    "
+                  >
+                    {{ "form-validations.empty" | translate }}
+                  </small>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label>{{
+                  "chartOfAccounts.opening-balance" | translate
+                }}</label>
+                <input class="form-control" formControlName="openingBalance" />
+
+                <div
+                  *ngIf="
+                    modalForm.get('openingBalance').invalid &&
+                    modalForm.get('openingBalance').touched
+                  "
+                >
+                  <small
+                    class="text-danger"
+                    *ngIf="modalForm.get('openingBalance')?.errors?.['required']"
+                  >
+                    {{ "form-validations.required" | translate }}
+                  </small>
+                  <small
+                    class="text-danger"
+                    *ngIf="
+                      modalForm.get('openingBalance')?.errors?.['pattern'] &&
+                      !modalForm.get('openingBalance')?.errors?.['required']
+                    "
+                  >
+                    {{ "form-validations.numeric" | translate }}
+                  </small>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label>{{
+                  "chartOfAccounts.current-balance" | translate
+                }}</label>
+                <input class="form-control" formControlName="currentBalance" />
+
+                <div
+                  *ngIf="
+                    modalForm.get('currentBalance').invalid &&
+                    modalForm.get('currentBalance').touched
+                  "
+                >
+                  <small
+                    class="text-danger"
+                    *ngIf="modalForm.get('currentBalance')?.errors?.['required']"
+                  >
+                    {{ "form-validations.required" | translate }}
+                  </small>
+                  <small
+                    class="text-danger"
+                    *ngIf="
+                      modalForm.get('currentBalance')?.errors?.['pattern'] &&
+                      !modalForm.get('currentBalance')?.errors?.['required']
+                    "
+                  >
+                    {{ "form-validations.numeric" | translate }}
+                  </small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn btn-success"
+            type="submit"
+            [disabled]="modalForm.invalid"
+          >
+            {{ "form-actions.save" | translate }}
+          </button>
+          <button class="btn btn-secondary mx-2" (click)="closeModal()">
+            {{ "form-actions.cancel" | translate }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

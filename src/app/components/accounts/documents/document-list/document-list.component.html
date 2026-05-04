@@ -1,0 +1,439 @@
+<div class="card p-4 mt-2">
+  <h4 class="mb-4">{{ "documents.previous-documents" | translate }}</h4>
+
+  <form (ngSubmit)="onSearch()" [formGroup]="searchForm" class="row g-3 mb-4">
+    <div class="col-md-3">
+      <label class="form-label">{{
+        "form-labels.document-type" | translate
+      }}</label>
+      <ng-select
+        [items]="documentTypes"
+        bindLabel="label"
+        bindValue="value"
+        formControlName="documentType"
+        [searchable]="false"
+        placeholder="{{ 'form-labels.choose-type' | translate }}"
+      ></ng-select>
+    </div>
+
+    <div class="col-md-3">
+      <div class="form-group">
+        <label class="form-label">{{ "form-labels.client" | translate }}</label>
+        <ng-select
+          [items]="clients"
+          bindLabel="name"
+          bindValue="id"
+          formControlName="clientId"
+          [searchable]="true"
+          placeholder="{{ 'form-labels.choose-account' | translate }}"
+        ></ng-select>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="form-group">
+        <label class="form-label">{{
+          "form-labels.search-text" | translate
+        }}</label>
+        <input type="text" class="form-control" formControlName="search" />
+      </div>
+    </div>
+
+    <div class="col">
+      <label class="form-label invisible d-block"> &nbsp; </label>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="searchForm.invalid"
+      >
+        <i class="fa fa-search"></i> {{ "form-actions.search" | translate }}
+      </button>
+    </div>
+  </form>
+
+  <!-- Document List -->
+  <div class="card p-4 mat-elevation-z8 mt-2">
+    <table mat-table [dataSource]="dataSource" matSort class="table">
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>#</th>
+        <td mat-cell *matCellDef="let document">{{ document.id }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="displayNumber">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ "form-labels.display-number" | translate }}
+        </th>
+        <td mat-cell *matCellDef="let document">
+          {{ document.displayNumber }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="documentType">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ "form-labels.document-type" | translate }}
+        </th>
+        <td mat-cell *matCellDef="let document">
+          {{ getDocumentType(document.documentType) }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="documentDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ "form-labels.date" | translate }}
+        </th>
+        <td mat-cell *matCellDef="let document">
+          {{ document.documentDate | date }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="clientName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ "form-labels.client" | translate }}
+        </th>
+        <td mat-cell *matCellDef="let document">{{ document.clientName }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef class="text-start">
+          {{ "Operations" | translate }}
+        </th>
+        <td mat-cell *matCellDef="let document">
+          <button
+            class="btn btn-sm btn-light"
+            title="{{ 'form-actions.print' | translate }}"
+            (click)="onPrintdocument(document)"
+          >
+            <i class="fa fa-print"></i>
+          </button>
+          <button
+            class="btn btn-sm btn-primary mx-2"
+            title="{{ 'form-actions.edit' | translate }}"
+            (click)="openModal(document)"
+          >
+            <i class="fa fa-edit"></i>
+          </button>
+          <button
+            class="btn btn-sm btn-danger"
+            title="{{ 'form-actions.delete' | translate }}"
+            (click)="onDelete(document)"
+          >
+            <i class="fa fa-trash"></i>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+
+    <mat-paginator
+      [pageSizeOptions]="[]"
+      [pageSize]="pageSize"
+      [length]="totalCount"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+    ></mat-paginator>
+  </div>
+</div>
+
+<!-- Edit Document Modal -->
+<div
+  class="modal fade show"
+  tabindex="-1"
+  role="dialog"
+  [ngClass]="{ 'd-block': modalVisible }"
+  *ngIf="modalVisible"
+>
+  <div
+    class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable"
+    role="document"
+  >
+    <div class="modal-content">
+      <form
+        (ngSubmit)="saveDocumentChanges(modalForm.value)"
+        [formGroup]="modalForm"
+      >
+        <div class="modal-header">
+          <button type="button" class="close" (click)="closeModal()">
+            <span>&times;</span>
+          </button>
+          <h5 class="modal-title">
+            {{ "form-actions.edit" | translate }}
+          </h5>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-lg-6 mb-3">
+              <label class="form-label">{{
+                "form-labels.document-type" | translate
+              }}</label>
+              <ng-select
+                [items]="documentTypes"
+                bindLabel="label"
+                bindValue="value"
+                formControlName="documentType"
+                [searchable]="false"
+                placeholder="{{ 'form-labels.choose-type' | translate }}"
+              ></ng-select>
+              <small
+                class="text-danger"
+                *ngIf="
+                  modalForm.get('documentType')?.invalid &&
+                  modalForm.get('documentType')?.touched
+                "
+              >
+                {{ "form-validations.required" | translate }}
+              </small>
+            </div>
+
+            <div class="col-lg-6 mb-3">
+              <label class="form-label">{{
+                "form-labels.client" | translate
+              }}</label>
+              <ng-select
+                [items]="clients"
+                bindLabel="name"
+                bindValue="id"
+                formControlName="clientId"
+                [searchable]="true"
+                placeholder="{{ 'form-labels.choose-account' | translate }}"
+              ></ng-select>
+              <small
+                class="text-danger"
+                *ngIf="
+                  modalForm.get('clientId')?.invalid &&
+                  modalForm.get('clientId')?.touched
+                "
+              >
+                {{ "form-validations.required" | translate }}
+              </small>
+            </div>
+
+            <div class="col-12 mb-3">
+              <label class="form-label">{{
+                "form-labels.introduction" | translate
+              }}</label>
+              <textarea
+                class="form-control"
+                rows="2"
+                formControlName="introduction"
+              ></textarea>
+            </div>
+
+            <div class="col-12 mb-3">
+              <label class="form-label">{{
+                "form-labels.subject" | translate
+              }}</label>
+              <textarea
+                class="form-control"
+                rows="3"
+                formControlName="subject"
+              ></textarea>
+              <small
+                class="text-danger"
+                *ngIf="
+                  modalForm.get('subject')?.invalid &&
+                  modalForm.get('subject')?.touched
+                "
+              >
+                {{ "form-validations.required" | translate }}
+              </small>
+            </div>
+          </div>
+
+          <!-- Line Items -->
+          <form class="border line-form p-3">
+            <h5 class="mt-0">{{ "form-labels.document-lines" | translate }}</h5>
+            <div [formGroup]="lineForm" class="row mb-2">
+              <div class="col-12 mb-3">
+                <label class="form-label">{{
+                  "form-labels.description" | translate
+                }}</label>
+                <textarea
+                  class="form-control"
+                  formControlName="description"
+                ></textarea>
+                <small
+                  class="text-danger"
+                  *ngIf="
+                    lineForm.get('description')?.invalid &&
+                    lineForm.get('description')?.touched
+                  "
+                >
+                  {{ "form-validations.required" | translate }}
+                </small>
+              </div>
+
+              <div class="col-3 mb-3">
+                <label class="form-label">{{
+                  "form-labels.quantity" | translate
+                }}</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  formControlName="quantity"
+                />
+                <small
+                  class="text-danger"
+                  *ngIf="
+                    lineForm.get('quantity')?.invalid &&
+                    lineForm.get('quantity')?.touched
+                  "
+                >
+                  {{ "form-validations.required" | translate }}
+                </small>
+              </div>
+
+              <div class="col-3 mb-3">
+                <label class="form-label">{{
+                  "form-labels.unit-price" | translate
+                }}</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  formControlName="unitPrice"
+                />
+                <small
+                  class="text-danger"
+                  *ngIf="
+                    lineForm.get('unitPrice')?.invalid &&
+                    lineForm.get('unitPrice')?.touched
+                  "
+                >
+                  {{ "form-validations.required" | translate }}
+                </small>
+              </div>
+
+              <div class="col-3 mb-3">
+                <label class="form-label">{{
+                  "form-labels.discount" | translate
+                }}</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  formControlName="discount"
+                />
+                <small
+                  class="text-danger"
+                  *ngIf="
+                    lineForm.get('discount')?.invalid &&
+                    lineForm.get('discount')?.touched
+                  "
+                >
+                  {{ "form-validations.required" | translate }}
+                </small>
+              </div>
+
+              <div class="col-3 mb-3">
+                <label class="form-label">{{
+                  "form-labels.tax-percent" | translate
+                }}</label>
+                <ng-select
+                  [items]="taxis"
+                  bindLabel="taxName"
+                  bindValue="id"
+                  formControlName="taxId"
+                  [searchable]="true"
+                  placeholder="{{ 'form-labels.choose-tax' | translate }}"
+                >
+                </ng-select>
+                <small
+                  class="text-danger"
+                  *ngIf="
+                    lineForm.get('taxId')?.invalid &&
+                    lineForm.get('taxId')?.touched
+                  "
+                >
+                  {{ "form-validations.required" | translate }}
+                </small>
+              </div>
+            </div>
+            <button
+              type="submit"
+              class="btn btn-dark"
+              (click)="addLine(lineForm.value)"
+              [disabled]="lineForm.invalid"
+            >
+              + {{ "form-labels.add-line" | translate }}
+            </button>
+
+            <div class="mt-4" *ngIf="lineItems.length > 0">
+              <table class="table table-bordered table-sm">
+                <thead>
+                  <tr>
+                    <th>
+                      <small>{{ "form-labels.description" | translate }}</small>
+                    </th>
+                    <th>
+                      <small>{{ "form-labels.quantity" | translate }}</small>
+                    </th>
+                    <th>
+                      <small>{{ "form-labels.unit-price" | translate }}</small>
+                    </th>
+                    <th>
+                      <small>{{ "form-labels.discount" | translate }}</small>
+                    </th>
+                    <th>
+                      <small>{{ "form-labels.tax-percent" | translate }}</small>
+                    </th>
+                    <th>
+                      <small>{{ "Operations" | translate }}</small>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let line of lineItems; let i = index">
+                    <td>
+                      {{ line.description }}
+                    </td>
+                    <td>
+                      {{ line.quantity }}
+                    </td>
+                    <td>
+                      {{ line.unitPrice }}
+                    </td>
+                    <td>
+                      {{ line.discount }}
+                    </td>
+                    <td>
+                      {{ getTaxPercent(line.taxId) }}
+                    </td>
+                    <td>
+                      <button
+                        class="btn btn-sm btn-primary mx-2"
+                        title="{{ 'form-actions.edit' | translate }}"
+                        (click)="editLine(line)"
+                      >
+                        <i class="fa fa-edit"></i>
+                      </button>
+                      <button
+                        class="btn btn-sm btn-danger"
+                        title="{{ 'form-actions.delete' | translate }}"
+                        (click)="removeLine(line.id)"
+                      >
+                        <i class="fa fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer">
+          <button
+            class="btn btn-success"
+            type="submit"
+            [disabled]="modalForm.invalid || lineItems.length === 0"
+          >
+            {{ "form-actions.save" | translate }}
+          </button>
+          <button class="btn btn-secondary mx-2" (click)="closeModal()">
+            {{ "form-actions.cancel" | translate }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

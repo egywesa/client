@@ -1,0 +1,56 @@
+<div class="block-header">
+  <div class="row">
+    <div class="col-lg-6 col-md-8 col-sm-12">
+      <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth"><i class="fa fa-arrow-right"></i></a>{{'home'|translate}}</h2>
+      <ul class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/dashboard"><i class="icon-home"></i></a></li>
+        <li class="breadcrumb-item active">{{ 'Banks'|translate }}</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row clearfix">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="header">
+        <h2>{{'Banks Table'|translate}}</h2>
+        <br/>
+        <a class="btn btn-info" routerLink="/dashboard/banks/add-or-edit"><i class="fa fa-plus"></i> {{'Add New'|translate}}</a>
+      </div>
+      <div class="body">
+        <div class="table-responsive">
+          <table datatable [dtOptions]="dtOptions" class="table table-hover dataTable table-custom">
+            <thead class="thead-light">
+            <tr>
+              <th>#</th>
+              <th>{{'Bank Name'|translate}}</th>
+              <th>{{'bankAccountName'|translate}}</th>
+              <th>{{'accountNumber'|translate}}</th>
+              <th>{{'ibanNumber'|translate}}</th>
+              <th>{{'swift'|translate}}</th>
+              <th>{{'currency'|translate}}</th>
+              <th>{{'Operations'|translate}}</th>
+            </tr>
+            </thead>
+<!--            <tbody>-->
+<!--            <tr *ngFor="let bank of banks;let i = index">-->
+<!--              <td>{{ i + 1 }}</td>-->
+<!--              <td>{{ bank.bankName }}</td>-->
+<!--              <td>{{ bank.bankAccountName}}</td>-->
+<!--              <td>{{ bank.accountNumber}}</td>-->
+<!--              <td>{{ bank.ibanNumber}}</td>-->
+<!--              <td>{{ bank.swift}}</td>-->
+<!--              <td>{{ bank.currency}}</td>-->
+<!--              <td>-->
+<!--                <a class="btn btn-sm btn-default" routerLink="/dashboard/banks/add-or-edit/{{bank.id}}"><i class="icon-pencil"></i></a>-->
+<!--                <a class="btn btn-sm btn-default" (click)="removeBank(bank.id)"><i class="icon-trash"></i></a>-->
+<!--              </td>-->
+<!--            </tr>-->
+<!--            </tbody>-->
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

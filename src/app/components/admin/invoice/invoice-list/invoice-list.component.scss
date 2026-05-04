@@ -1,0 +1,22 @@
+.product-form {
+  background-color: whitesmoke;
+  margin: 10px;
+  border-radius: 10px;
+}
+
+// background for my modal with opacity 0.5. Attached to my modal div. Refer to HTML code above.
+.my-modal {
+  display: block;
+  background: rgba(0, 0, 0, 0.5);
+  height: 100vh;
+  width: 0;
+}
+::ng-deep div.dataTables_filter {
+  display: none !important;
+}
+th{
+  padding: 7px;
+}
+.client{
+  width: 20% !important;
+}

@@ -1,0 +1,138 @@
+<div class="card p-4">
+  <form (ngSubmit)="addVoucher()" [formGroup]="voucherForm">
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="form-group">
+          <label class="form-label">{{ "form-labels.date" | translate }}</label>
+          <input
+            type="date"
+            class="form-control"
+            formControlName="date"
+            placeholder="mm/dd/yyyy"
+          />
+
+          <small
+            class="text-danger"
+            *ngIf="
+              voucherForm.get('date')?.invalid &&
+              voucherForm.get('date')?.touched
+            "
+          >
+            {{ "form-validations.required" | translate }}
+          </small>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="form-group">
+          <label class="form-label">{{
+            "form-labels.client" | translate
+          }}</label>
+          <ng-select
+            [items]="clients"
+            bindLabel="name"
+            bindValue="id"
+            formControlName="clientId"
+            [searchable]="true"
+            placeholder="{{ 'form-labels.choose-client' | translate }}"
+          >
+          </ng-select>
+
+          <small
+            class="text-danger"
+            *ngIf="
+              voucherForm.get('clientId')?.invalid &&
+              voucherForm.get('clientId')?.touched
+            "
+          >
+            {{ "form-validations.required" | translate }}
+          </small>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="form-group">
+          <label class="form-label">{{
+            "form-labels.account" | translate
+          }}</label>
+          <ng-select
+            [items]="banks"
+            bindLabel="bankName"
+            bindValue="id"
+            formControlName="bankId"
+            [searchable]="true"
+            placeholder="{{ 'form-labels.choose-account' | translate }}"
+          >
+          </ng-select>
+
+          <small
+            class="text-danger"
+            *ngIf="
+              voucherForm.get('bankId')?.invalid &&
+              voucherForm.get('bankId')?.touched
+            "
+          >
+            {{ "form-validations.required" | translate }}
+          </small>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="form-group">
+          <label class="form-label">{{
+            "form-labels.amount" | translate
+          }}</label>
+          <input
+            type="number"
+            class="form-control"
+            formControlName="amount"
+            placeholder="{{ 'form-labels.amount-hint' | translate }}"
+          />
+          <div
+            *ngIf="
+              voucherForm.get('amount')?.invalid &&
+              voucherForm.get('amount')?.touched
+            "
+          >
+            <small
+              class="text-danger"
+              *ngIf="voucherForm.get('amount')?.errors?.['required']"
+            >
+              {{ "form-validations.required" | translate }}
+            </small>
+            <small
+              class="text-danger"
+              *ngIf="
+                voucherForm.get('amount')?.errors?.['pattern'] &&
+                !voucherForm.get('amount')?.errors?.['required']
+              "
+            >
+              {{ "form-validations.numeric" | translate }}
+            </small>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-12">
+        <div class="form-group">
+          <label class="form-label">{{
+            "form-labels.description" | translate
+          }}</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="description"
+            [placeholder]="'form-labels.description-hint' | translate"
+          />
+        </div>
+      </div>
+
+      <div class="col-12 mt-3">
+        <button
+          class="btn btn-info"
+          type="submit"
+          [disabled]="voucherForm.invalid"
+        >
+          <i class="fa fa-plus mx-1"></i>
+          {{ "form-actions.save" | translate }}
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

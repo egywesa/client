@@ -1,0 +1,6 @@
+<app-first-design *ngIf="designnum=='2'" [invoice]="invoice" [baseUrl]="baseUrl"></app-first-design>
+<app-second-design *ngIf="designnum=='4'" [invoice]="invoice" [baseUrl]="baseUrl"></app-second-design>
+<ng-container>
+  <app-third-design *ngIf="designnum=='3'" [invoice]="invoice" [baseUrl]="baseUrl"></app-third-design>
+</ng-container>
+ <app-sample-design *ngIf="designnum=='1'" [invoice]="invoice" [baseUrl]="baseUrl"></app-sample-design>

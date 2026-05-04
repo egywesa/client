@@ -1,0 +1,66 @@
+<div>
+  <button type="button" class="btn  close" (click)="close()"> <span aria-hidden="true">&times;</span></button>
+</div>
+<div style="overflow-y:auto; direction: rtl;">
+
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ 'invoice notifications'|translate }}</h5>
+
+
+        <!-- <h1></h1> -->
+
+      </div>
+      <div class="modal-body row">
+        <table class="table" *ngIf="currentOpenedNotifications?.length > 0">
+          <thead>
+            <th>{{'Invoice Number'|translate}}</th>
+            <th>{{'Invoice Date'|translate}}</th>
+            <th>{{'InvoiceType'|translate}}</th>
+            <th>{{'Download'|translate}}</th>
+            <!-- <th>{{'Operations'|translate}}</th> -->
+          </thead>
+          <tbody>
+            <tr *ngFor="let notification of currentOpenedNotifications">
+              <td>{{ notification.id }}({{ notification.invoiceID }})</td>
+              <td>{{ notification.date | date }}</td>
+              <td>
+                {{ notification.acountantInvoiceType == 1 ? ('CreditNote'|translate) :
+                ('DebitNote'|translate) }}
+              </td>
+              <td>
+                <a class="btn btn-info ml-2" target="_blank"
+                  [href]="'/dashboard/invoice-notifications/show/'+notification.id">
+                  <i class="fa fa-print"></i>
+                </a>
+                <a class="btn btn-info ml-2" target="_blank"
+                  [href]="'/dashboard/invoice-notifications/download/'+notification.id">
+                  <i class="fa fa-download"></i>
+                </a>
+                <a *ngIf="admin" class="btn btn-info  ml-2" target="_blank"
+                  [href]="'/dashboard/invoice-notifications/edit/'+notification.id">
+                  <i class="fa fa-edit"></i>
+                </a>
+                <a *ngIf="notification.zatcaVerified==true" class="btn btn-info" target="_blank">
+                  {{'zatca is verified' |translate}}
+                </a>
+                <a id="verified" *ngIf="notification.zatcaVerified==false || notification.zatcaVerified==null" class="btn btn-info" target="_blank">
+                  <!-- (click)="VerfyNotification(notification.id)">  -->
+                  {{'zatca not verified' |translate}}
+                </a>
+              </td>
+              <!-- <td>
+                                <a class="btn btn-sm btn-default" (click)="removenotification(notification.id)"><i class="icon-trash"></i></a>
+                            </td> -->
+            </tr>
+          </tbody>
+        </table>
+        <h2 class="p-1" *ngIf="currentOpenedNotifications?.length == 0">
+          {{ 'no invoice notifications' | translate }}
+        </h2>
+      </div>
+
+    </div>
+  </div>
+</div>

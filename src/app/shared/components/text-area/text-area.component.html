@@ -1,0 +1,20 @@
+<textarea
+  (input)="onChange($event.target.value)"
+  (blur)="onTouched()"
+  class="form-control"
+  #input
+  placeholder="{{ label }}"
+  rows="{{rows}}"
+></textarea>
+
+<div class="text-danger"
+     *ngIf="(controlDir && controlDir.control && !controlDir.control.valid && controlDir.control.touched)">
+  <span *ngIf="controlDir.control.errors?.required">{{ label }} {{ 'is required' | translate }}</span>
+  <br *ngIf="controlDir.control.errors?.required">
+  <span *ngIf="controlDir.control.errors?.pattern">{{ label }} {{ 'is invalid' | translate }}</span>
+  <br *ngIf="controlDir.control.errors?.pattern">
+  <span *ngIf="controlDir.control.errors?.minlength">{{ label }} {{ 'is very short' | translate }}</span>
+  <br *ngIf="controlDir.control.errors?.minlength">
+  <span *ngIf="controlDir.control.errors?.maxlength">{{ label }} {{ 'is too long'| translate }}</span>
+  <br *ngIf="controlDir.control.errors?.maxlength">
+</div>

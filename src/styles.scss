@@ -1,0 +1,188 @@
+/* You can add global styles to this file, and also import other style files */
+body.rtl {
+  input::placeholder,
+  label,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  button,
+  a,
+  span,
+  input,
+  textarea,
+  small,
+  li,
+  th,
+  td,
+  option,
+  select,
+  div {
+    font-family: "Cairo", sans-serif;
+  }
+
+  .table-responsive::-webkit-scrollbar {
+    width: 0px;
+  }
+  table.dataTable thead th,
+  table.dataTable thead td,
+  table.dataTable tfoot th,
+  table.dataTable tfoot td {
+    text-align: right;
+  }
+}
+
+/* Global table cell text color */
+table td {
+  /* Dark black color for better visibility */
+  font-weight: 500 !important; /* Slightly bolder text */
+  -webkit-print-color-adjust: exact !important; /* Ensure color prints correctly */
+  print-color-adjust: exact !important;
+}
+
+body::-webkit-scrollbar {
+  width: 15px;
+  height: 22px;
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: #20303c; /* color of the scroll thumb */
+  border-radius: 20px; /* roundness of the scroll thumb */
+}
+
+body.ltr {
+  input::placeholder,
+  label,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  button,
+  a,
+  span,
+  input,
+  textarea,
+  small,
+  li,
+  th,
+  td,
+  option,
+  select,
+  div {
+    font-family: "Roboto", sans-serif;
+  }
+}
+
+tr:has(.drafttr) {
+  background-color: lightgrey !important;
+}
+
+tr:has(.notificationtr) {
+  background-color: lightblue !important;
+}
+.tab-content {
+  position: fixed;
+  overflow-y: scroll;
+  height: 90vh;
+}
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+.input-group-prepend .btn {
+  margin-right: 1%;
+}
+.dataTables_wrapper,
+table {
+  overflow-x: scroll;
+}
+
+html[lang="en"] .modal .modal-header .close {
+  margin: unset !important;
+}
+
+.modal.show {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.modal-dialog-scrollable .modal-content {
+  overflow-y: auto;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.text-start {
+  text-align: start !important;
+}
+
+.preloader-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.4s ease;
+  z-index: 1000;
+  opacity: 0.9;
+  color: gray !important;
+  rotate: -30deg;
+  h1 {
+    font-size: 80px;
+  }
+}
+.subscription {
+  :host ::ng-deep ul.pagination {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px), (max-width: 1024px) {
+  .navbar-brand {
+    display: none !important;
+  }
+}
+
+// Mat Custom Styles
+.mat-table thead th {
+  vertical-align: middle;
+}
+
+.mat-tab-label.mat-tab-label-active {
+  opacity: 1;
+}
+
+body.rtl .mat-paginator .mat-paginator-navigation-first,
+body.rtl .mat-paginator .mat-paginator-navigation-last,
+body.rtl .mat-paginator .mat-paginator-navigation-next,
+body.rtl .mat-paginator .mat-paginator-navigation-previous {
+  transform: rotate(180deg);
+}
+
+// Ng Select
+body.rtl .ng-select.ng-select-single .ng-select-container {
+  padding: 0 12px;
+}
+
+body.rtl
+  .ng-select.ng-select-single
+  .ng-select-container
+  .ng-value-container
+  .ng-input {
+  padding-right: 15px;
+  padding-left: 50px;
+}

@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>Saudi Fatora | الفاتورة السعودية</title>
+  <base href="/">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <meta name="description" content="Saudi Fatora - نظام الفواتير الإلكترونية المتكامل">
+  <meta name="keywords" content="فواتير, سعودي, إلكتروني, نظام, محاسبة">
+  <meta name="author" content="Saudi Fatora">
+  <meta name="theme-color" content="#3498db">
+  <meta property="og:title" content="Saudi Fatora | الفاتورة السعودية">
+  <meta property="og:description" content="نظام الفواتير الإلكترونية المتكامل">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://demo.saudifatora.com">
+  <meta property="og:image" content="assets/images/og-image.jpg">
+
+  <link rel="icon" href="assets/images/icon.svg" type="image/x-icon">
+  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+  
+  <!-- Preload Critical Resources -->
+  <link rel="preload" href="assets/vendor/bootstrap/css/bootstrap.min.css" as="style">
+  <link rel="preload" href="assets/vendor/font-awesome/css/font-awesome.min.css" as="style">
+  <link rel="preload" href="assets/css/main.css" as="style">
+  <link rel="preload" href="assets/css/color_skins.css" as="style">
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700&display=swap" as="style">
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Roboto:wght@500;700&display=swap" as="style">
+
+  <!-- VENDOR CSS -->
+  <link rel="stylesheet" href="assets/vendor/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/vendor/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="assets/vendor/toastr/toastr.min.css">
+
+  <!-- Dynamic RTL/LTR CSS Loading -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const head = document.getElementsByTagName('HEAD')[0];
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = `assets/css/main${localStorage.getItem('language') == 'en' ? '' : '-rtl'}.css`;
+      head.appendChild(link);
+    });
+  </script>
+
+  <!-- Theme CSS -->
+  <link rel="stylesheet" href="assets/css/color_skins.css">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <!-- Additional Libraries -->
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Page Loader -->
+  <style>
+    .page-loader-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #ffffff;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+
+    .loader {
+      text-align: center;
+    }
+
+    .loader img {
+      width: 120px;
+      height: 120px;
+      margin-bottom: 1rem;
+      animation: pulse 1.5s infinite;
+    }
+
+    .loader p {
+      color: #3498db;
+      font-size: 1.1rem;
+      margin-top: 1rem;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+  </style>
+</head>
+
+<body class="theme-blue mat-typography">
+  <!-- Page Loader -->
+  <div class="page-loader-wrapper">
+    <div class="loader">
+      <img src="assets/images/img/logo.png" alt="Saudi Fatora">
+      <p>جاري التحميل...</p>
+    </div>
+  </div>
+
+  <app-root></app-root>
+
+  <!-- Core Scripts -->
+  <script src="assets/bundles/libscripts.bundle.js"></script>
+  <script src="assets/bundles/vendorscripts.bundle.js"></script>
+  <script src="assets/vendor/toastr/toastr.js"></script>
+  <script src="assets/js/index.js"></script>
+
+  <!-- Remove Loader -->
+  <script>
+    window.addEventListener('load', function() {
+      const loader = document.querySelector('.page-loader-wrapper');
+      if (loader) {
+        loader.style.opacity = '0';
+        setTimeout(() => {
+          loader.style.display = 'none';
+        }, 500);
+      }
+    });
+  </script>
+</body>
+</html>

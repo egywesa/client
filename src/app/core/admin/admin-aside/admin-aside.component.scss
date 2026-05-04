@@ -1,0 +1,9 @@
+.tab-content::-webkit-scrollbar {
+    width: 10px;               /* width of the entire scrollbar */
+  }
+  
+  .tab-content::-webkit-scrollbar-thumb {
+            background-color:#20303c ;    /* color of the scroll thumb */
+          border-radius: 20px;       /* roundness of the scroll thumb */
+  
+  }

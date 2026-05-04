@@ -1,0 +1,99 @@
+<div class="card p-4">
+  <form (ngSubmit)="addEntry()" [formGroup]="entryForm">
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="form-group">
+          <label class="form-label">{{ "form-labels.date" | translate }}</label>
+          <input
+            type="date"
+            class="form-control"
+            formControlName="entryDate"
+            placeholder="mm/dd/yyyy"
+          />
+
+          <small
+            class="text-danger"
+            *ngIf="
+              entryForm.get('entryDate')?.invalid &&
+              entryForm.get('entryDate')?.touched
+            "
+          >
+            {{ "form-validations.required" | translate }}
+          </small>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="form-group">
+          <label class="form-label">{{
+            "form-labels.account" | translate
+          }}</label>
+          <ng-select
+            [items]="accounts"
+            bindLabel="name"
+            bindValue="id"
+            formControlName="accountId"
+            [searchable]="true"
+            placeholder="{{ 'form-labels.choose-account' | translate }}"
+          >
+          </ng-select>
+
+          <small
+            class="text-danger"
+            *ngIf="
+              entryForm.get('accountId')?.invalid &&
+              entryForm.get('accountId')?.touched
+            "
+          >
+            {{ "form-validations.required" | translate }}
+          </small>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="form-group">
+          <label class="form-label">{{
+            "form-labels.amount" | translate
+          }}</label>
+          <input
+            type="number"
+            class="form-control"
+            formControlName="amount"
+            placeholder="{{ 'form-labels.amount-hint' | translate }}"
+          />
+          <div
+            *ngIf="
+              entryForm.get('amount')?.invalid &&
+              entryForm.get('amount')?.touched
+            "
+          >
+            <small
+              class="text-danger"
+              *ngIf="entryForm.get('amount')?.errors?.['required']"
+            >
+              {{ "form-validations.required" | translate }}
+            </small>
+            <small
+              class="text-danger"
+              *ngIf="
+                entryForm.get('amount')?.errors?.['pattern'] &&
+                !entryForm.get('amount')?.errors?.['required']
+              "
+            >
+              {{ "form-validations.numeric" | translate }}
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 mt-3">
+        <button
+          class="btn btn-info"
+          type="submit"
+          [disabled]="entryForm.invalid"
+        >
+          <i class="fa fa-plus mx-1"></i>
+          {{ "form-actions.save" | translate }}
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,38 @@
+<div class="row clearfix">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="header row">
+        <div class="col-lg-4">
+          <h2>{{ "Zatac Table" | translate }}</h2>
+          <br />
+          <a
+            class="btn btn-info ml-1"
+            routerLink="/dashboard/zatac"
+            ><i class="fa fa-plus"></i> {{ "Add New" | translate }}</a
+          >
+        </div>
+
+      </div>
+      <div class="body">
+        <div class="table-responsive">
+          <table datatable [dtOptions]="dtOptions" class="table table-hover dataTable table-custom">
+            <thead class="thead-light">
+            <tr>
+
+              <th>{{'Branch Name'|translate}}</th>
+              <th>{{'csr'|translate}}</th>
+              <th>{{'Sydate'|translate}}</th>
+              <th>{{'binarySecurityToken'|translate}}</th>
+              <th>{{'Key_pem'|translate}}</th>
+              <th>{{'secret'|translate}}</th>
+              <th>{{'InputOtp'|translate}}</th>
+              <th>{{'requestId'|translate}}</th>
+            </tr>
+            </thead>
+
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

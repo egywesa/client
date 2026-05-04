@@ -1,0 +1,75 @@
+<div class="block-header">
+    <div class="row">
+      <div class="col-lg-12 col-md-8 col-sm-12">
+        <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth"><i class="fa fa-arrow-right"></i></a>{{'home'|translate}}</h2>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a routerLink="/dashboard"><i class="icon-home"></i></a></li>
+          <li class="breadcrumb-item"><a routerLink="/dashboard/contact">{{'contacts.title'|translate}}</a></li>
+          <li class="breadcrumb-item active">{{ 'Add New'|translate }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row clearfix">
+    <div class="col-lg-12 col-md-12">
+      <div class="card">
+        <div class="header">
+          <h2> {{'Add New'|translate}}</h2>
+        </div>
+        <div class="body">
+          <form [formGroup]="contactForm" (submit)="onSubmit()" enctype="multipart/form-data">
+            <div class="row">
+              
+              <div class="col-md-6 form-group">
+                <label>{{'title Arabic'|translate}}</label>
+                <app-text-input [label]="'title Arabic'|translate" formControlName="titleAr"></app-text-input>
+              </div>
+              <div class="col-md-6 form-group">
+                <label>{{'title English'|translate}}</label>
+                <app-text-input [label]="'title English'|translate" formControlName="title"></app-text-input>
+              </div>
+  
+              <div class="col-md-6 form-group">
+                <label>{{'addressAr'|translate}}</label>
+                <app-text-input [label]="'addressAr'|translate" formControlName="addressAr"></app-text-input>
+              </div>
+              <div class="col-md-6 form-group">
+                <label>{{'address'|translate}}</label>
+                <app-text-input [label]="'address'|translate" formControlName="address"></app-text-input>
+              </div>
+
+              <div class="col-md-6 form-group">
+                <label>{{'phone'|translate}}</label>
+                <app-text-input [label]="'phone'|translate" formControlName="phone"></app-text-input>
+              </div>
+              <div class="col-md-6 form-group">
+                <label>{{'email'|translate}}</label>
+                <app-text-input [label]="'email'|translate" formControlName="email"></app-text-input>
+              </div>
+              <div class="col-md-6 form-group">
+                <label>{{'faceBook'|translate}}</label>
+                <app-text-input [label]="'faceBook'|translate" formControlName="faceBook"></app-text-input>
+              </div>
+              <div class="col-md-6 form-group">
+                <label>{{'linkedin'|translate}}</label>
+                <app-text-input [label]="'linkedin'|translate" formControlName="linkedin"></app-text-input>
+              </div>
+              <div class="col-md-12 form-group">
+                <label>{{'twitter'|translate}}</label>
+                <app-text-input [label]="'twitter'|translate" formControlName="twitter"></app-text-input>
+              </div>
+            
+              
+            </div>
+            <br>
+            <div class="input-group-prepend">
+              <button class="btn btn-outline-success ml-1" type="submit" [disabled]="!contactForm.valid">{{'Save'|translate}}</button>
+              <button class="btn btn-default" routerLink="/dashboard/contact">{{'Back'|translate}}</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  

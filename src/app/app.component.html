@@ -1,0 +1,38 @@
+<ngx-spinner
+  template="<img src='assets/images/img/logo.png' width='180' height='180' />" size = "small">
+  <p class="loading">Loading...</p>
+</ngx-spinner>
+<!--For Dashboard Pages-->
+<ng-container *ngIf="router.url != '/account/login' && router.url != '/PackagePrices' &&  router.url != '/account/companyProfile' &&router.url != '/account/forgetPassword' &&router.url != '/' && router.url != '/account/register' &&router.url != '/landpage'&&router.url != '/#home' &&
+router.url != '/#contact' && router.url != '/#testomonia' && router.url != '/#price' && router.url != '/#subscription' && router.url != '/#about' &&
+  !router.url.includes('/dashboard/invoices/show/') && !router.url.includes('/dashboard/invoices/print/') &&
+  !router.url.includes('/dashboard/invoice-notifications/show/') && !router.url.includes('/dashboard/invoices/showdraft/') && !router.url.includes('/dashboard/invoices/printdraft/')
+  &&!router.url.includes('/dashboard/invoices/download/')&&!router.url.includes('/dashboard/invoice-notifications/download/')">
+  <div id="wrapper">
+
+    <app-header></app-header>
+
+    <ng-container *ngIf="(accountService.currentUser$ | async) as user">
+
+      <app-admin-aside *ngIf="user.roles.includes('Admin')"></app-admin-aside>
+      <app-aside *ngIf="user.roles.includes('User')"></app-aside>
+
+    </ng-container>
+
+    <div id="main-content">
+      <div class="container-fluid">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+
+<!-- For Login Page -->
+<ng-container *ngIf="router.url == '/account/login' || router.url == '/PackagePrices' || router.url == '/account/companyProfile' || router.url == '/account/forgetPassword' ||router.url == '/' ||router.url == '/account/register' ||router.url == '/landpage' ||router.url == '/#home' ||
+router.url == '/#contact' ||router.url == '/#testomonia' || router.url == '/#price' ||router.url == '/#subscription' ||router.url == '/#about' ||
+  router.url.includes('/dashboard/invoices/show/') || router.url.includes('/dashboard/invoices/print/') ||
+  router.url.includes('/dashboard/invoice-notifications/show/') || router.url.includes('/dashboard/invoices/showdraft/') || router.url.includes('/dashboard/invoices/printdraft/')
+  ||router.url.includes('/dashboard/invoices/download/')||router.url.includes('/dashboard/invoice-notifications/download/')">
+  <router-outlet></router-outlet>
+</ng-container>

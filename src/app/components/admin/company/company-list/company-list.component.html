@@ -1,0 +1,99 @@
+<div class="block-header">
+  <div class="row">
+    <div class="col-lg-6 col-md-8 col-sm-12">
+      <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth"><i
+            class="fa fa-arrow-right"></i></a>{{'home'|translate}}</h2>
+      <ul class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/dashboard"><i class="icon-home"></i></a></li>
+        <li class="breadcrumb-item active">{{ 'Companies'|translate }}</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row clearfix">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="header">
+        <h2>{{'Companies Table'|translate}}</h2>
+        <br />
+        <a class="btn btn-info" routerLink="/dashboard/companies/add-or-edit"><i class="fa fa-plus"></i> {{'Add New'|translate}}</a>
+      </div>
+<!--
+      <kendo-grid [kendoGridBinding]="gridView" kendoGridSelectBy="id" [(selectedKeys)]="mySelection" [pageSize]="20"
+        [pageable]="true" [sortable]="true" [groupable]="true" [reorderable]="true" [resizable]="true" [height]="600"
+        [columnMenu]="{ filter: true }"  [skip]="skip" (pageChange)="pageChange($event)">
+        <ng-template kendoGridToolbarTemplate>
+          <input [style.width.px]="165" placeholder="Search in all columns..." kendoTextBox
+            (input)="onFilter($event)" />
+          <kendo-grid-spacer></kendo-grid-spacer>
+          <button kendoGridPDFCommand icon="file-pdf">Export to PDF</button>
+        </ng-template>
+
+        <kendo-grid-column-group [columnMenu]="false">
+          <kendo-grid-column field="companyName" title="{{'Company Name'|translate}}" [width]="220">
+          </kendo-grid-column>
+
+          <kendo-grid-column field="activityName" title="{{'Activity'|translate}}" [width]="220">
+          </kendo-grid-column>
+          <kendo-grid-column field="phoneNumber" title="{{'Company phone'|translate}}" [width]="100" [class]="{'text-center': true}"
+            [resizable]="false" >
+          </kendo-grid-column>
+          <kendo-grid-column field="email" title="{{'company email'|translate}}" [width]="100" [class]="{'text-center': true}"
+            [resizable]="false">
+
+          </kendo-grid-column>
+          <kendo-grid-column field="commercialRegNumber" title="{{'commercial Reg Number'|translate}}" [width]="100" [class]="{'text-center': true}"
+          [resizable]="false" >
+        </kendo-grid-column>
+        <kendo-grid-column  title="{{'Operations'|translate}}" [width]="100" [class]="{'text-center': true}">
+      </kendo-grid-column>
+        </kendo-grid-column-group>
+
+        <kendo-grid-pdf fileName="Employees.pdf" [repeatHeaders]="true"></kendo-grid-pdf>
+
+      </kendo-grid> -->
+      <div class="body">
+        <div class="row">
+          <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+            <input type="text" class="form-control" placeholder="بحث برقم الشركه" (ngModelChange)="submitFilter()" [(ngModel)]="searchId" />
+          </div>
+          <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+            <input type="text" class="form-control" placeholder="بحث باسم الشركه" (ngModelChange)="submitFilter()" [(ngModel)]="searchname" />
+          </div>
+          <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+            <input type="text" class="form-control" placeholder="بحث برقم الموبيل" (ngModelChange)="submitFilter()" [(ngModel)]="searchPhoneNumber" />
+          </div>
+          <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+            <input type="text" class="form-control" placeholder="بحث بإيميل الشركه" (ngModelChange)="submitFilter()" [(ngModel)]="searchEmail" />
+          </div>
+          <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+            <input type="text" class="form-control" placeholder="بحث بالرقم الضريبى" (ngModelChange)="submitFilter()" [(ngModel)]="searchVat" />
+          </div>
+          <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+
+          </div>
+        </div>
+        <br/>
+        <div class="table-responsive">
+          <table datatable [dtOptions]="dtOptions" class="table table-hover dataTable table-custom">
+            <thead class="thead-light">
+              <tr>
+
+                <th>#</th>
+                <th>{{'Company Name'|translate}}</th>
+                <th>{{'Activity'|translate}}</th>
+                <th>{{'Company phone'|translate}}</th>
+                <th>{{'company email'|translate}}</th>
+                <th>{{'Client CreatedDate'|translate}}</th>
+                <th>{{'commercial Reg Number'|translate}}</th>
+                <th>{{'Operations'|translate}}</th>
+              </tr>
+            </thead>
+
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

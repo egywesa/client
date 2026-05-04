@@ -1,0 +1,346 @@
+<div class="card p-4 mt-2">
+  <h4 class="mb-4">{{ "payment-voucher.previous-vouchers" | translate }}</h4>
+
+  <form (ngSubmit)="onSearch()" [formGroup]="searchForm" class="row g-3 mb-4">
+    <div class="col-md-4">
+      <label class="form-label">{{
+        "form-labels.from-date" | translate
+      }}</label>
+      <input type="date" class="form-control" formControlName="fromDate" />
+
+      <small
+        class="text-danger"
+        *ngIf="searchForm.hasError('dateRangeInvalid') && searchForm.touched"
+      >
+        {{ "form-validations.date-range" | translate }}
+      </small>
+    </div>
+
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="form-label">{{
+          "form-labels.to-date" | translate
+        }}</label>
+        <input type="date" class="form-control" formControlName="toDate" />
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="form-label">{{
+          "form-labels.beneficiary" | translate
+        }}</label>
+        <ng-select
+          [items]="suppliers"
+          bindLabel="name"
+          bindValue="id"
+          formControlName="supplierId"
+          [searchable]="true"
+          placeholder="{{ 'form-labels.choose-beneficiary' | translate }}"
+        >
+        </ng-select>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="form-label">{{
+          "form-labels.account" | translate
+        }}</label>
+        <ng-select
+          [items]="banks"
+          bindLabel="bankName"
+          bindValue="id"
+          formControlName="bankId"
+          [searchable]="true"
+          placeholder="{{ 'form-labels.choose-account' | translate }}"
+        >
+        </ng-select>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="form-label">{{
+          "form-labels.description" | translate
+        }}</label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="description"
+          [placeholder]="'form-labels.description-hint' | translate"
+        />
+      </div>
+    </div>
+
+    <div class="col">
+      <label class="form-label invisible d-block"> &nbsp; </label>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="searchForm.invalid"
+      >
+        <i class="fa fa-search"></i> {{ "form-actions.search" | translate }}
+      </button>
+      <button
+        type="button"
+        class="btn btn-success mx-2"
+        [disabled]="searchForm.invalid"
+        (click)="onExportToExcel()"
+      >
+        <i class="fa fa-file-excel-o"></i>
+        {{ "form-actions.export-excel" | translate }}
+      </button>
+    </div>
+  </form>
+
+  <!-- Payment Vouchers List -->
+  <div class="card p-4 mat-elevation-z8 mt-2">
+    <table mat-table [dataSource]="dataSource" matSort class="table">
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>#</th>
+        <td mat-cell *matCellDef="let voucher">{{ voucher.id }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ "form-labels.date" | translate }}
+        </th>
+        <td mat-cell *matCellDef="let voucher">{{ voucher.date | date }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="supplierName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ "suppliers.supplier-name" | translate }}
+        </th>
+        <td mat-cell *matCellDef="let voucher">{{ voucher.supplierName }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="bankName">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ "form-labels.account" | translate }}
+        </th>
+        <td mat-cell *matCellDef="let voucher">{{ voucher.bankName }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="amount">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ "form-labels.amount" | translate }}
+        </th>
+        <td mat-cell *matCellDef="let voucher">{{ voucher.amount }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="description">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          {{ "form-labels.description" | translate }}
+        </th>
+        <td mat-cell *matCellDef="let voucher">{{ voucher.description }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef class="text-start">
+          {{ "Operations" | translate }}
+        </th>
+        <td mat-cell *matCellDef="let voucher">
+          <button
+            class="btn btn-sm btn-light"
+            title="{{ 'form-actions.print' | translate }}"
+            (click)="onPrintVoucher(voucher)"
+          >
+            <i class="fa fa-print"></i>
+          </button>
+          <button
+            class="btn btn-sm btn-primary mx-2"
+            title="{{ 'form-actions.edit' | translate }}"
+            (click)="openModal(voucher)"
+          >
+            <i class="fa fa-edit"></i>
+          </button>
+          <button
+            class="btn btn-sm btn-danger"
+            title="{{ 'form-actions.delete' | translate }}"
+            (click)="onDelete(voucher)"
+          >
+            <i class="fa fa-trash"></i>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+
+    <mat-paginator
+      [pageSizeOptions]="[]"
+      [pageSize]="pageSize"
+      [length]="totalCount"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+    ></mat-paginator>
+  </div>
+</div>
+
+<!-- Edit Voucher Modal -->
+<div
+  class="modal fade show"
+  tabindex="-1"
+  role="dialog"
+  [ngClass]="{ 'd-block': modalVisible }"
+  *ngIf="modalVisible"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <form (ngSubmit)="saveModal(modalForm.value)" [formGroup]="modalForm">
+        <div class="modal-header">
+          <button type="button" class="close" (click)="closeModal()">
+            <span>&times;</span>
+          </button>
+          <h5 class="modal-title">
+            {{ "form-actions.edit" | translate }}
+          </h5>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="form-label">{{
+                  "form-labels.date" | translate
+                }}</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  formControlName="date"
+                  placeholder="mm/dd/yyyy"
+                />
+
+                <small
+                  class="text-danger"
+                  *ngIf="
+                    modalForm.get('date')?.invalid &&
+                    modalForm.get('date')?.touched
+                  "
+                >
+                  {{ "form-validations.required" | translate }}
+                </small>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="form-label">{{
+                  "form-labels.beneficiary" | translate
+                }}</label>
+                <ng-select
+                  [items]="suppliers"
+                  bindLabel="name"
+                  bindValue="id"
+                  formControlName="supplierId"
+                  [searchable]="true"
+                  placeholder="{{
+                    'form-labels.choose-beneficiary' | translate
+                  }}"
+                >
+                </ng-select>
+
+                <small
+                  class="text-danger"
+                  *ngIf="
+                    modalForm.get('supplierId')?.invalid &&
+                    modalForm.get('supplierId')?.touched
+                  "
+                >
+                  {{ "form-validations.required" | translate }}
+                </small>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="form-label">{{
+                  "form-labels.account" | translate
+                }}</label>
+                <ng-select
+                  [items]="banks"
+                  bindLabel="bankName"
+                  bindValue="id"
+                  formControlName="bankId"
+                  [searchable]="true"
+                  placeholder="{{ 'form-labels.choose-account' | translate }}"
+                >
+                </ng-select>
+
+                <small
+                  class="text-danger"
+                  *ngIf="
+                    modalForm.get('bankId')?.invalid &&
+                    modalForm.get('bankId')?.touched
+                  "
+                >
+                  {{ "form-validations.required" | translate }}
+                </small>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label class="form-label">{{
+                  "form-labels.amount" | translate
+                }}</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  formControlName="amount"
+                  placeholder="{{ 'form-labels.amount-hint' | translate }}"
+                />
+                <div
+                  *ngIf="
+                    modalForm.get('amount')?.invalid &&
+                    modalForm.get('amount')?.touched
+                  "
+                >
+                  <small
+                    class="text-danger"
+                    *ngIf="modalForm.get('amount')?.errors?.['required']"
+                  >
+                    {{ "form-validations.required" | translate }}
+                  </small>
+                  <small
+                    class="text-danger"
+                    *ngIf="
+                      modalForm.get('amount')?.errors?.['pattern'] &&
+                      !modalForm.get('amount')?.errors?.['required']
+                    "
+                  >
+                    {{ "form-validations.numeric" | translate }}
+                  </small>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <div class="form-group">
+                <label class="form-label">{{
+                  "form-labels.description" | translate
+                }}</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="description"
+                  [placeholder]="'form-labels.description-hint' | translate"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn btn-success"
+            type="submit"
+            [disabled]="modalForm.invalid"
+          >
+            {{ "form-actions.save" | translate }}
+          </button>
+          <button class="btn btn-secondary mx-2" (click)="closeModal()">
+            {{ "form-actions.cancel" | translate }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

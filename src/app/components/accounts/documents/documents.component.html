@@ -1,0 +1,32 @@
+<div class="block-header">
+  <div class="row">
+    <div class="col-lg-6 col-md-8 col-sm-12">
+      <h2>
+        <a
+          href="javascript:void(0);"
+          class="btn btn-xs btn-link btn-toggle-fullwidth"
+          ><i class="fa fa-arrow-right"></i></a
+        >{{ "home" | translate }}
+      </h2>
+      <ul class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a routerLink="/dashboard"><i class="icon-home"></i></a>
+        </li>
+        <li class="breadcrumb-item active">
+          {{ "documents.title" | translate }}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<app-add-document
+  [clients]="clients"
+  [taxis]="taxis"
+  [documentTypes]="documentTypeOptions"
+></app-add-document>
+<app-document-list
+  [clients]="clients"
+  [taxis]="taxis"
+  [documentTypes]="documentTypeOptions"
+></app-document-list>

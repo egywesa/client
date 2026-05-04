@@ -1,0 +1,296 @@
+<div class="card p-4 mt-2">
+  <form (ngSubmit)="onSearch()" [formGroup]="searchForm" class="row g-3 mb-4">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label">{{
+          "form-labels.from-date" | translate
+        }}</label>
+        <input type="date" class="form-control" formControlName="fromDate" />
+
+        <small
+          class="text-danger"
+          *ngIf="
+            searchForm.get('fromDate')?.invalid &&
+            searchForm.get('fromDate')?.touched
+          "
+        >
+          {{ "form-validations.required" | translate }}
+        </small>
+        <small
+          class="text-danger"
+          *ngIf="searchForm.hasError('dateRangeInvalid') && searchForm.touched"
+        >
+          {{ "form-validations.date-range" | translate }}
+        </small>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label">{{
+          "form-labels.to-date" | translate
+        }}</label>
+        <input type="date" class="form-control" formControlName="toDate" />
+
+        <small
+          class="text-danger"
+          *ngIf="
+            searchForm.get('toDate')?.invalid &&
+            searchForm.get('toDate')?.touched
+          "
+        >
+          {{ "form-validations.required" | translate }}
+        </small>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label">{{
+          "form-labels.account" | translate
+        }}</label>
+        <ng-select
+          [items]="accounts"
+          bindLabel="name"
+          bindValue="id"
+          formControlName="accountId"
+          [searchable]="true"
+          placeholder="{{ 'form-labels.choose-account' | translate }}"
+        >
+        </ng-select>
+
+        <small
+          class="text-danger"
+          *ngIf="
+            searchForm.get('accountId')?.invalid &&
+            searchForm.get('accountId')?.touched
+          "
+        >
+          {{ "form-validations.required" | translate }}
+        </small>
+      </div>
+    </div>
+
+    <div class="col">
+      <label class="form-label invisible d-block"> &nbsp; </label>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="searchForm.invalid"
+      >
+        <i class="fa fa-search mx-1"></i>
+        {{ "form-actions.search" | translate }}
+      </button>
+      <button
+        type="button"
+        class="btn btn-success mx-2"
+        [disabled]="searchForm.invalid"
+        (click)="onExport(fileTypeOptions.EXCEL)"
+      >
+        <i class="fa fa-file-excel-o mx-1"></i>
+        {{ "form-actions.export-excel" | translate }}
+      </button>
+      <button
+        type="button"
+        class="btn btn-light"
+        [disabled]="!accountStatementReport"
+        (click)="onPrint()"
+      >
+        <i class="fa fa-print mx-1"></i>
+        {{ "form-actions.print" | translate }}
+      </button>
+    </div>
+  </form>
+
+  <div *ngIf="accountStatementReport">
+    <div *ngIf="accountStatementReport.mode === 'Detailed'">
+      <div class="mb-2">
+        <small class="text-muted d-block">
+          {{ "form-labels.period" | translate }}
+        </small>
+        <span>{{ "form-labels.from" | translate }}</span>
+        <strong class="mx-1">
+          {{ accountStatementReport.from | date }}
+        </strong>
+        <span>{{ "form-labels.to" | translate }}</span>
+        <strong class="mx-1">
+          {{ accountStatementReport.to | date }}
+        </strong>
+      </div>
+      <div
+        class="d-flex justify-content-between align-items-center border p-3 rounded"
+      >
+        <div>
+          <small class="text-muted d-block">
+            {{ "form-labels.account" | translate }}
+          </small>
+          <strong>{{ accountStatementReport.account }}</strong>
+        </div>
+        <div>
+          <small class="text-muted d-block">
+            {{ "reports.opening-balance" | translate }}
+          </small>
+          <h5 class="m-0 text-primary">
+            {{ accountStatementReport.openingBalance | number }}
+          </h5>
+        </div>
+        <div>
+          <small class="text-muted d-block">
+            {{ "reports.final-balance" | translate }}
+          </small>
+          <h5 class="m-0 text-success">
+            {{ accountStatementReport.finalBalance | number }}
+          </h5>
+        </div>
+        <div>
+          <small class="text-muted d-block">
+            {{ "reports.manual-balance" | translate }}
+          </small>
+          <h5 class="m-0 text-secondary">
+            {{ accountStatementReport.totals.manualBalance | number }}
+          </h5>
+        </div>
+      </div>
+
+      <div class="card p-4 mt-3 shadow-sm">
+        <div class="table-responsive">
+          <table class="table table-bordered text-center">
+            <thead class="thead-light">
+              <tr>
+                <th>{{ "form-labels.date" | translate }}</th>
+                <th>{{ "form-labels.journal" | translate }}</th>
+                <th>{{ "form-labels.description" | translate }}</th>
+                <th>{{ "form-labels.amount" | translate }}</th>
+                <th>{{ "form-labels.balance" | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let trx of accountStatementReport.transactions">
+                <td>{{ trx.date | date }}</td>
+                <td>{{ trx.journalEntryId }}</td>
+                <td>{{ trx.description }}</td>
+                <td>{{ trx.amount | number }}</td>
+                <td>{{ trx.balanceAfter | number }}</td>
+              </tr>
+
+              <tr class="font-weight-bold bg-light">
+                <td colspan="3">{{ "reports.period-total" | translate }}</td>
+                <td>
+                  {{ accountStatementReport.totals.periodTotal | number }}
+                </td>
+                <td>{{ accountStatementReport.finalBalance | number }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="accountStatementReport.mode === 'Grouped'">
+      <div
+        class="d-flex justify-content-between align-items-center p-3 rounded mb-2"
+      >
+        <div>
+          <small class="text-muted d-block">
+            {{ "form-labels.account" | translate }}
+          </small>
+          <strong>{{ accountStatementReport.account }}</strong>
+        </div>
+        <div>
+          <small class="text-muted d-block">
+            {{ "form-labels.period" | translate }}
+          </small>
+          <span>{{ "form-labels.from" | translate }}</span>
+          <strong class="mx-1">
+            {{ accountStatementReport.from | date }}
+          </strong>
+          <span>{{ "form-labels.to" | translate }}</span>
+          <strong class="mx-1">
+            {{ accountStatementReport.to | date }}
+          </strong>
+        </div>
+      </div>
+      <div
+        class="d-flex justify-content-between align-items-center border p-3 rounded"
+      >
+        <div>
+          <small class="text-muted d-block">
+            {{ "reports.opening-balance" | translate }}
+          </small>
+          <h5 class="m-0 text-primary">
+            {{ accountStatementReport.openingBalance | number }}
+          </h5>
+        </div>
+        <div>
+          <small class="text-muted d-block">
+            {{ "reports.final-balance" | translate }}
+          </small>
+          <h5 class="m-0 text-success">
+            {{ accountStatementReport.finalBalance | number }}
+          </h5>
+        </div>
+        <div>
+          <small class="text-muted d-block">
+            {{ "reports.manual-balance" | translate }}
+          </small>
+          <h5 class="m-0 text-secondary">
+            {{ accountStatementReport.totals.manualBalance | number }}
+          </h5>
+        </div>
+        <div>
+          <small class="text-muted d-block">
+            {{ "reports.period-total" | translate }}
+          </small>
+          <h5 class="m-0 text-secondary">
+            {{ accountStatementReport.totals.periodTotal | number }}
+          </h5>
+        </div>
+      </div>
+
+      <div class="card p-4 mt-3 shadow-sm">
+        <mat-accordion *ngIf="accountStatementReport.grouped.length > 0">
+          <mat-expansion-panel
+            *ngFor="let item of accountStatementReport.grouped; let i = index"
+            [expanded]="i === 0"
+            class="mb-3"
+          >
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <div class="text-muted">
+                  {{ item.accountName }}
+                </div>
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <div class="table-responsive">
+              <table class="table table-bordered text-center">
+                <thead class="thead-light">
+                  <tr>
+                    <th>{{ "form-labels.date" | translate }}</th>
+                    <th>{{ "form-labels.journal" | translate }}</th>
+                    <th>{{ "form-labels.description" | translate }}</th>
+                    <th>{{ "form-labels.amount" | translate }}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let trx of item.transactions">
+                    <td>{{ trx.date | date }}</td>
+                    <td>{{ trx.journalEntryId }}</td>
+                    <td>{{ trx.description }}</td>
+                    <td>{{ trx.amount | number }}</td>
+                  </tr>
+                  <tr class="font-weight-bold bg-light text-primary">
+                    <td colspan="3">
+                      {{ "reports.period-total" | translate }}
+                    </td>
+                    <td>{{ item.total | number : "1.2-2" }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+    </div>
+  </div>
+</div>

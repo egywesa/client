@@ -1,0 +1,172 @@
+// Shared styles for invoice templates
+:host {
+  display: block;
+  background-color: white;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'XB Riyaz', Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #000;
+  direction: rtl;
+  text-align: right;
+}
+
+// Common table styles
+.res-table {
+  width: 100%;
+  margin-bottom: 20px;
+  overflow-x: auto;
+  direction: rtl;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 0;
+  direction: rtl;
+  table-layout: fixed;
+}
+
+td, th {
+  padding: 8px;
+  border: 1px solid #000;
+  text-align: right;
+  vertical-align: middle;
+  font-family: 'XB Riyaz', Arial, sans-serif;
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+
+// Header styles
+.table-head {
+  background-color: #14678f;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  padding: 10px;
+  font-size: 14px;
+  font-family: 'XB Riyaz', Arial, sans-serif;
+}
+
+// Product table styles
+.products-table {
+  th {
+    background-color: #14678f;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+    font-size: 12px;
+    font-family: 'XB Riyaz', Arial, sans-serif;
+  }
+
+  td {
+    padding: 8px;
+    text-align: center;
+    font-size: 12px;
+    font-family: 'XB Riyaz', Arial, sans-serif;
+  }
+}
+
+// Total section styles
+.total-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-family: 'XB Riyaz', Arial, sans-serif;
+
+  td {
+    padding: 8px;
+    text-align: right;
+    font-family: 'XB Riyaz', Arial, sans-serif;
+    border: 1px solid #000;
+    line-height: 1.5;
+    white-space: normal;
+    word-wrap: break-word;
+  }
+
+  .total-label {
+    font-weight: bold;
+    background-color: #f8f9fa;
+    font-family: 'XB Riyaz', Arial, sans-serif;
+    width: 50%;
+    text-align: right;
+    padding-right: 15px;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  .total-value {
+    text-align: center;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+    width: 50%;
+    font-size: 13px;
+  }
+
+  tr:last-child {
+    td {
+      font-weight: bold;
+      background-color: #f8f9fa;
+    }
+  }
+
+  // Specific styles for VAT row
+  tr:nth-child(3) {
+    .total-label {
+      font-size: 13px;
+      line-height: 1.4;
+      padding: 8px 15px;
+      white-space: normal;
+      word-wrap: break-word;
+    }
+  }
+}
+
+// QR code styles
+.qr-code-container {
+  text-align: center;
+  width: 150px;
+  height: 150px;
+  margin: 0 auto;
+}
+
+// Signature styles
+.signature-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+// Print styles
+@media print {
+  :host {
+    padding: 0;
+    margin: 0;
+  }
+
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .table-head {
+    background-color: #14678f !important;
+    color: white !important;
+  }
+
+  .total-label {
+    background-color: #f8f9fa !important;
+  }
+
+  .total-table {
+    tr:last-child {
+      td {
+        background-color: #f8f9fa !important;
+      }
+    }
+  }
+} 

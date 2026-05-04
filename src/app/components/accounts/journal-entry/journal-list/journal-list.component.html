@@ -1,0 +1,324 @@
+<div class="card p-4 mt-2">
+  <h4 class="mb-4">{{ "journal-entry.previous-entries" | translate }}</h4>
+  <form (ngSubmit)="onSearch()" [formGroup]="searchForm" class="row g-3 mb-4">
+    <div class="col-md-4">
+      <label class="form-label">{{
+        "form-labels.from-date" | translate
+      }}</label>
+      <input type="date" class="form-control" formControlName="fromDate" />
+
+      <small
+        class="text-danger"
+        *ngIf="searchForm.hasError('dateRangeInvalid') && searchForm.touched"
+      >
+        {{ "form-validations.date-range" | translate }}
+      </small>
+    </div>
+
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="form-label">{{
+          "form-labels.to-date" | translate
+        }}</label>
+        <input type="date" class="form-control" formControlName="toDate" />
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="form-label">{{
+          "form-labels.account" | translate
+        }}</label>
+        <ng-select
+          [items]="accounts"
+          bindLabel="name"
+          bindValue="id"
+          formControlName="accountId"
+          [searchable]="true"
+          placeholder="{{ 'form-labels.choose-account' | translate }}"
+        >
+        </ng-select>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="form-group">
+        <label class="form-label">{{
+          "form-labels.description" | translate
+        }}</label>
+        <input type="text" class="form-control" formControlName="description" />
+      </div>
+    </div>
+
+    <div class="col">
+      <label class="form-label invisible d-block"> &nbsp; </label>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="searchForm.invalid"
+      >
+        <i class="fa fa-search"></i> {{ "form-actions.search" | translate }}
+      </button>
+      <button
+        type="button"
+        class="btn btn-success mx-2"
+        [disabled]="searchForm.invalid"
+        (click)="onExportToExcel()"
+      >
+        <i class="fa fa-file-excel-o"></i>
+        {{ "form-actions.export-excel" | translate }}
+      </button>
+    </div>
+  </form>
+
+  <mat-accordion *ngIf="journalEntries.length > 0; else noEntries" multi="true">
+    <mat-expansion-panel
+      *ngFor="let entry of journalEntries; let i = index"
+      [expanded]="i === 0"
+    >
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <div *ngIf="entry.entryNumber" class="text-muted">
+            <span>#</span>
+            {{ entry.entryNumber }}
+          </div>
+          <div *ngIf="entry.entryDate" class="text-muted mx-2">
+            <i class="fa fa-calendar mx-1"></i>
+            {{ entry.entryDate }}
+          </div>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <div *ngIf="entry.description">
+            {{ "form-labels.description" | translate }}:
+            {{ entry.description }}
+          </div>
+        </div>
+
+        <div>
+          <button
+            type="button"
+            class="btn btn-light btn-sm border"
+            (click)="printEntry(entry)"
+          >
+            {{ "form-actions.print" | translate }}
+          </button>
+          <button
+            class="btn btn-info btn-sm border mx-2"
+            (click)="openModal(entry)"
+          >
+            {{ "form-actions.edit" | translate }}
+          </button>
+          <button class="btn btn-danger btn-sm" (click)="onDelete(entry)">
+            {{ "form-actions.delete" | translate }}
+          </button>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-striped mb-0">
+          <thead class="thead-dark">
+            <tr>
+              <th>{{ "form-labels.account" | translate }}</th>
+              <th>{{ "form-labels.code" | translate }}</th>
+              <th>{{ "form-labels.amount" | translate }}</th>
+              <th>{{ "form-labels.description" | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let line of entry.lines">
+              <td>{{ line.accountName }}</td>
+              <td>{{ line.accountCode }}</td>
+              <td [class]="line.amount >= 0 ? 'text-success' : 'text-danger'">
+                {{ line.amount }}
+              </td>
+              <td>{{ line.description }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+  <ng-template #noEntries>
+    <p class="text-muted text-center">
+      {{ "journal-entry.no-entries" | translate }}
+    </p>
+  </ng-template>
+
+  <mat-paginator
+    [length]="totalCount"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="[]"
+    (page)="onPageChange($event)"
+  >
+  </mat-paginator>
+</div>
+
+<!-- Edit Entry Modal -->
+<div
+  class="modal fade show"
+  tabindex="-1"
+  role="dialog"
+  [ngClass]="{ 'd-block': modalVisible }"
+  *ngIf="modalVisible"
+>
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <form (ngSubmit)="saveModal(journalForm.value)" [formGroup]="journalForm">
+        <div class="modal-header">
+          <button type="button" class="close" (click)="closeModal()">
+            <span>&times;</span>
+          </button>
+          <h5 class="modal-title">
+            {{ "form-actions.edit" | translate }}
+          </h5>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-lg-6 mb-3">
+              <label class="form-label">{{
+                "journal-entry.entry-date" | translate
+              }}</label>
+              <input
+                type="date"
+                class="form-control"
+                formControlName="entryDate"
+                placeholder="mm/dd/yyyy"
+              />
+
+              <small
+                class="text-danger"
+                *ngIf="
+                  journalForm.get('entryDate')?.invalid &&
+                  journalForm.get('entryDate')?.touched
+                "
+              >
+                {{ "form-validations.required" | translate }}
+              </small>
+            </div>
+
+            <div class="col-lg-6 mb-3">
+              <label class="form-label">{{
+                "form-labels.description" | translate
+              }}</label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="description"
+                [placeholder]="'form-labels.description-hint' | translate"
+              />
+            </div>
+
+            <div class="col-12">
+              <!-- Line Items -->
+              <div class="mb-3" formArrayName="lines">
+                <label class="form-label d-block">
+                  {{ "journal-entry.line-items" | translate }}</label
+                >
+                <div
+                  *ngFor="let item of lineItems.controls; let i = index"
+                  [formGroupName]="i"
+                  class="row mb-2"
+                >
+                  <div class="col-4">
+                    <ng-select
+                      [items]="accounts"
+                      bindLabel="name"
+                      bindValue="id"
+                      formControlName="accountId"
+                      [searchable]="true"
+                      placeholder="{{
+                        'form-labels.choose-account' | translate
+                      }}"
+                    >
+                    </ng-select>
+
+                    <small
+                      class="text-danger"
+                      *ngIf="
+                        item.get('accountId')?.invalid &&
+                        item.get('accountId')?.touched
+                      "
+                    >
+                      {{ "form-validations.required" | translate }}
+                    </small>
+                  </div>
+                  <div class="col-3">
+                    <input
+                      type="number"
+                      class="form-control"
+                      formControlName="amount"
+                      placeholder="{{
+                        'journal-entry.amount-hint' | translate
+                      }}"
+                    />
+                    <div
+                      *ngIf="
+                        item.get('amount')?.invalid &&
+                        item.get('amount')?.touched
+                      "
+                    >
+                      <small
+                        class="text-danger"
+                        *ngIf="item.get('amount')?.errors?.['required']"
+                      >
+                        {{ "form-validations.required" | translate }}
+                      </small>
+                      <small
+                        class="text-danger"
+                        *ngIf="
+                          item.get('amount')?.errors?.['pattern'] &&
+                          !item.get('amount')?.errors?.['required']
+                        "
+                      >
+                        {{ "form-validations.numeric" | translate }}
+                      </small>
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <input
+                      type="text"
+                      class="form-control"
+                      formControlName="description"
+                      [placeholder]="'form-labels.description-hint' | translate"
+                    />
+                  </div>
+                  <div class="col">
+                    <button
+                      type="button"
+                      class="btn btn-danger w-100"
+                      (click)="removeLine(i)"
+                    >
+                      <i class="fa fa-trash"></i>
+                    </button>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  class="btn btn-dark mt-2"
+                  (click)="addLine()"
+                >
+                  + {{ "journal-entry.add-line" | translate }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn btn-success"
+            type="submit"
+            [disabled]="journalForm.invalid"
+          >
+            {{ "form-actions.save" | translate }}
+          </button>
+          <button class="btn btn-secondary mx-2" (click)="closeModal()">
+            {{ "form-actions.cancel" | translate }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

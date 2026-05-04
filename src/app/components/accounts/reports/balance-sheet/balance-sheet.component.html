@@ -1,0 +1,151 @@
+<div class="card p-4 mt-2">
+  <form (ngSubmit)="onSearch()" [formGroup]="searchForm" class="row g-3 mb-4">
+    <div class="col-md-3">
+      <div class="form-group">
+        <label class="form-label">{{
+          "form-labels.from-date" | translate
+        }}</label>
+        <input type="date" class="form-control" formControlName="fromDate" />
+
+        <small
+          class="text-danger"
+          *ngIf="
+            searchForm.get('fromDate')?.invalid &&
+            searchForm.get('fromDate')?.touched
+          "
+        >
+          {{ "form-validations.required" | translate }}
+        </small>
+        <small
+          class="text-danger"
+          *ngIf="searchForm.hasError('dateRangeInvalid') && searchForm.touched"
+        >
+          {{ "form-validations.date-range" | translate }}
+        </small>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="form-group">
+        <label class="form-label">{{
+          "form-labels.to-date" | translate
+        }}</label>
+        <input type="date" class="form-control" formControlName="toDate" />
+
+        <small
+          class="text-danger"
+          *ngIf="
+            searchForm.get('toDate')?.invalid &&
+            searchForm.get('toDate')?.touched
+          "
+        >
+          {{ "form-validations.required" | translate }}
+        </small>
+      </div>
+    </div>
+
+    <div class="col">
+      <label class="form-label invisible d-block"> &nbsp; </label>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="searchForm.invalid"
+      >
+        <i class="fa fa-search mx-1"></i>
+        {{ "form-actions.search" | translate }}
+      </button>
+      <button
+        type="button"
+        class="btn btn-success mx-2"
+        [disabled]="searchForm.invalid"
+        (click)="onExport(fileTypeOptions.EXCEL)"
+      >
+        <i class="fa fa-file-excel-o mx-1"></i>
+        {{ "form-actions.export-excel" | translate }}
+      </button>
+      <button
+        type="button"
+        class="btn btn-light"
+        [disabled]="!balanceSheetReport"
+        (click)="onPrint()"
+      >
+        <i class="fa fa-print mx-1"></i>
+        {{ "form-actions.print" | translate }}
+      </button>
+    </div>
+  </form>
+
+  <div *ngIf="balanceSheetReport">
+    <div
+      class="d-flex justify-content-between align-items-center border p-3 rounded"
+    >
+      <div>
+        <small class="text-muted d-block">
+          {{ "form-labels.period" | translate }}
+        </small>
+        <span>{{ "form-labels.from" | translate }}</span>
+        <strong class="mx-1">{{ balanceSheetReport.from | date }}</strong>
+        <span>{{ "form-labels.to" | translate }}</span>
+        <strong class="mx-1">{{ balanceSheetReport.to | date }}</strong>
+      </div>
+    </div>
+
+    <div class="card p-4 mt-2 shadow-sm">
+      <div *ngFor="let group of balanceSheetReport.groups">
+        <h5 class="mb-3 mt-4">{{ group.group }}</h5>
+
+        <div class="table-responsive">
+          <table class="table table-bordered text-center">
+            <thead class="thead-light">
+              <tr>
+                <th>{{ "form-labels.account" | translate }}</th>
+                <th>{{ "reports.opening-balance" | translate }}</th>
+                <th>{{ "reports.period-total" | translate }}</th>
+                <th>{{ "reports.final-balance" | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let acc of group.accounts">
+                <td>{{ acc.name }}</td>
+                <td>{{ acc.openingBalance | number : "1.2-2" }}</td>
+                <td>{{ acc.periodTotal | number : "1.2-2" }}</td>
+                <td>{{ acc.finalBalance | number : "1.2-2" }}</td>
+              </tr>
+              <tr class="font-weight-bold bg-light text-primary">
+                <td colspan="3">{{ "reports.total" | translate }}</td>
+                <td>{{ group.total | number : "1.2-2" }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="mt-4 border-top pt-3">
+        <div
+          class="d-flex justify-content-start align-items-center text-center"
+        >
+          <div class="px-4 py-2 rounded border text-success">
+            <strong class="text-muted d-block">{{
+              "reports.total-assets" | translate
+            }}</strong>
+            <span>{{ balanceSheetReport.totalAssets | number : "1.2-2" }}</span>
+          </div>
+          <div class="px-4 py-2 rounded border mx-4 text-danger">
+            <strong class="text-muted d-block">{{
+              "reports.total-liabilities" | translate
+            }}</strong>
+            <span>{{
+              balanceSheetReport.totalLiabilities | number : "1.2-2"
+            }}</span>
+          </div>
+          <div class="px-4 py-2 rounded border text-info">
+            <strong class="text-muted d-block">{{
+              "reports.total-net-position" | translate
+            }}</strong>
+            <span>{{ balanceSheetReport.netPosition | number : "1.2-2" }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

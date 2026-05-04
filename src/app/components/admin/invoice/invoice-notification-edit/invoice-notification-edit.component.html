@@ -1,0 +1,278 @@
+<div class="block-header">
+  <div class="row">
+    <div class="col-lg-12 col-md-8 col-sm-12">
+      <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth"><i class="fa fa-arrow-right"></i></a>{{'home'|translate}}</h2>
+      <ul class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/dashboard"><i class="icon-home"></i></a></li>
+        <li class="breadcrumb-item"><a routerLink="/dashboard/invoices">{{'Invoices'|translate}}</a></li>
+        <li class="breadcrumb-item active">{{ 'Add New'|translate }}</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row clearfix">
+<!--  <div class="{{ shortOrLong == 1 || invoiceType == 2 ? 'col-lg-8': 'col-lg-12' }} col-md-12">-->
+  <div class="col-lg-12 col-md-12">
+    <div class="card">
+      <div class="header">
+        <h2> {{'Add New'|translate}}</h2>
+      </div>
+      <div class="body">
+        <form [formGroup]="invoiceNotificationForm">
+          <div class="row">
+            <div class="col-md-6 form-group">
+              <label>{{'Invoice Type'|translate}}</label>
+              <select [(ngModel)]="invoiceType" formControlName="invoiceType" class="form-control">
+                <option *ngIf="invoiceType == 1" value="1">{{ 'Invoice Tax'|translate }}</option>
+                <option *ngIf="invoiceType == 2" value="2">{{ 'Simple Invoice'|translate }}</option>
+              </select>
+            </div>
+            <div class="col-md-6 form-group">
+              <label>{{'Language'|translate}}</label>
+              <select formControlName="language" class="form-control">
+                <option value="arabic">{{ 'Arabic'|translate }}</option>
+                <option value="english">{{ 'English'|translate }}</option>
+              </select>
+            </div>
+            <div class="col-md-12 form-group">
+              <label>{{'acountantInvoiceType'|translate}}</label><span style="color: red"> * </span>
+              <select formControlName="acountantInvoiceType" class="form-control">
+                <option value="1">{{ 'CreditNote'|translate }}</option>
+                <option value="2">{{ 'DebitNote'|translate }}</option>
+              </select>
+            </div>
+            <ng-container *ngIf="invoiceType == 1">
+              <div class="col-md-12 form-group">
+                <label class="fancy-radio" *ngIf="shortOrLong == 0">
+                  <input type="radio" [(ngModel)]="shortOrLong" formControlName="shortOrLong" [value]="0"
+                         data-parsley-multiple="shortOrLong">
+                  <span><i></i>{{ 'Short Invoice'|translate }}</span>
+                </label>
+                <label class="fancy-radio" *ngIf="shortOrLong == 1">
+                  <input type="radio" [(ngModel)]="shortOrLong" formControlName="shortOrLong" [value]="1"
+                         data-parsley-multiple="shortOrLong">
+                  <span><i></i>{{ 'Long Short'|translate }}</span>
+                </label>
+                <p id="error-radio"></p>
+              </div>
+            </ng-container>
+            <div class="col-md-6 form-group">
+              <label>{{'Date'|translate}}</label>
+              <p class="form-control">{{ timeNow | date }}</p>
+            </div>
+            <div class="col-md-6 form-group">
+              <label>{{'dateOfSupply'|translate}}</label>
+              <app-text-input [type]="'date'" [label]="'dateOfSupply'|translate" formControlName="dateOfSupply"></app-text-input>
+            </div>
+            <div class="col-md-12 form-group">
+              <label>{{'remarks'|translate}}</label>
+              <app-text-area [label]="'remarks'|translate" formControlName="remarks" [(ngModel)]="remarks"></app-text-area>
+            </div>
+
+            <ng-container *ngIf="shortOrLong == 1 || invoiceType == 2">
+              <div class="col-md-12 form-group">
+               <label>{{'hasPendingMoney'|translate}}</label>
+               <select (change)="changePendingMoneyState()" formControlName="hasPendingMoney" class="form-control">
+              <option value="true">{{ 'true'|translate }}</option>
+                  <option value="false">{{ 'false'|translate }}</option>
+                </select>
+             </div>
+                        </ng-container>
+           <ng-container *ngIf="HasPendingMoney && (invoiceType == 2 || shortOrLong == 1) ">
+              <div class="col-md-4 form-group">
+                <label>{{'pendingMoney'|translate}}</label><span style="color: red"> * </span>
+               <app-text-input [label]="'pendingMoney'|translate" formControlName="pendingMoney"></app-text-input>
+             </div>
+                      <div class="col-md-4 form-group">
+               <label>{{'pendingMoneyType'|translate}}</label><span style="color: red"> * </span>
+               <select formControlName="pendingMoneyType" class="form-control">
+                 <option [value]="0">{{ 'Static'|translate }}</option>
+                 <option [value]="1">{{ 'Percentage'|translate }}</option>
+               </select>
+             </div>
+             <div class="col-md-4 form-group">
+               <label>{{'calculatePendingMoneyAfterTax'|translate}}</label><span style="color: red"> * </span>
+               <select formControlName="calculatePendingMoneyAfterTax" class="form-control">
+                 <option value="true">{{ 'calculateAfterTax'|translate }}</option>
+                 <option value="false">{{ 'calculateBeforeTax'|translate }}</option>
+               </select>
+             </div>
+           </ng-container>
+           <!-- <div class="col-md-4 form-group">
+             <label>{{'Branch'|translate}}</label>
+             <select formControlName="branchId" class="form-control">
+               <option value="">{{ 'choose-branch'|translate }}</option>
+               <option [value]="branch.branchId" *ngFor="let branch of branch">{{ branch.branchName }}</option>
+             </select> -->
+<!--            </div>-->
+<!--            <div class="col-md-4 form-group">-->
+<!--              <label>{{'AdditionalContact'|translate}}</label>-->
+<!--              <select formControlName="additionalContactId" class="form-control">-->
+<!--                <option value="">{{ 'choose-additionalContact'|translate }}</option>-->
+<!--                <option [value]="additionalContact.id" *ngFor="let additionalContact of additionalContacts">-->
+<!--                  {{ additionalContact.name }}-->
+<!--                </option>-->
+<!--              </select>-->
+<!--            </div>-->
+<!--            <div class="col-md-4 form-group">-->
+<!--              <label>{{'Bank'|translate}}</label>-->
+<!--              <select formControlName="bankId" class="form-control">-->
+<!--                <option value="">{{ 'choose-bank'|translate }}</option>-->
+<!--                <option [value]="bank.id" *ngFor="let bank of banks">{{ bank.bankName }}</option>-->
+<!--              </select>-->
+<!--            </div>-->
+<!--            <div class="col-md-12 form-group">-->
+<!--              <label>{{'Saving as'|translate}}</label>-->
+<!--              <select formControlName="isDraft" class="form-control">-->
+<!--                <option [value]="false">{{ "save as invoice" | translate }}</option>-->
+<!--                <option [value]="true">{{ "save as draft" | translate }}</option>-->
+<!--              </select>-->
+<!--            </div>-->
+<div class="col-md-12 form-group">
+  <label>{{'Payment types'|translate}}</label>
+  <select  formControlName="zatcapaymentmethods" [(ngModel)]="zatcapaymentmethods" class="form-control">
+    <option value="{{10}}">{{ "CASH" | translate }}</option>
+    <option value="{{30}}">{{ "CREDIT" | translate }}</option>
+    <option value="{{42}}">{{ "BANK_ACCOUNT" | translate }}</option>
+    <option value="{{48}}">{{ "BANK_CARD" | translate }}</option>
+  </select>
+</div>
+          </div>
+        </form>
+        <ng-container >
+          <div class="row product-form">
+            <div class="header">
+              <h5>{{'Add New Product'|translate}}</h5>
+            </div>
+            <div class="col-md-12 form-group">
+              <label>{{'productDescription'|translate}}</label><span style="color: red"> * </span>
+              <textarea class="form-control" [(ngModel)]="productForm.productDescription"
+                        placeholder="{{'productDescription'|translate}}"></textarea>
+            </div>
+            <div class="col-md-4 form-group">
+              <label>{{'quantity'|translate}}</label><span style="color: red"> * </span>
+              <input type="text" class="form-control" [(ngModel)]="productForm.quantity"
+                     placeholder="{{'quantity'|translate}}" />
+            </div>
+            <div class="col-md-4 form-group">
+              <label>{{'unitPrice'|translate}}</label><span style="color: red"> * </span>
+              <input type="text" class="form-control" [(ngModel)]="productForm.unitPrice"
+                     placeholder="{{'unitPrice'|translate}}" />
+            </div>
+            <div class="col-md-4 form-group">
+              <label>{{'discountValue'|translate}}</label><span style="color: red"> * </span>
+              <input type="text" class="form-control" [(ngModel)]="productForm.discountValue"
+                     placeholder="{{'discountValue'|translate}}" />
+            </div>
+            <div class="col-md-4 form-group">
+              <label>{{'discountType'|translate}}</label><span style="color: red"> * </span>
+              <select class="form-control" [(ngModel)]="productForm.discountType" >
+                <option value="">{{ 'choose-discount-type'|translate }}</option>
+                <option value="0">{{ 'Static'|translate }}</option>
+                <option value="1">{{ 'Percentage'|translate }}</option>
+              </select>
+            </div>
+            <div class="col-md-4 form-group">
+              <label>{{'Tax'|translate}}</label><span style="color: red"> * </span>
+              <select class="form-control" [(ngModel)]="productForm.taxId" (change)="onSelectChange($event.target.value)">
+                <option value="">{{ 'choose-tax'|translate }}</option>
+                <option [value]="tax.id" *ngFor="let tax of taxes">{{ tax.taxNameAr }}</option>
+              </select>
+            </div>
+            <div class="col-md-4 form-group">
+              <label>{{'productNum'|translate}}</label>
+              <input type="text" class="form-control" [(ngModel)]="productForm.productNum"
+                     placeholder="{{'productNum'|translate}}" />
+            </div>
+            <br/>
+            <div class="col-md-12 form-group">
+            <button type="button" class="btn btn-success m-1" (click)="addNewProduct()">
+              <i class="fa fa-plus"></i> {{ 'add-new'|translate }}
+            </button>
+              <button type="button" class="btn btn-default m-1" (click)="open()">
+                <i class="fa fa-plus-circle"></i> {{ 'add previous product'|translate }}
+              </button>
+          </div>
+          </div>
+          <div class="product-form">
+            <div class="table-responsive"><table class="table" *ngIf="invoiceItems.length > 0">
+              <thead>
+                <tr>
+                  <td>{{'productDescription'|translate}}</td>
+                  <td>{{'quantity'|translate}}</td>
+                  <td>{{'unitPrice'|translate}}</td>
+                  <td>{{'discountValue'|translate}}</td>
+                  <td>{{'discountType'|translate}}</td>
+                  <td>{{'Tax'|translate}}</td>
+                  <td>{{'productNum'|translate}}</td>
+                  <td>{{'operations'|translate}}</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of invoiceItems;let i = index">
+                  <td>{{ item.productDescription.split('',50).join("") }}</td>
+                  <td>{{ item.quantity }}</td>
+                  <td>{{ item.unitPrice }}</td>
+                  <td>{{ item.discountValue }}</td>
+                  <td *ngIf="item.discountType == 0">{{ 'Static' | translate }}</td>
+                  <td *ngIf="item.discountType == 1">{{ 'Percentage' | translate }}</td>
+                  <td>{{ item.tax.taxNameAr}}</td>
+                  <td>{{ item.productNum }}</td>
+                  <td>
+                    <button type="button" class="btn btn-outline-primary" (click)="updateItemFromInvoice(i)">
+                      <i class="fa fa-edit"></i>
+                    </button>
+                  <button type="button" class="btn btn-outline-danger" (click)="removeItemFromInvoice(i)">
+                    <i class="fa fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+              </tbody>
+            </table></div>
+
+          </div>
+        </ng-container>
+        <br>
+        <div class="input-group-prepend">
+          <button class="btn btn-outline-success ml-1" type="button" (click)="onSubmit()">
+            {{'Save'|translate}}
+          </button>
+          <button class="btn btn-default" routerLink="/dashboard/invoices">{{'Back'|translate}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<div class="modal fade my-modal" tabindex="-1" role="dialog" #myModal>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ 'add previous product'|translate }}</h5>
+      </div>
+      <div class="modal-body">
+        <div class="col-md-12 form-group">
+          <label>{{'Product'|translate}}</label><span style="color: red"> * </span>
+          <form class="example-form">
+            <mat-form-field class="example-full-width">
+              <input type="text" placeholder="{{'choose-product'|translate }}" aria-label="Number" matInput  [formControl]="myControl" [(ngModel)]="previousProductId" [matAutocomplete]="auto">
+              <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                <mat-option *ngFor="let product of filteredOptions | async" [value]="product.productName">
+                  {{product.productName.split('',50).join("")}}
+                  <span *ngIf="product.productName.length >50">...</span>
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" (click)="chooseProduct()" >{{ 'submit'|translate }}</button>
+        <button type="button" class="btn btn-default" (click)="close()" >{{ 'close'|translate }}</button>
+      </div>
+    </div>
+  </div>
+</div>

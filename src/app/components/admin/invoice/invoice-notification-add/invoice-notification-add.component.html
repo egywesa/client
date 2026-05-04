@@ -1,0 +1,532 @@
+﻿<div class="block-header">
+  <div class="row">
+    <div class="col-lg-12 col-md-8 col-sm-12">
+      <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth"><i class="fa fa-arrow-right"></i></a>{{'home'|translate}}</h2>
+      <ul class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/dashboard"><i class="icon-home"></i></a></li>
+        <li class="breadcrumb-item"><a routerLink="/dashboard/invoices">{{'Invoices'|translate}}</a></li>
+        <li class="breadcrumb-item active">{{ 'Add New'|translate }}</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row clearfix">
+  <div class="col-lg-12 col-md-12">
+    <div class="card">
+      <div class="header">
+        <h2> {{'Add New'|translate}}</h2>
+      </div>
+      <div class="body">
+        <form [formGroup]="invoiceNotificationForm">
+          <div class="form-row">
+            <!-- الصف الأول: نوع الفاتورة واللغة ونوع إشعار المحاسب -->
+            <div class="form-col form-col-4">
+              <div class="form-group">
+              <label>{{'Invoice Type'|translate}}</label>
+              <select [(ngModel)]="invoiceType" formControlName="invoiceType" class="form-control">
+                <option *ngIf="invoiceType == 1" value="1">{{ 'Invoice Tax'|translate }}</option>
+                <option *ngIf="invoiceType == 2" value="2">{{ 'Simple Invoice'|translate }}</option>
+              </select>
+            </div>
+            </div>
+            <div class="form-col form-col-4">
+              <div class="form-group">
+              <label>{{'Language'|translate}}</label>
+              <select formControlName="language" class="form-control">
+                <option value="arabic">{{ 'Arabic'|translate }}</option>
+                <option value="english">{{ 'English'|translate }}</option>
+              </select>
+            </div>
+            </div>
+            <div class="form-col form-col-4">
+              <div class="form-group">
+              <label>{{'acountantInvoiceType'|translate}}</label><span style="color: red"> * </span>
+              <select formControlName="acountantInvoiceType" class="form-control">
+                <option value="1">{{ 'CreditNote'|translate }}</option>
+                <option value="2">{{ 'DebitNote'|translate }}</option>
+              </select>
+            </div>
+            </div>
+            <div class="form-col form-col-4">
+              <div class="form-group">
+                <label>{{'Po Number'|translate}}</label>
+                <input type="text" placeholder="{{'Po Number'|translate}}" formControlName="poNumber" class="form-control"/>
+              </div>
+            </div>
+
+            <!-- الصف الثاني: التاريخ وتاريخ التوريد -->
+            <div class="form-col form-col-6">
+              <div class="form-group">
+              <label>{{'Date'|translate}}</label>
+              <p class="form-control">{{ timeNow | date }}</p>
+              </div>
+            </div>
+            <div class="form-col form-col-6">
+              <div class="form-group">
+              <label>{{'dateOfSupply'|translate}}</label>
+              <app-text-input [type]="'date'" [label]="'dateOfSupply'|translate" formControlName="dateOfSupply"></app-text-input>
+              </div>
+            </div>
+
+            <!-- الصف الثالث: الملاحظات -->
+            <div class="form-col form-col-12">
+              <div class="form-group">
+              <label>{{'remarks'|translate}}</label>
+              <app-text-area [label]="'remarks'|translate" formControlName="remarks"></app-text-area>
+              </div>
+            </div>
+
+            <!-- الصف الرابع: المال المعلق -->
+            <ng-container *ngIf="shortOrLong == 1 || invoiceType == 2">
+              <div class="form-col form-col-12">
+                <div class="form-group">
+               <label>{{'hasPendingMoney'|translate}}</label>
+               <select (change)="changePendingMoneyState()" formControlName="hasPendingMoney" class="form-control">
+              <option value="true">{{ 'true'|translate }}</option>
+                  <option value="false">{{ 'false'|translate }}</option>
+                </select>
+                </div>
+             </div>
+                        </ng-container>
+
+            <ng-container *ngIf="HasPendingMoney && (invoiceType == 2 || shortOrLong == 1)">
+              <div class="form-col form-col-4">
+                <div class="form-group">
+                  <div class="required-field">
+                    <label>{{'pendingMoney'|translate}}</label>
+                    <span class="required-asterisk">*</span>
+                  </div>
+               <app-text-input [label]="'pendingMoney'|translate" formControlName="pendingMoney"></app-text-input>
+             </div>
+              </div>
+              <div class="form-col form-col-4">
+                <div class="form-group">
+                  <div class="required-field">
+                    <label>{{'pendingMoneyType'|translate}}</label>
+                    <span class="required-asterisk">*</span>
+                  </div>
+               <select formControlName="pendingMoneyType" class="form-control">
+                 <option [value]="0">{{ 'Static'|translate }}</option>
+                 <option [value]="1">{{ 'Percentage'|translate }}</option>
+               </select>
+             </div>
+              </div>
+              <div class="form-col form-col-4">
+                <div class="form-group">
+                  <div class="required-field">
+                    <label>{{'calculatePendingMoneyAfterTax'|translate}}</label>
+                    <span class="required-asterisk">*</span>
+                  </div>
+               <select formControlName="calculatePendingMoneyAfterTax" class="form-control">
+                 <option value="true">{{ 'calculateAfterTax'|translate }}</option>
+                 <option value="false">{{ 'calculateBeforeTax'|translate }}</option>
+               </select>
+                </div>
+             </div>
+           </ng-container>
+
+            <!-- الصف الخامس: أنواع الدفع -->
+            <div class="form-col form-col-12">
+              <div class="form-group">
+  <label>{{'Payment types'|translate}}</label>
+                <select formControlName="zatcaPaymentMethods" class="form-control">
+    <option value="{{10}}">{{ "CASH" | translate }}</option>
+    <option value="{{30}}">{{ "CREDIT" | translate }}</option>
+    <option value="{{42}}">{{ "BANK_ACCOUNT" | translate }}</option>
+    <option value="{{48}}">{{ "BANK_CARD" | translate }}</option>
+  </select>
+              </div>
+</div>
+          </div>
+        </form>
+
+        <ng-container>
+          <div class="row product-form" style="margin-top: 2px; padding: 10px; background: #d1d4d6; border-radius: 4px;">
+            <div class="header">
+              <h5 style="font-size: 1rem; margin-bottom: 6px; color: #495057;">
+                {{'Add New Product'|translate}} {{ 'or' | translate }}
+                <a style="color:rgb(97, 158, 97); font-size: 0.95rem;" href="javascript:void(0)" (click)="open()">
+                  {{ 'add previous product'|translate }}
+                </a>
+              </h5>
+            </div>
+            <div class="col-md-12 form-group" style="margin-bottom: 8px;">
+              <div class="required-field">
+                <label style="font-size: 0.9rem;">{{'productDescription'|translate}}</label>
+                <span style="color: red">*</span>
+              </div>
+              <textarea class="form-control" [(ngModel)]="productForm.productDescription"
+                placeholder="{{'productDescription'|translate}}" style="height: 50px; font-size: 0.9rem;"></textarea>
+            </div>
+            <div class="col-md-4 form-group" style="margin-bottom: 8px;">
+              <div class="required-field">
+                <label style="font-size: 0.9rem;">{{'quantity'|translate}}</label>
+                <span style="color: red">*</span>
+              </div>
+              <input type="number" class="form-control" [(ngModel)]="productForm.quantity"
+                placeholder="{{'quantity'|translate}}" style="font-size: 0.9rem;" />
+            </div>
+            <div class="col-md-4 form-group" style="margin-bottom: 8px;">
+              <div class="required-field">
+                <label style="font-size: 0.9rem;">{{'unitPrice'|translate}}</label>
+                <span style="color: red">*</span>
+              </div>
+              <input type="number" class="form-control" [(ngModel)]="productForm.unitPrice"
+                placeholder="{{'unitPrice'|translate}}" style="font-size: 0.9rem;" />
+            </div>
+            <div class="col-md-4 form-group" style="margin-bottom: 8px;">
+              <label style="font-size: 0.9rem;">{{'discountValue'|translate}}</label>
+              <input type="number" class="form-control" [(ngModel)]="productForm.discountValue"
+                placeholder="{{'discountValue'|translate}}" style="font-size: 0.9rem;" />
+            </div>
+            <div class="col-md-4 form-group" style="margin-bottom: 8px;">
+              <label style="font-size: 0.9rem;">{{'discountType'|translate}}</label>
+              <select class="form-control" [(ngModel)]="productForm.discountType" style="font-size: 0.9rem;">
+                <option [value]="0">{{ 'Static'|translate }}</option>
+                <option [value]="1">{{ 'Percentage'|translate }}</option>
+              </select>
+            </div>
+            <div class="col-md-4 form-group" style="margin-bottom: 8px;">
+              <div class="required-field">
+                <label style="font-size: 0.9rem;">{{'Tax'|translate}}</label>
+                <span style="color: red">*</span>
+              </div>
+              <select class="form-control" [(ngModel)]="productForm.taxId" style="font-size: 0.9rem;">
+                <option value="">{{ 'choose-tax'|translate }}</option>
+                <option [value]="tax.id" *ngFor="let tax of taxes">{{ tax.taxName }}</option>
+              </select>
+            </div>
+            <div class="col-md-4 form-group" style="margin-bottom: 8px;">
+              <label style="font-size: 0.9rem;">{{'productNum'|translate}}</label>
+              <input type="text" class="form-control" [(ngModel)]="productForm.productNum"
+                placeholder="{{'productNum'|translate}}" style="font-size: 0.9rem;" />
+            </div>
+            <div class="col-md-12 form-group" style="margin-top: 0px;">
+              <button type="button" class="btn btn-success m-1" style="font-size: 0.9rem; padding: 4px 12px;" (click)="addNewProduct()">
+                <i class="fa fa-plus"></i> {{ 'add-new'|translate }}
+              </button>
+              <button type="button" class="btn btn-default m-1" style="font-size: 0.9rem; padding: 4px 12px;" (click)="open()">
+                <i class="fa fa-plus-circle" style="color: red"></i> {{ 'add previous product'|translate }}
+              </button>
+            </div>
+          </div>
+          <div class="product-form">
+            <div class="product-table-container" style="margin-top: -12px; border: .5px solid #e9ecef; border-radius: 2px;">
+              <div class="product-table-header" style="padding: 10px 15px; background: #f8f9fa; border-bottom: 1px solid #e9ecef;">
+                <h5 style="font-size: .8rem; margin: 0; color: #495057;">{{'Products'|translate}}</h5>
+                <div class="add-product-indicator" style="font-size: 0.8rem; color: #6c757d;">
+                  <i class="fa fa-arrow-down"></i>
+                  <span>{{'Add products below'|translate}}</span>
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table class="table" *ngIf="invoiceItems.length > 0" style="margin-bottom: 0;">
+                  <thead>
+                    <tr>
+                      <th style="font-size: 0.9rem; padding: 8px;">{{'productDescription'|translate}}</th>
+                      <th style="font-size: 0.9rem; padding: 8px;">{{'quantity'|translate}}</th>
+                      <th style="font-size: 0.9rem; padding: 8px;">{{'unitPrice'|translate}}</th>
+                      <th style="font-size: 0.9rem; padding: 8px;">{{'discountValue'|translate}}</th>
+                      <th style="font-size: 0.9rem; padding: 8px;">{{'discountType'|translate}}</th>
+                      <th style="font-size: 0.9rem; padding: 8px;">{{'Tax'|translate}}</th>
+                      <th style="font-size: 0.9rem; padding: 8px;">{{'productNum'|translate}}</th>
+                      <th style="font-size: 0.9rem; padding: 8px;">{{'operations'|translate}}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of invoiceItems;let i = index">
+                      <td class="product-description-cell" [attr.data-full-description]="item.productDescription" style="font-size: 0.9rem; padding: 8px;">
+                        {{ item.productDescription | slice:0:50 }}{{ item.productDescription.length > 50 ? '...' : '' }}
+                      </td>
+                      <td style="font-size: 0.9rem; padding: 8px;">{{ item.quantity }}</td>
+                      <td style="font-size: 0.9rem; padding: 8px;">{{ item.unitPrice }}</td>
+                      <td style="font-size: 0.9rem; padding: 8px;">{{ item.discountValue }}</td>
+                      <td style="font-size: 0.9rem; padding: 8px;">{{ item.discountType == 0 ? ('Static' | translate) : ('Percentage' | translate) }}</td>
+                      <td style="font-size: 0.9rem; padding: 8px;">{{ item.tax.taxName}}</td>
+                      <td style="font-size: 0.9rem; padding: 8px;">{{ item.productNum }}</td>
+                      <td style="font-size: 0.9rem; padding: 8px;">
+                        <button type="button" class="btn btn-outline-primary" style="padding: 2px 8px; font-size: 0.85rem;" (click)="updateItemFromInvoice(i)">
+                          <i class="fa fa-edit"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-danger" style="padding: 2px 8px; font-size: 0.85rem;" (click)="removeItemFromInvoice(i)">
+                          <i class="fa fa-trash"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="empty-table-message" *ngIf="invoiceItems.length === 0" style="padding: 30px; text-align: center; background: #fff;">
+                  <i class="fa fa-shopping-cart" style="font-size: 2rem; color: #e9ecef; margin-bottom: 10px;"></i>
+                  <span style="display: block; color: #6c757d; font-size: 0.95rem;">{{'No products added yet'|translate}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        <br>
+        <div class="input-group-prepend">
+          <button class="btn btn-outline-success ml-1" type="button" (click)="onSubmit()">
+            {{'Save'|translate}}
+          </button>
+          <button class="btn btn-default" routerLink="/dashboard/invoices">{{'Back'|translate}}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* تحسين التصميم العام */
+  .form-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -8px;
+    gap: 16px 0;
+  }
+
+  .form-col {
+    padding: 0 8px;
+  }
+
+  .form-col-2 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+
+  .form-col-3 {
+    flex: 0 0 33.333333%;
+    max-width: 33.333333%;
+  }
+
+  .form-col-4 {
+    flex: 0 0 25%;
+    max-width: 25%;
+  }
+
+  .form-col-6 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+
+  .form-col-12 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  .form-group {
+    margin-bottom: 0;
+  }
+
+  .required-field {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .required-field label,
+  label {
+    margin-bottom: 4px;
+    font-weight: 500;
+    color: #495057;
+    font-size: 0.9rem;
+  }
+
+  .required-asterisk {
+    color: #dc3545;
+    font-size: 0.9rem;
+  }
+
+  .form-control {
+    height: 36px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 0.375rem 0.75rem;
+    font-size: 0.9rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  }
+
+  .form-control:focus {
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  }
+
+  select.form-control {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2334495e' d='M6 8L2 4h8z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 12px;
+    padding-right: 2rem;
+  }
+
+  app-text-input .form-control,
+  app-text-area .form-control {
+    height: auto; /* Adjust based on component */
+  }
+
+  .product-form {
+    background: #f8f9fa;
+    padding: 16px;
+    border-radius: 4px;
+    margin: 16px 0;
+    border: 1px solid #e9ecef;
+  }
+
+  .product-form .header {
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #e9ecef;
+  }
+
+  .product-form h5 {
+    margin: 0;
+    color: #495057;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  .product-table-container {
+    background: #fff;
+    border-radius: 4px;
+    border: 1px solid #e9ecef;
+    margin-top: 16px;
+    overflow: hidden;
+  }
+
+  .product-table-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .product-table-header h5 {
+    margin: 0;
+    color: #495057;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  .add-product-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #6c757d;
+    font-size: 0.9rem;
+  }
+
+  .add-product-indicator i {
+    color: #28a745;
+    animation: bounce 2s infinite;
+  }
+
+  .empty-table-message {
+    padding: 24px;
+    text-align: center;
+    color: #6c757d;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .empty-table-message i {
+    font-size: 2rem;
+    color: #e9ecef;
+  }
+
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+      transform: translateY(0);
+    }
+    40% {
+      transform: translateY(-5px);
+    }
+    60% {
+      transform: translateY(-3px);
+    }
+  }
+
+  .table {
+    margin-bottom: 0;
+    font-size: 0.9rem;
+  }
+
+  .table th {
+    background-color: #f8f9fa;
+    color: #495057;
+    font-weight: 600;
+    padding: 10px 12px;
+    border-bottom: 2px solid #e9ecef;
+    white-space: nowrap;
+  }
+
+  .table td {
+    padding: 10px 12px;
+    vertical-align: middle;
+    border-bottom: 1px solid #e9ecef;
+    white-space: nowrap;
+  }
+
+  .table td:first-child {
+      white-space: normal;
+      word-break: break-word;
+  }
+
+  .btn {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+  }
+
+  .table .btn {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+    margin: 0 2px;
+  }
+
+  .table .btn i {
+    font-size: 0.9rem;
+  }
+
+  .input-group-prepend {
+    margin-top: 16px;
+    display: flex;
+    gap: 8px;
+  }
+</style>
+
+<div class="modal fade my-modal" tabindex="-1" role="dialog" #myModal>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ 'add previous product'|translate }}</h5>
+      </div>
+      <div class="modal-body">
+        <div class="col-md-12 form-group">
+          <label>{{'Product'|translate}}</label><span style="color: red"> * </span>
+          <form class="example-form">
+            <mat-form-field class="example-full-width">
+              <input type="text" placeholder="{{'choose-product'|translate }}" aria-label="Number" matInput  [formControl]="myControl" [(ngModel)]="previousProductId" [matAutocomplete]="auto">
+              <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                <mat-option *ngFor="let product of filteredOptions | async" [value]="product.productName">
+                  {{product.productName.split('',50).join("")}}
+                  <span *ngIf="product.productName.length >50">...</span>
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" (click)="chooseProduct()" >{{ 'submit'|translate }}</button>
+        <button type="button" class="btn btn-default" (click)="close()" >{{ 'close'|translate }}</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,110 @@
+<app-header-landing></app-header-landing>
+<div class="content">
+
+<h1>
+    {{ 'packegtitle' | translate }}
+</h1>
+<table>
+    <tr >
+        <th *ngFor="let item of firstlist ">{{item.plan}}</th>
+        <th> </th>
+    </tr>
+    <tr>
+        <td *ngFor="let item of firstlist "> {{item.priceMonthly}}</td>
+        <td>
+    {{ 'month' | translate }}
+        </td>
+    </tr>
+    <tr>
+        <td *ngFor="let item of firstlist "> {{item.priceAnnual}} </td>
+        <td>
+    {{ 'years' | translate }}
+        </td>
+    </tr>
+    <tr>
+        <td *ngFor="let item of firstlist "> {{item.invoice}} {{ 'price' | translate }}</td>
+        <td> {{ 'pakegprices' | translate }}</td>
+    </tr>
+    <tr>
+        <td *ngFor="let item of firstlist " routerLink="/account/register"> <button>  
+            {{ 'buy now' | translate }}
+        </button></td>
+        <td></td>
+    </tr>
+   
+</table>
+
+<table>
+    <tr >
+        <th *ngFor="let item of  lastlist">{{item.plan}}</th>
+        <th> </th>
+    </tr>
+    <tr>
+        <td *ngFor="let item of lastlist "> {{item.priceMonthly}}</td>
+        <td> {{ 'month' | translate }}</td>
+    </tr>
+    <tr>
+        <td *ngFor="let item of lastlist "> {{item.priceAnnual}} </td>
+        <td>{{ 'years' | translate }}</td>
+    </tr>
+    <tr>
+        <td *ngFor="let item of lastlist "> {{item.invoice}} {{ 'price' | translate }}</td>
+        <td>الاسعار</td>
+    </tr>
+    <tr>
+        <td *ngFor="let item of lastlist " routerLink="/account/register"> <button> {{ 'buy now' | translate }} </button></td>
+        <td></td>
+    </tr>
+   
+</table>
+</div>
+<footer class=" text-lg-start " align="center">
+
+    <section class="footer" >
+        <div >
+            <img src="../../../assets/images/img/2-removebg-preview 1.png" width="180px" class="logo">
+            <div>
+                <img src="../../../assets/images/img/Vector.png" width="20px">
+                <img src="../../../assets/images/img/Vector (1).png" width="20px">
+                <img src="../../../assets/images/img/Vector (2).png" width="11px">
+            </div>
+           <div class="link">
+          
+                    <a class="nav-link" href="/landpage#home">{{'header.home' | translate}}</a>
+             
+                    <a class="nav-link" href="/landpage#about">{{'header.aboutus' | translate}}</a>
+               
+            
+                    <a class="nav-link" href="/landpage#price">{{'header.subscription' |
+                        translate}}</a>
+
+                    <a class="nav-link" href="/landpage#testomonia">{{'header.clients' | translate}}</a>
+
+                
+                    <a class="nav-link" href="/landpage#contact">{{'header.contactus' | translate}}</a>
+
+            </div>
+            <div class="row">
+                <div class="location col-md-3 col-lg-3 col-xl-3">
+                    <i class="fa fa-phone" aria-hidden="true"></i>
+                    {{'footer.number' | translate}}
+                </div>
+                <div class="location col-md-3 col-lg-3 col-xl-3">
+                    <i class="fa fa-envelope" aria-hidden="true"></i>
+                    info@saudifatora.com
+                </div>
+                <div class="location col-md-3 col-lg-3 col-xl-3">
+                    <i class="fa fa-map-marker" aria-hidden="true"></i>
+                    {{'footer.address' | translate}}
+                </div>
+            </div>
+            <div class="caption">
+                Copyright © Saudi Fatora 2023
+            </div>
+        </div>
+
+    </section>
+    <!-- Section: Links  -->
+
+
+</footer>

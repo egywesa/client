@@ -1,0 +1,130 @@
+<div class="card p-4">
+  <form [formGroup]="journalForm" (ngSubmit)="saveEntry()">
+    <div class="row">
+      <div class="col-lg-6 mb-3">
+        <label class="form-label">{{
+          "journal-entry.entry-date" | translate
+        }}</label>
+        <input
+          type="date"
+          class="form-control"
+          formControlName="entryDate"
+          placeholder="mm/dd/yyyy"
+        />
+
+        <small
+          class="text-danger"
+          *ngIf="
+            journalForm.get('entryDate')?.invalid &&
+            journalForm.get('entryDate')?.touched
+          "
+        >
+          {{ "form-validations.required" | translate }}
+        </small>
+      </div>
+
+      <div class="col-lg-6 mb-3">
+        <label class="form-label">{{
+          "form-labels.description" | translate
+        }}</label>
+        <input
+          type="text"
+          class="form-control"
+          formControlName="description"
+          [placeholder]="'journal-entry.description-hint' | translate"
+        />
+      </div>
+    </div>
+
+    <!-- Line Items -->
+    <div class="mb-3" formArrayName="lines">
+      <label class="form-label d-block">
+        {{ "journal-entry.line-items" | translate }}</label
+      >
+      <div
+        *ngFor="let item of lineItems.controls; let i = index"
+        [formGroupName]="i"
+        class="row mb-2"
+      >
+        <div class="col-md-4">
+          <ng-select
+            [items]="accounts"
+            bindLabel="name"
+            bindValue="id"
+            formControlName="accountId"
+            [searchable]="true"
+            placeholder="{{ 'form-labels.choose-account' | translate }}"
+          >
+          </ng-select>
+
+          <small
+            class="text-danger"
+            *ngIf="
+              item.get('accountId')?.invalid && item.get('accountId')?.touched
+            "
+          >
+            {{ "form-validations.required" | translate }}
+          </small>
+        </div>
+        <div class="col-md-3">
+          <input
+            type="number"
+            class="form-control"
+            formControlName="amount"
+            placeholder="{{ 'journal-entry.amount-hint' | translate }}"
+          />
+          <div
+            *ngIf="item.get('amount')?.invalid && item.get('amount')?.touched"
+          >
+            <small
+              class="text-danger"
+              *ngIf="item.get('amount')?.errors?.['required']"
+            >
+              {{ "form-validations.required" | translate }}
+            </small>
+            <small
+              class="text-danger"
+              *ngIf="
+                item.get('amount')?.errors?.['pattern'] &&
+                !item.get('amount')?.errors?.['required']
+              "
+            >
+              {{ "form-validations.numeric" | translate }}
+            </small>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <input
+            type="text"
+            class="form-control"
+            formControlName="description"
+            [placeholder]="'form-labels.description-hint' | translate"
+          />
+        </div>
+        <div class="col">
+          <button
+            type="button"
+            class="btn btn-danger w-100"
+            (click)="removeLine(i)"
+          >
+            <i class="fa fa-trash"></i>
+          </button>
+        </div>
+      </div>
+      <button type="button" class="btn btn-dark mt-2" (click)="addLine()">
+        + {{ "journal-entry.add-line" | translate }}
+      </button>
+    </div>
+
+    <div class="d-flex gap-2">
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="journalForm.invalid"
+      >
+        {{ "form-actions.save" | translate }}
+      </button>
+    </div>
+  </form>
+</div>

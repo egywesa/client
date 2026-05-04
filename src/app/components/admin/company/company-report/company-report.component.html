@@ -1,0 +1,267 @@
+<div class="block-header">
+  <div class="row">
+    <div class="col-lg-12 col-md-8 col-sm-12">
+      <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth"><i
+            class="fa fa-arrow-right"></i></a>{{'home'|translate}}</h2>
+      <ul class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/dashboard"><i class="icon-home"></i></a></li>
+        <li class="breadcrumb-item"><a routerLink="/dashboard/companies">{{'Companies'|translate}}</a></li>
+        <li class="breadcrumb-item active">معاينة</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row clearfix">
+  <div class="col-lg-12 col-md-12">
+    <div class="">
+      <div class="header row">
+        <div class="col-lg-3 col-md-3  card">
+          <div class="row">
+            <div class="col-lg-3 col-md-3">
+              <i class="fa fa-list-alt" aria-hidden="true"></i>
+
+            </div>
+            <div class="col-lg-6 col-md-6">
+              <span> {{rest}} <br>
+                <p>المتبقى</p>
+              </span>
+            </div>
+
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-3  card">
+          <div class="row">
+            <div class="col-lg-3 col-md-3">
+              <i class="fa fa-calendar" aria-hidden="true"></i>
+
+            </div>
+            <div class="col-lg-6 col-md-6">
+              <span> {{startAt}}<br>
+                <p>تاريخ الاشتراك </p>
+              </span>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-3  card">
+          <div class="row">
+            <div class="col-lg-3 col-md-3">
+              <i class="fa fa-calendar" aria-hidden="true"></i>
+
+            </div>
+            <div class="col-lg-6 col-md-6">
+              <span>{{endAt}} <br>
+                <p>تاريخ التجديد </p>
+              </span>
+
+            </div>
+
+          </div>
+        </div>
+
+
+      </div>
+      <div class="row mt-5 mb-5">
+        <div class="col-lg-4 col-md-4 card">
+          <h4 class="name">{{company.firstName}} {{company.lastName}}</h4>
+          <h4 class="name">{{company.companyNameEn}} </h4>
+          <h4 class="name">{{company.companyNameAr}} </h4>
+          <hr>
+
+          <p> <small>البريد الالكترونى : </small> {{company.email}} </p>
+
+          <p> <small> الجوال :</small> {{company.phoneNumber}} </p>
+
+          <p> <small>العنوان :</small> {{company.companyAddressAr}} </p>
+
+          <p> <small>الرقم الضريبي :</small> {{company.vat}} </p>
+
+        </div>
+        <div class="col-lg-7 col-md-7 ">
+          <div class="flex">
+            <div class="flexitem card" *ngFor="let item of prices ">
+              <h2>{{item.plan}}</h2>
+              <h4>{{item.invoice}} {{ 'invoices monthly' | translate }}</h4>
+              <h6>{{item.priceMonthly}} {{ 'monthly' | translate }}
+                <a (click)="subscribe(item.id,false)"> {{ 'subscribe monthly' | translate }}</a>
+              </h6>
+              <h6>{{item.priceAnnual}}{{ 'yearly' | translate }}
+                <a (click)="subscribe(item.id,true)">{{ 'subscribe yearly' | translate }}</a>
+              </h6>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="body">
+
+        <div class="row mt-5 mb-5">
+          <div class="col-lg-10 col-md-10 ">
+            <div class="container">
+              <details class="accordion">
+                <summary class="accordion-header">
+                  <div class="accordion-header-content">
+                    <h4 class="accordion-header-content-title">{{ 'numberinvoices'|translate }}</h4>
+                  </div>
+                </summary>
+                <div class="accordion-content">
+                  <div class="flex">
+                    <div class="item " *ngFor="let item of statiscmontly ">
+                      <h3 style="text-align: center; color:#8AB11B">
+                        {{item.monthId}}
+                      </h3>
+                      <h6> {{'statistic.totalCredit'|translate }}:{{item.totalCredit}}</h6>
+                      <h6>{{'statistic.totalDebit'|translate }}:{{item.totalDebit}}</h6>
+                      <h6>{{'statistic.totalNormalInvoices'|translate }}:{{item.totalNormalInvoices}}</h6>
+                      <h6>{{'statistic.totalSimpleInvoices'|translate }}:{{item.totalSimpleInvoices}}</h6>
+                    </div>
+
+                  </div>
+                </div>
+              </details>
+            </div>
+          </div>
+
+        </div>
+        <div class="row">
+          <div class="col-lg-11 col-md-11 card">
+            <h4>الفواتير</h4>
+            <div class="body">
+              <tr>
+                <th>
+
+                    <label>من:</label>
+                    <input type="date" class="form-control" [(ngModel)]="searchedDate1" />
+                </th>
+                <th>
+                    <label>الى:</label>
+                    <input type="date" class="form-control" [(ngModel)]="searchedDate2" />
+                </th>
+                <th>
+                  <div class="form-group d-flex flex-column">
+                    <label style="visibility: hidden">search</label>
+                    <button class="btn btn-primary" (click)="submitFilter()">بحث</button>
+                  </div>
+                </th>
+                <th>
+                  <div class="form-group d-flex flex-column">
+                    <label style="visibility: hidden">clear</label>
+                    <button class="btn btn-primary" (click)="clearFilter()">clear</button>
+                  </div>
+                </th>
+                <th>
+                  <div class="form-group d-flex flex-column">
+                    <label style="visibility: hidden">excel</label>
+                    <button class="btn btn-primary" (click)="Exportbydate()">
+                      <i class="fa fa-print" style="color: white;font-size: 14px;"></i> {{ 'export' | translate }} Excel
+                    </button>
+                  </div>
+                </th>
+
+                <th>
+                  <div class="form-group d-flex flex-column">
+                    <label style="visibility: hidden">excel</label>
+                    <button class="btn btn-primary" (click)="Exportbydate2()">
+                      <i class="fa fa-print" style="color: white;font-size: 14px;"></i> {{ 'export with products' | translate }} Excel
+                    </button>
+                  </div>
+                </th>
+                <th>
+                  <div class="form-group d-flex flex-column">
+                    <label style="visibility: hidden">download</label>
+                    <button class="btn btn-primary" (click)="downloadbydate()">
+                      <i class="fa fa-download" style="color: white;font-size: 14px;"></i> {{ 'download' | translate }} Download Zip
+                    </button>
+                  </div>
+                </th>
+              </tr>
+              <tr>
+                <!-- <th></th> -->
+                <th>
+                  <input type="text" class="form-control" placeholder="{{ 'search' | translate }}"
+                         (ngModelChange)="submitFilter()" [(ngModel)]="searchId" />
+                </th>
+                <th class="client" style="width: 21%;">
+                  <!-- <select class="form-control " (ngModelChange)="submitFilter()" [(ngModel)]="searchClientId" >
+                                  <option  [value]=0 selected disabled >{{ 'choose-client'|translate }}</option>
+                                  <option [value]="client.id" *ngFor="let client of clients">{{ client.name }}</option>
+                                </select> -->
+
+                  <input type="text" class="form-control" placeholder="{{ 'choose-client' | translate }}"
+                         (ngModelChange)="submitFilter()" [(ngModel)]="searchClientId" />
+                </th>
+                <th>
+                  <select class="form-control" (ngModelChange)="submitFilter()" [(ngModel)]="searchInvoiceType">
+                    <option disabled selected [value]=null>{{ 'choose-invoice-type'|translate }}</option>
+                    <option value="">كل الفواتير</option>
+                    <option value="1">{{ 'Invoice Tax'|translate }}</option>
+                    <option value="2">{{ 'Simple Invoice'|translate }}</option>
+                  </select>
+                </th>
+                <th>
+                  <select class="form-control" (ngModelChange)="submitFilter()" [(ngModel)]="searchInvoiceFatora">
+                    <option disabled selected [value]=null>{{ 'choose-type'|translate }}</option>
+                    <option value="">كل الفواتير</option>
+                    <option value="false">{{ 'invoicetype'|translate }}</option>
+                    <option value="true">{{ 'isdraft'|translate }}</option>
+                  </select>
+                </th>
+                <th>
+                  <input type="text" class="form-control" placeholder="{{ 'total' | translate }}"
+                         (ngModelChange)="submitFilter()" [(ngModel)]="searchTotal" />
+                </th>
+
+                <th></th>
+              </tr>
+              <div class="table-responsive">
+
+                <table datatable [dtOptions]="dtOptions" class="table table-hover dataTable table-custom">
+                  <thead class="thead-light">
+                    <tr>
+                      <th></th>
+                      <th>{{'Invoice Number'|translate}}</th>
+                      <th>{{'Invoice Date'|translate}}</th>
+                      <th>{{'Invoice Client'|translate}}</th>
+                      <th>{{'InvoiceType'|translate}}</th>
+                       <th>{{'Total'|translate}}</th>
+                     
+
+                      <th>{{'Operations'|translate}}</th>
+                    </tr>
+
+                  </thead>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="row subscription" style="margin-top: 2%;">
+          <div class="col-lg-11 col-md-11 card">
+            <h4>الإشتراكات</h4>
+            <table datatable [dtOptions]="dtOptionspayment" class="table table-hover  table-custom">
+              <thead class="thead-light">
+                <tr>
+                  <th>#</th>
+                  <th>{{'amount'|translate}}</th>
+                  <th>{{'startAt'|translate}}</th>
+                  <th>{{'endAt'|translate}}</th>
+                  <th>{{'invoicesLimit'|translate}}</th>
+                  <th>{{'currentInvoicesLimit'|translate}}</th>
+                  <th>{{'PricePlan'|translate}}</th>
+                  <th>{{'Client'|translate}}</th>
+                  
+                </tr>
+              </thead>
+            </table>
+          </div>
+        </div>
+
+
+
+      </div>
+    </div>
+  </div>
+</div>

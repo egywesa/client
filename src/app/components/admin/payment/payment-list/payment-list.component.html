@@ -1,0 +1,75 @@
+<div class="block-header">
+  <div class="row">
+    <div class="col-lg-6 col-md-8 col-sm-12">
+      <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth"><i
+            class="fa fa-arrow-right"></i></a>{{'home'|translate}}</h2>
+      <ul class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/dashboard"><i class="icon-home"></i></a></li>
+        <li class="breadcrumb-item active">{{ 'Payments'|translate }}</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row clearfix">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="header">
+        <h2>{{'Payments Table'|translate}}</h2>
+      </div>
+      <a class="btn btn-info m-1" routerLink="/dashboard/renew-payment"><i class="fa fa-credit-card-alt"
+          aria-hidden="true"></i> {{'Renew Payment'|translate}}</a>
+
+      <div class="body">
+        <div class="table-responsive">
+          <table datatable [dtOptions]="dtOptions" class="table table-hover dataTable table-custom">
+            <thead class="thead-light">
+              <tr>
+                <th>#</th>
+                <th>{{'amount'|translate}}</th>
+                <th>{{'startAt'|translate}}</th>
+                <th>{{'endAt'|translate}}</th>
+                <th>{{'invoicesLimit'|translate}}</th>
+                <th>{{'currentInvoicesLimit'|translate}}</th>
+                <th>{{'Client'|translate}}</th>
+              </tr>
+            </thead>
+          </table>
+          <!-- <button class="btn btn-outline-warning mt-4" routerLink="/dashboard/renew-payment">{{'Renew Payment'|translate}}</button> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row clearfix mt-5" *ngIf="!admin">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="header">
+        <h2>{{'Payments invoices'|translate}}</h2>
+      </div>
+
+      <div class="body">
+        <div class="table-responsive">
+          <table datatable [dtOptions]="dtOptions2" class="table table-hover dataTable table-custom">
+            <thead class="thead-light">
+              <tr>
+                <th>#</th>
+                <th>{{'Invoice Number'|translate}}</th>
+                <th>{{'Invoice Date'|translate}}</th>
+                <th>{{'Invoice Client'|translate}}</th>
+                <th>{{'InvoiceType'|translate}}</th>
+                <th>{{'Total'|translate}}</th>
+
+
+                <th>{{'Operations'|translate}}</th>
+              </tr>
+
+            </thead>
+          </table>
+          <!-- <button class="btn btn-outline-warning mt-4" routerLink="/dashboard/renew-payment">{{'Renew Payment'|translate}}</button> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

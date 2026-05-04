@@ -1,0 +1,7 @@
+td{
+    white-space: normal !important;
+    vertical-align: baseline !important;
+    @media screen and (max-width: 1000px) {
+        white-space:nowrap !important;
+    }
+}

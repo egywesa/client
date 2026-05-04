@@ -1,0 +1,13 @@
+::ng-deep div.table-responsive>div.dataTables_wrapper>div.row>div[class^=col-]:last-child{
+    overflow-x: scroll !important;
+}
+#DataTables_Table_0_wrapper{
+    overflow-x: scroll !important;
+
+}
+table  {
+    overflow-x: scroll !important;
+}
+th ,td{
+    color: rgb(23, 86, 86) !important;
+}

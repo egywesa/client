@@ -1,0 +1,12 @@
+:host ::ng-deep  div.dataTables_wrapper div.dataTables_info{
+    display: none !important;
+}
+:host ::ng-deep .dataTables_length{
+    display: none !important;
+}
+
+
+
+:host ::ng-deep .dataTables_filter{
+    display: none !important;
+}

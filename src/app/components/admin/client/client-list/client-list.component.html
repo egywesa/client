@@ -1,0 +1,114 @@
+<div class="block-header">
+  <div class="row">
+    <div class="col-lg-6 col-md-8 col-sm-12">
+      <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth"><i class="fa fa-arrow-right"></i></a>{{'home'|translate}}</h2>
+      <ul class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/dashboard"><i class="icon-home"></i></a></li>
+        <li class="breadcrumb-item active">{{ 'Clients'|translate }}</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row clearfix">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="header">
+        <div class="col-lg-4">
+          <h2>{{'Clients Table'|translate}}</h2>
+        <br/>
+        <a class="btn btn-info" routerLink="/dashboard/clients/add-or-edit"><i class="fa fa-plus"></i> {{'Add New'|translate}}</a>
+
+        </div>
+          <div class="col-lg-7">
+            <tr>
+              <th>
+                <label>من:</label>
+                <input type="date" class="form-control" [(ngModel)]="searchedDate1" />
+              </th>
+              <th>
+                <label>الى:</label>
+                <input type="date" class="form-control"  [(ngModel)]="searchedDate2" />
+
+              </th>
+              <th>
+                <label> </label>
+                <a class="btn btn-primary ml-1" (click)="submitFilter()" style="position: absolute;top: 46%;">بحث
+                 </a>
+              </th>
+              <th>
+                <label> </label>
+                <a class="btn btn-primary ml-1" (click)="clearFilter()" style="position: absolute;top: 46%; margin-right: 7%;">clear
+                 </a>
+              </th>
+              <th>
+                <label> </label>
+                <a class="btn btn-primary ml-1" (click)="Exportbydate()" style="position: absolute;top: 46%; margin-right: 17%;"><i class="fa fa-print"></i> {{'export'|translate}} Excel
+                 </a>
+              </th>
+            </tr>
+          </div>
+
+      </div>
+      <div class="body">
+        <div>
+          <th>
+            <input type="text" class="form-control" placeholder="{{ 'searchemail' | translate }}"
+              (ngModelChange)="submitFilter()" [(ngModel)]="searchemail" />
+          </th>
+          <th>
+            <input type="text" class="form-control" placeholder="{{ 'searchphone' | translate }}"
+              (ngModelChange)="submitFilter()" [(ngModel)]="searchphone" />
+          </th>
+          <th>
+            <input type="text" class="form-control" placeholder="{{ 'searchname' | translate }}"
+              (ngModelChange)="submitFilter()" [(ngModel)]="searchname" />
+          </th>
+
+          <th>
+            <input type="text" class="form-control" placeholder="{{ 'searchAdministratorName' | translate }}"
+              (ngModelChange)="submitFilter()" [(ngModel)]="searchAdministratorName" />
+          </th>
+          <th>
+            <input type="text" class="form-control" placeholder="{{ 'searchEnum' | translate }}"
+              (ngModelChange)="submitFilter()" [(ngModel)]="searchEnum" />
+          </th>
+        </div>
+        <div class="table-responsive">
+          <table datatable [dtOptions]="dtOptions" class="table table-hover dataTable table-custom">
+            <thead class="thead-light">
+            <tr>
+              <th>#</th>
+              <th>{{'Client Name'|translate}}</th>
+              <th>{{'Client Address'|translate}}</th>
+              <th>{{'Client Phone'|translate}}</th>
+              <th>{{'Client Company'|translate}}</th>
+              <th>{{'Client clientNum'|translate}}</th>
+              <th>{{'Client email'|translate}}</th>
+              <th>{{'Client CreatedDate'|translate}}</th>
+              <th>{{'Operations'|translate}}</th>
+
+            </tr>
+            </thead>
+<!--            <tbody>-->
+<!--            <tr *ngFor="let client of clients;let i = index">-->
+<!--              <td>{{ i + 1 }}</td>-->
+<!--              <td>{{ client.name }}</td>-->
+<!--              <td>{{ client.address}}</td>-->
+<!--              <td>{{ client.phone}}</td>-->
+<!--              <td>-->
+<!--                <span *ngIf="client.companyName != null">{{ client.companyName}}</span>-->
+<!--                <span *ngIf="client.companyName == null">{{ 'not exists'|translate}}</span>-->
+<!--              </td>-->
+<!--              <td>-->
+<!--                <a class="btn btn-sm btn-default" routerLink="/dashboard/clients/add-or-edit/{{client.id}}"><i class="icon-pencil"></i></a>-->
+<!--                <a class="btn btn-sm btn-default" (click)="removeClient(client.id)"><i class="icon-trash"></i></a>-->
+<!--              </td>-->
+<!--            </tr>-->
+<!--            </tbody>-->
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,32 @@
+<div id="wrapper">
+  <app-header-landing></app-header-landing>
+  <div class="login">
+     <div class="row form" >
+      <div class="col-md-5 col-lg-5 col-xl-5 mx-auto ">
+        <h1 >{{ 'login' | translate }}</h1>
+        <form class="form-auth-small" [formGroup]="loginForm" (submit)="onSubmit()">
+          
+          <div class="form-group">
+            <label>{{ 'Email Address' | translate }}</label>
+            <input type="email" class="form-control" formControlName="email" id="signin-email" required
+             >
+          </div>
+          <div class="form-group">
+            <label >{{ 'Password' | translate }}</label>
+            <input type="password" class="form-control" formControlName="password" id="signin-password" required
+             >
+          </div>
+          <a style=" cursor: pointer;" routerLink="/account/forgetPassword"> {{ 'forget' | translate }}</a>
+          
+          <button type="submit" class=" btn loginbtn">{{ 'LOGIN' | translate }}</button>
+           <p> {{ 'noacount' | translate }} <a routerLink="/account/register">{{ 'REGISTER' | translate }}</a></p>
+        </form>
+      </div>
+      <div class="col-md-5 col-lg-5 col-xl-5 mx-auto inlab ">
+        <img src="assets/images/img/LOGIN3.png">
+      </div>
+     
+     </div>
+  </div>
+  
+</div>

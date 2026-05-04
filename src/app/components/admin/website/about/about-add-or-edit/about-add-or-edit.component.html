@@ -1,0 +1,82 @@
+<div class="block-header">
+    <div class="row">
+      <div class="col-lg-12 col-md-8 col-sm-12">
+        <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth"><i class="fa fa-arrow-right"></i></a>{{'home'|translate}}</h2>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a routerLink="/dashboard"><i class="icon-home"></i></a></li>
+          <li class="breadcrumb-item"><a routerLink="/dashboard/whoweare">{{'abouts.title'|translate}}</a></li>
+          <li class="breadcrumb-item active">{{ 'Add New'|translate }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row clearfix">
+    <div class="col-lg-12 col-md-12">
+      <div class="card">
+        <div class="header">
+          <h2> {{'Add New'|translate}}</h2>
+        </div>
+        <div class="body">
+          <form [formGroup]="aboutForm" (submit)="onSubmit()" enctype="multipart/form-data">
+            <div class="row">
+              <div class="col-md-12 form-group">
+                <label>{{'photo'|translate}}</label>
+                <app-text-input [type]="'file'" (change)="onFileChange($event)" [label]="'photo'|translate" formControlName="image"></app-text-input>
+              </div>
+              <div class="col-md-6 form-group">
+                <label>{{'title Arabic'|translate}}</label>
+                <app-text-input [label]="'title Arabic'|translate" formControlName="titleAr"></app-text-input>
+              </div>
+              <div class="col-md-6 form-group">
+                <label>{{'title English'|translate}}</label>
+                <app-text-input [label]="'title English'|translate" formControlName="title"></app-text-input>
+              </div>
+  
+              <div class="col-md-6 form-group">
+                <label>{{'paragraph1 Arabic'|translate}}</label>
+                <app-text-input [label]="'paragraph1 Arabic'|translate" formControlName="paragraph1Ar"></app-text-input>
+              </div>
+              <div class="col-md-6 form-group">
+                <label>{{'paragraph1 English'|translate}}</label>
+                <app-text-input [label]="'paragraph1 English'|translate" formControlName="paragraph1"></app-text-input>
+              </div>
+
+              <div class="col-md-6 form-group">
+                <label>{{'paragraph2 Arabic'|translate}}</label>
+                <app-text-input [label]="'paragraph2 Arabic'|translate" formControlName="paragraph2Ar"></app-text-input>
+              </div>
+              <div class="col-md-6 form-group">
+                <label>{{'paragraph2 English'|translate}}</label>
+                <app-text-input [label]="'paragraph2 English'|translate" formControlName="paragraph2"></app-text-input>
+              </div>
+              <div class="col-md-6 form-group">
+                <label>{{'paragraph3 Arabic'|translate}}</label>
+                <app-text-input [label]="'paragraph3 Arabic'|translate" formControlName="paragraph3Ar"></app-text-input>
+              </div>
+              <div class="col-md-6 form-group">
+                <label>{{'paragraph3 English'|translate}}</label>
+                <app-text-input [label]="'paragraph3 English'|translate" formControlName="paragraph3"></app-text-input>
+              </div>
+              <div class="col-md-6 form-group">
+                <label>{{'paragraph4 Arabic'|translate}}</label>
+                <app-text-input [label]="'paragraph4 Arabic'|translate" formControlName="paragraph4Ar"></app-text-input>
+              </div>
+              <div class="col-md-6 form-group">
+                <label>{{'paragraph4 English'|translate}}</label>
+                <app-text-input [label]="'paragraph4 English'|translate" formControlName="paragraph4"></app-text-input>
+              </div>
+  
+              
+            </div>
+            <br>
+            <div class="input-group-prepend">
+              <button class="btn btn-outline-success ml-1" type="submit" [disabled]="!aboutForm.valid">{{'Save'|translate}}</button>
+              <button class="btn btn-default" routerLink="/dashboard/whoweare">{{'Back'|translate}}</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  

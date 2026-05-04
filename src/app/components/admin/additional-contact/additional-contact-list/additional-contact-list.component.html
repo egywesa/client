@@ -1,0 +1,58 @@
+<div class="block-header">
+  <div class="row">
+    <div class="col-lg-6 col-md-8 col-sm-12">
+      <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth"><i class="fa fa-arrow-right"></i></a>{{'home'|translate}}</h2>
+      <ul class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/dashboard"><i class="icon-home"></i></a></li>
+        <li class="breadcrumb-item active">{{ 'AdditionalContacts'|translate }}</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row clearfix">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="header">
+        <h2>{{'AdditionalContacts Table'|translate}}</h2>
+        <br/>
+        <a class="btn btn-info" routerLink="/dashboard/additional-contacts/add-or-edit"><i class="fa fa-plus"></i> {{'Add New'|translate}}</a>
+      </div>
+      <div class="body">
+        <div class="table-responsive">
+          <table datatable [dtOptions]="dtOptions" class="table table-hover dataTable table-custom">
+            <thead class="thead-light">
+            <tr>
+              <th>#</th>
+              <th>{{'AdditionalContact Name'|translate}}</th>
+              <th>{{'AdditionalContact Title'|translate}}</th>
+              <th>{{ 'Phone'|translate }}</th>
+              <th>{{ 'Email'|translate }}</th>
+<!--              <th>{{ 'facebook'|translate }}</th>-->
+<!--              <th>{{ 'twitter'|translate }}</th>-->
+<!--              <th>{{ 'linkedIn'|translate }}</th>-->
+              <th>{{'Operations'|translate}}</th>
+            </tr>
+            </thead>
+<!--            <tbody>-->
+<!--            <tr *ngFor="let additionalContact of additionalContacts;let i = index">-->
+<!--              <td>{{ i + 1 }}</td>-->
+<!--              <td>{{ additionalContact.name }}</td>-->
+<!--              <td>{{ additionalContact.title}}</td>-->
+<!--              <td>{{ additionalContact.phone}}</td>-->
+<!--              <td>{{ additionalContact.email}}</td>-->
+<!--              <td>{{ additionalContact.facebook}}</td>-->
+<!--              <td>{{ additionalContact.twitter}}</td>-->
+<!--              <td>{{ additionalContact.linkedin}}</td>-->
+<!--              <td>-->
+<!--                <a class="btn btn-sm btn-default" routerLink="/dashboard/additional-contacts/add-or-edit/{{additionalContact.id}}"><i class="icon-pencil"></i></a>-->
+<!--                <a class="btn btn-sm btn-default" (click)="removeAdditionalContact(additionalContact.id)"><i class="icon-trash"></i></a>-->
+<!--              </td>-->
+<!--            </tr>-->
+<!--            </tbody>-->
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

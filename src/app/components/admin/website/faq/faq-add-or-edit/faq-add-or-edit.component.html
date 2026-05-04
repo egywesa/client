@@ -1,0 +1,42 @@
+<div class="block-header">
+  <div class="row">
+    <div class="col-lg-12 col-md-8 col-sm-12">
+      <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth"><i class="fa fa-arrow-right"></i></a>{{'home'|translate}}</h2>
+      <ul class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/dashboard"><i class="icon-home"></i></a></li>
+        <li class="breadcrumb-item"><a routerLink="/dashboard/faqs">{{'Faqs'|translate}}</a></li>
+        <li class="breadcrumb-item active">{{ 'Add New'|translate }}</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row clearfix">
+  <div class="col-lg-12 col-md-12">
+    <div class="card">
+      <div class="header">
+        <h2> {{'Add New'|translate}}</h2>
+      </div>
+      <div class="body">
+        <form [formGroup]="faqForm" (submit)="onSubmit()" enctype="multipart/form-data">
+          <div class="row">
+            <div class="col-md-12 form-group">
+              <label>{{'Question'|translate}}</label>
+              <app-text-input [label]="'Question'|translate" formControlName="question"></app-text-input>
+            </div>
+
+            <div class="col-md-12 form-group">
+              <label>{{'Answer'|translate}}</label>
+              <app-text-area [label]="'Answer'|translate" formControlName="answer"></app-text-area>
+            </div>
+          </div>
+          <br>
+          <div class="input-group-prepend">
+            <button class="btn btn-outline-success ml-1" type="submit" [disabled]="!faqForm.valid">{{'Save'|translate}}</button>
+            <button class="btn btn-default" routerLink="/dashboard/faqs">{{'Back'|translate}}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

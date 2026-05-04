@@ -1,0 +1,218 @@
+<div class="card p-4 mat-elevation-z8 mt-2">
+  <h4 class="mb-4">{{ "suppliers.search-supplier" | translate }}</h4>
+
+  <form (ngSubmit)="onSearch()" [formGroup]="searchForm" class="row g-3 mb-4">
+    <div class="col-md-4">
+      <label class="form-label">{{
+        "suppliers.supplier-name" | translate
+      }}</label>
+      <input type="text" class="form-control" formControlName="name" />
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label>{{ "suppliers.contact-name" | translate }}</label>
+        <input class="form-control" formControlName="contactName" />
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label>{{ "form-labels.phone" | translate }}</label>
+        <input class="form-control" formControlName="phone" />
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="form-group">
+        <label>{{ "form-labels.address" | translate }}</label>
+        <input class="form-control" formControlName="address" />
+      </div>
+    </div>
+
+    <div class="col">
+      <label class="form-label invisible d-block"> &nbsp; </label>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="searchForm.invalid"
+      >
+        <i class="fa fa-search"></i> {{ "form-actions.search" | translate }}
+      </button>
+      <button
+        type="button"
+        class="btn btn-success mx-2"
+        [disabled]="searchForm.invalid"
+        (click)="onExportToExcel()"
+      >
+        <i class="fa fa-file-excel-o"></i>
+        {{ "form-actions.export-excel" | translate }}
+      </button>
+    </div>
+  </form>
+
+  <table mat-table [dataSource]="dataSource" matSort class="table">
+    <ng-container matColumnDef="code">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>#</th>
+      <td mat-cell *matCellDef="let supplier">{{ supplier.code }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        {{ "suppliers.supplier-name" | translate }}
+      </th>
+      <td mat-cell *matCellDef="let supplier">{{ supplier.name }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="contactName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        {{ "suppliers.contact-name" | translate }}
+      </th>
+      <td mat-cell *matCellDef="let supplier">{{ supplier.contactName }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="phone">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        {{ "form-labels.phone" | translate }}
+      </th>
+      <td mat-cell *matCellDef="let supplier">{{ supplier.phone }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        {{ "form-labels.email" | translate }}
+      </th>
+      <td mat-cell *matCellDef="let supplier">{{ supplier.email }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="address">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>
+        {{ "form-labels.address" | translate }}
+      </th>
+      <td mat-cell *matCellDef="let supplier">{{ supplier.address }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef class="text-start">
+        {{ "Operations" | translate }}
+      </th>
+      <td mat-cell *matCellDef="let supplier">
+        <button
+          class="btn btn-sm btn-primary"
+          (click)="openModal(supplier)"
+          title="{{ 'form-actions.edit' | translate }}"
+        >
+          <i class="fa fa-edit"></i>
+        </button>
+        <button
+          class="btn btn-sm btn-danger mx-2"
+          (click)="onDelete(supplier)"
+          title="{{ 'form-actions.delete' | translate }}"
+        >
+          <i class="fa fa-trash"></i>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+
+  <mat-paginator
+    [pageSizeOptions]="[]"
+    [pageSize]="pageSize"
+    [length]="totalCount"
+    showFirstLastButtons
+    (page)="onPageChange($event)"
+  ></mat-paginator>
+</div>
+
+<!-- Edit Supplier Modal -->
+<div
+  class="modal fade show"
+  tabindex="-1"
+  role="dialog"
+  [ngClass]="{ 'd-block': modalVisible }"
+  *ngIf="modalVisible"
+>
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <form (ngSubmit)="saveModal(modalForm.value)" [formGroup]="modalForm">
+        <div class="modal-header">
+          <button type="button" class="close" (click)="closeModal()">
+            <span>&times;</span>
+          </button>
+          <h5 class="modal-title">
+            {{ "form-actions.edit" | translate }}
+          </h5>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-12">
+              <div class="form-group">
+                <label>{{ "suppliers.supplier-name" | translate }}</label>
+                <input class="form-control" formControlName="name" />
+
+                <div
+                  *ngIf="
+                    modalForm.get('name').invalid &&
+                    modalForm.get('name').touched
+                  "
+                >
+                  <small
+                    class="text-danger"
+                    *ngIf="modalForm.get('name')?.errors?.['required']"
+                  >
+                    {{ "form-validations.required" | translate }}
+                  </small>
+                  <small
+                    class="text-danger"
+                    *ngIf="
+                      modalForm.get('name')?.errors?.['whitespace'] &&
+                      !modalForm.get('name')?.errors?.['required']
+                    "
+                  >
+                    {{ "form-validations.empty" | translate }}
+                  </small>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label>{{ "suppliers.contact-name" | translate }}</label>
+                <input class="form-control" formControlName="contactName" />
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label>{{ "form-labels.phone" | translate }}</label>
+                <input class="form-control" formControlName="phone" />
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label>{{ "form-labels.email" | translate }}</label>
+                <input class="form-control" formControlName="email" />
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <label>{{ "form-labels.address" | translate }}</label>
+                <input class="form-control" formControlName="address" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="btn btn-success"
+            type="submit"
+            [disabled]="modalForm.invalid"
+          >
+            {{ "form-actions.save" | translate }}
+          </button>
+          <button class="btn btn-secondary mx-2" (click)="closeModal()">
+            {{ "form-actions.cancel" | translate }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

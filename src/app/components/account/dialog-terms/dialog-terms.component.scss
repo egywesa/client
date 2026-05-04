@@ -1,0 +1,45 @@
+.dialog{
+    padding: 5%;
+}
+h1 {
+    font-family: 'Cairo';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 30px;
+    line-height: 56px;
+    color: #19325A;
+}
+p{
+    font-family: 'Cairo';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 30px;
+text-align: right;
+
+color: #202950;
+}
+button{
+    background: #8AB11B;
+    border-radius: 20px;
+    padding: 11px 22px;
+    color: white;
+    border: none !important;
+}
+i{
+    color: #202950;
+    font-size: 25px;
+}
+li::marker {
+    color: #8AB11B;
+   
+  }
+  ol{
+    li::marker {
+        color: #202950;
+       
+      }
+  }
+  .direc{
+    direction: rtl;
+  }

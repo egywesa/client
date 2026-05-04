@@ -1,0 +1,262 @@
+<div class="block-header">
+  <div class="row">
+    <div class="col-lg-6 col-md-8 col-sm-12">
+      <h2>
+        <a
+          href="javascript:void(0);"
+          class="btn btn-xs btn-link btn-toggle-fullwidth"
+          ><i class="fa fa-arrow-right"></i></a
+        >{{ "home" | translate }}
+      </h2>
+      <ul class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a routerLink="/dashboard"><i class="icon-home"></i></a>
+        </li>
+        <li class="breadcrumb-item active">{{ "zatacsetting" | translate }}</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row clearfix">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="body">
+        <form [formGroup]="zatacform" (submit)="send()">
+          <div class="row">
+            
+
+            <div class="col-md-12 form-group">
+              <label>{{ "Choose" | translate }}</label>
+              <select formControlName="IntegrationType" class="form-control">
+                <option value="0">{{ "Simulation test" | translate }}</option>
+                <option value="1">{{ "Production" | translate }}</option>
+              </select>
+            </div>
+            <div class="col-md-12 form-group">
+              <label>{{ "Company" | translate }}</label
+              ><span style="color: red"> * </span>
+<!--             
+              (ngModelChange)="submitFilter()" -->
+
+              <ng-select formControlName="companyId" class="company-selector"  
+              [items]="companies"
+              bindValue="companyId"
+              bindLabel="companyName"
+            
+              id="companyId"
+              name="companyId"
+             
+              (search)="brandTyped($event)"
+              (change)="brandTyped($event)"
+              (keydown)="brandTyped($event)" 
+              (keyup)="brandTyped($event)">
+              <ng-option [ngValue]="company" *ngFor="let company of companies" [value]="company.id">{{company.companyName}}</ng-option>
+              </ng-select>
+
+
+<!-- 
+              <select
+                (change)="FilterBranch($event)"
+                formControlName="companyId"
+                class="form-control dropdown-sol col-lg-12"
+              >
+                <option
+                  *ngFor="let company of companies"
+                  value="{{ company.id }}"
+                  >{{ company.companyName }}</option
+                >
+              </select> -->
+            </div>
+
+            <div class="col-md-12 form-group">
+              <label>{{ "Branch" | translate }}</label
+              ><span style="color: red"> * </span>
+              <a
+                href="javascript:void(0)"
+                style="color: green"
+                (click)="openBranchForm()"
+              >
+                <i class="fa fa-plus"></i> {{ "add new" | translate }}
+              </a>
+
+              <select formControlName="branchId" class="form-control">
+                <option
+                  *ngFor="let branch of branches"
+                  value="{{ branch.branchId }}"
+                >
+                  {{ branch.branchName }}
+                </option>
+              </select>
+            </div>
+            <div class="col-md-12 form-group">
+              <label>{{ "OTP" | translate }}</label>
+              <app-text-input
+                [label]="'OTP' | translate"
+                formControlName="otp"
+              ></app-text-input>
+            </div>
+
+            <button
+              class="btn btn-success mr-3"
+              type="submit"
+              [disabled]="!zatacform.valid"
+            >
+              {{ "Save" | translate }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade my-modal" tabindex="-1" role="dialog" #branchAddNewModel>
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" (click)="closeBranchForm()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h5 class="modal-title">{{ "add new" | translate }}</h5>
+      </div>
+      <form [formGroup]="branchForm" (submit)="send()">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6 form-group">
+              <label>{{ "Branch Name" | translate }}</label>
+              <app-text-input
+                [label]="'Branch Name' | translate"
+                formControlName="branchName"
+              ></app-text-input>
+            </div>
+            <div class="col-md-6 form-group">
+              <label dir="auto">{{ "commercialRegNumber" | translate }}</label>
+              <app-text-input
+                [label]="'CommercialRegNumber' | translate"
+                formControlName="commercialRegNumber"
+              ></app-text-input>
+            </div>
+            <div class="col-md-6 form-group">
+              <label>{{ "Branch Address" | translate }}</label>
+              <app-text-input
+                [label]="'Branch Address' | translate"
+                formControlName="address"
+              ></app-text-input>
+            </div>
+
+            <div class="col-md-6 form-group">
+              <label dir="auto">{{ "BuildingNumber" | translate }}</label>
+              <app-text-input
+                [label]="'BuildingNumber' | translate"
+                formControlName="buildingNumber"
+              ></app-text-input>
+            </div>
+
+            <div class="col-md-6 form-group">
+              <label>{{ "CitySubdivisionName" | translate }}</label>
+              <app-text-input
+                [label]="'CitySubdivisionName' | translate"
+                formControlName="citySubdivisionName"
+              ></app-text-input>
+            </div>
+            <!-- <div class="col-md-6 form-group">
+              <label>{{'Country'|translate}}</label>
+              <app-text-input [label]="'Country'|translate" formControlName="country"></app-text-input>
+            </div> -->
+            <div class="col-md-6 form-group">
+              <label>{{ "Country" | translate }}</label>
+              <select class="form-control" formControlName="countryId">
+                <option [value]="null">{{ "Country" | translate }}</option>
+                <option [value]="country.id" *ngFor="let country of countries">
+                  {{ country.name }}
+                </option>
+              </select>
+            </div>
+            <div class="col-md-6 form-group">
+              <label>{{ "city" | translate }}</label>
+              <select class="form-control" formControlName="cityId">
+                <option [value]="null">{{ "choose city" | translate }}</option>
+                <option [value]="city.id" *ngFor="let city of cities">
+                  {{ city.name }}
+                </option>
+              </select>
+            </div>
+            <div class="col-md-6 form-group">
+           
+                <label>{{'CountrySubentity'|translate}}</label>
+  
+                <select class="form-control" formControlName="countrySubentity">
+                  <option value="Makkah">{{ 'Makkah' | translate }}</option>
+                  <option value="Riyadh">{{ 'Riyadh' | translate }}</option>
+                  <option value="Eastern">{{ 'Eastern' | translate }}</option>
+                  <option value="Madinah">{{ 'Madinah' | translate }}</option>
+                  <option value="Al Baha">{{ 'Al Baha' | translate }}</option>
+                  <option value="Al Jawf">{{ 'Al Jawf' | translate }}</option>
+                  <option value="Qassim">{{ 'Qassim' | translate }}</option>
+                  <option value="Hail">{{ 'Hail' | translate }}</option>
+                  <option value="Tabuk">{{ 'Tabuk' | translate }}</option>
+                  <option value="Asir">{{ 'Asir' | translate }}</option>
+                  <option value="Jazan">{{ 'Jazan' | translate }}</option>
+                  <option value="Najran">{{ 'Najran' | translate }}</option>
+                  <option value="Northern Borders">{{ 'Northern Borders' | translate }}</option>
+                  <option value="Other">{{ 'Other' | translate }}</option>
+                </select>
+  
+              
+  <!-- 
+                <app-text-input [label]="'CountrySubentity'|translate" formControlName="countrySubentity"></app-text-input> -->
+             
+            </div>
+            <div class="col-md-6 form-group">
+              <label>{{ "PlotIdentification" | translate }}</label>
+              <app-text-input
+                [label]="'PlotIdentification' | translate"
+                formControlName="plotIdentification"
+              ></app-text-input>
+            </div>
+            <div class="col-md-6 form-group">
+              <label dir="auto">{{ "PostalZone" | translate }}</label>
+              <app-text-input
+                [label]="'PostalZone' | translate"
+                formControlName="postalZone"
+              ></app-text-input>
+            </div>
+            <div class="col-md-6 form-group">
+              <label>{{ "StreetName" | translate }}</label>
+              <app-text-input
+                [label]="'StreetName' | translate"
+                formControlName="streetName"
+              ></app-text-input>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-success"
+            (click)="addNewBranch()"
+          >
+            {{ "submit" | translate }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-default"
+            (click)="closeBranchForm()"
+          >
+            {{ "close" | translate }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  document.addEventListener(
+    "DOMContentLoaded",
+    (e) => {
+      $("#input-datalist").autocomplete();
+    },
+    false
+  );
+</script>

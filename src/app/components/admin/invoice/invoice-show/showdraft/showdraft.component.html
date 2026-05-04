@@ -1,0 +1,591 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="ar">
+    <!-- <div class="preloader-wrapper" >
+        <h1> DRAFT / مسودة</h1>
+      </div> -->
+<head>
+  <!-- Required meta tags -->
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>الفاتوره الالكترونيه</title>
+  <style>
+    @media print {
+      body {
+        -webkit-print-color-adjust: exact;
+      }
+
+      ::-webkit-scrollbar {
+        display: none;
+      }
+    }
+    body {
+      font-family: 'dejavu sans', sans-serif;
+      direction: rtl;
+      text-align: right;
+      font-size: 12px;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .bill {
+      overflow-x: hidden;
+      direction: rtl;
+      width: 100%;
+      margin: auto;
+      border-style: solid;
+    }
+@media print {
+  .preloader-wrapper {
+    background-color: #f0f0f0;
+    padding: 20px;
+    text-align: center;
+  }
+}
+    .table-one span {
+      line-height: 20px;
+      font-weight: bold;
+      font-size: 13px;
+    }
+
+    .table-one {
+      padding: 5px;
+    }
+
+    .table-one img {
+      max-width: 400px;
+      max-height: 100px;
+    }
+
+    .table-head {
+      background-color: #14678f;
+      color: white;
+      font-size: 11px;
+    }
+
+    table {
+      width: 100%;
+      text-align: right;
+
+    }
+
+    table tr {
+      overflow-x: hidden;
+    }
+
+    table td {
+      padding: 5px;
+      border: 1px solid black;
+    }
+
+    .desc {
+      border: 1px solid black;
+      padding: 4px;
+      min-height: 50px;
+      margin-top: 10px;
+    }
+
+    .res-table {
+      overflow-x: auto;
+    }
+    .multiline-cell {
+      white-space: pre-line;
+    }
+  </style>
+</head>
+
+<body style="font-family: 'XB Riyaz'">
+
+<div id="PdfDocument" class="bill" *ngIf="invoice" style="position: relative;">
+  <div *ngIf="invoice?.isDraft"
+       style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg); font-size: 8rem; color: rgba(0, 0, 0, 0.1); font-weight: bold; z-index: 9999; pointer-events: none; white-space: nowrap;">
+    Draft/مسودة
+  </div>
+  <section class="bill" *ngIf="invoice" id="PdfDocument">
+    <!--=============================== Start Header =========================-->
+    <div class="res-table">
+      <table class="table-one">
+
+        <tr>
+          <td colspan="3" style="border: none; text-align: center; ">
+          </td>
+        </tr>
+        <tr>
+          <td style="border: none;">
+            <table style=" border-spacing: 0px; width: 30%;">
+              <tr>
+                <td>رقم الفاتوره</td>
+                <td>{{ invoice.invoiceNum }}</td>
+                <td>Invoice No</td>
+              </tr>
+              <tr>
+                <td>تاريخ الفاتورة</td>
+                <td>{{ invoice.date | date }}
+                  <br>
+                  {{ invoice.date | date:'HH:mm' }}
+                </td>
+                <td> Invoice Date</td>
+
+              </tr>
+              <!--            @if($invoice->return_number !== null)-->
+              <!--            <tr>-->
+              <!--              <td> رقم الفاتوره المرتجع</td>-->
+              <!--              <td>{{ $invoice->return_number:'1.2-2' }}</td>-->
+              <!--              <td> Number</td>-->
+              <!--            </tr>-->
+              <!--            @endif-->
+
+              <tr *ngIf="invoice.dateOfSupply != null">
+                <td> تاريخ التوريد</td>
+                <td>{{ invoice.dateOfSupply | date }}
+                </td>
+                <td> Date Of Supply</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <!--=============================== End Header =========================-->
+
+    <!--  &lt;!&ndash;=============================== Start Body =========================&ndash;&gt;-->
+    <!--  &lt;!&ndash;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; date &#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&ndash;&gt;-->
+    <div class="res-table">
+      <table *ngIf="invoice.clientId == null">
+        <tr>
+          <td colspan="6" class="table-head"> المورد / Seller</td>
+        </tr>
+        <tbody>
+          <tr>
+            <td>الاسم / Name :</td>
+            <td colspan="2">
+
+
+
+              {{invoice.user.company.companyNameAr}}
+              <br>
+              {{invoice.user.company.companyNameEn}}
+            </td>
+            <td>العنوان / Address :</td>
+            <td colspan="2">
+              {{invoice.user.company.companyAddressAr}}
+              <br />
+              {{invoice.user.company.companyAddressEn}}
+            </td>
+          </tr>
+          <tr>
+            <td>الرقم الضريبي / VAT Number :</td>
+            <td colspan="5"> {{invoice.user.company.tin}}</td>
+          </tr>
+          <tr>
+            <!-- <td>الرقم المميز / TIN Number :</td>
+            <td colspan="2"> {{invoice.user.company.vat}}</td> -->
+            <td>رقم السجل التجارى / Commercial Registration Number :</td>
+            <td colspan="2"> {{invoice.user.company.commercialRegNumber}}</td>
+          </tr>
+          <tr>
+            <td> البريد الإلكترونى / Email :</td>
+            <td colspan="2"> {{invoice.user.email}}</td>
+            <td> الجوال / Phone :</td>
+            <td colspan="2"> {{invoice.user.phoneNumber}}</td>
+          </tr>
+        </tbody>
+
+
+      </table>
+
+
+      <ng-container *ngIf="invoice.clientId != null">
+
+
+          <table>
+            <tr>
+              <td colspan="3" class="table-head"> العميل / Client</td>
+              <td colspan="3" class="table-head"> المورد / Seller</td>
+            </tr>
+            <tbody>
+              <tr>
+                <td>الاسم / Name :</td>
+                <td colspan="2">
+                  {{invoice.client.nameAr}}
+                  <br>
+                  {{invoice.client.nameEn}}
+
+                </td>
+
+                <td>الاسم / Name :</td>
+                <td colspan="2">
+                  {{invoice.user.company.companyNameAr}}
+                  <br>
+                  {{invoice.user.company.companyNameEn}}
+
+                </td>
+              </tr>
+              <tr>
+                <td>العنوان / Address :</td>
+                <td colspan="2">
+                  {{invoice.client.addressAr}}
+                  <br>
+                  {{invoice.client.addressEn}}
+                </td>
+                <td>العنوان / Address :</td>
+                <td colspan="2">
+                  {{ invoice.user.company.companyAddressAr }}
+                  <br>
+                  {{ invoice.user.company.companyAddressEn }}
+                </td>
+              </tr>
+              <tr>
+                <td>الرقم الضريبي / VAT Number:</td>
+                <td colspan="2"> {{invoice.client.tin}}</td>
+                <td>الرقم الضريبي / VAT Number :</td>
+                <td colspan="2"> {{invoice.user.company.vat}}</td>
+              </tr>
+              
+              <tr>
+                <td> اسم المسؤول / Client Name :</td>
+                <td colspan="2"> {{invoice.client.administratorNameAr}}</td>
+                <td>رقم السجل التجارى / Commercial Registration Number :</td>
+                <td colspan="2"> {{invoice.user.company.commercialRegNumber}}</td>
+
+              </tr>
+              <tr>
+                <td> البريد الإلكترونى / Email :</td>
+                <td colspan="2"> {{invoice.client.email}}</td>
+                <td> البريد الإلكترونى / Email :</td>
+                <td colspan="2"> {{invoice.user.email}}</td>
+              </tr>
+              <tr>
+                <td> الجوال / Phone :</td>
+                <td colspan="2"> {{invoice.client.phone}}</td>
+                <td> الجوال / Phone :</td>
+                <td colspan="2"> {{invoice.user.phoneNumber}}</td>
+
+              </tr>
+
+            </tbody>
+
+
+          </table>
+
+<!--
+        <ng-container *ngIf="invoice.client != null">
+          <table>
+            <tr>
+              <td colspan="3" class="table-head"> العميل / Client</td>
+              <td colspan="3" class="table-head"> المورد / Seller</td>
+            </tr>
+            <tbody>
+              <tr>
+                <td>الاسم / Name :</td>
+                <td colspan="2">
+                  {{ invoice.client.companyNameAr }}
+                  <br>
+                  {{ invoice.client.companyNameEn }}
+
+                </td>
+
+                <td>الاسم / Name :</td>
+                <td colspan="2">
+                  {{ invoice.client.companyNameAr }}
+                  <br>
+                  {{ invoice.client.companyNameEn }}
+
+                </td>
+              </tr>
+              <tr>
+                <td>العنوان / Address :</td>
+                <td colspan="2">
+                  {{ invoice.client.addressAr }}
+                </td>
+                <td>العنوان / Address :</td>
+                <td colspan="2">
+                  {{ invoice.client.addressEn }}
+                </td>
+              </tr>
+              <tr>
+                <td>الرقم الضريبي / VAT Number:</td>
+                <td colspan="2"> {{invoice.client.tin}}</td>
+                <td>الرقم الضريبي / VAT Number :</td>
+                <td colspan="2"> {{invoice.user.company.tin}}</td>
+              </tr>
+              <tr>
+                <td> رقم العميل / Client Num :</td>
+                <td colspan="2"> {{invoice.client.clientNum}}</td>
+                <td>الرقم المميز / TIN Number :</td>
+                <td colspan="2"> {{invoice.user.company.vat}}</td>
+              </tr>
+              <tr>
+                <td> اسم المسؤول / Client Name :</td>
+                <td colspan="2"> {{invoice.client.administratorNameAr}}</td>
+                <td>رقم السجل التجارى / Commercial Registration Number :</td>
+                <td colspan="2"> {{invoice.user.company.commercialRegNumber}}</td>
+
+              </tr>
+              <tr>
+                <td> البريد الإلكترونى / Email :</td>
+                <td colspan="2"> {{invoice.client.email}}</td>
+                <td> البريد الإلكترونى / Email :</td>
+                <td colspan="2"> {{invoice.user.company.email}}</td>
+              </tr>
+              <tr>
+                <td> الجوال / Phone :</td>
+                <td colspan="2"> {{invoice.client.phone}}</td>
+                <td> الجوال / Phone :</td>
+                <td colspan="2"> {{invoice.user.company.phoneNumber}}</td>
+
+              </tr>
+
+            </tbody>
+
+
+          </table>
+        </ng-container> -->
+
+      </ng-container>
+
+    </div>
+    <div style="height: 10px"></div>
+
+    <div class="res-table">
+      <table>
+        <tbody>
+          <ng-container *ngIf="invoice.branchId != null">
+            <tr>
+              <td colspan="6" class="table-head"> الفرع / Branch</td>
+            </tr>
+            <tr>
+              <td>اسم الفرع / Branch Name :</td>
+              <td colspan="2">{{invoice.branch.branchName}}</td>
+              <td>عنوان الفرع / Branch Address :</td>
+              <td colspan="2">{{invoice.branch.address}}</td>
+            </tr>
+          </ng-container>
+          <br>
+          <ng-container *ngIf="invoice.additionalContactId != null">
+            <tr>
+              <td colspan="6" class="table-head"> معلومات اتصال اضافيه / Additional Contacts :</td>
+            </tr>
+            <tr>
+              <td> : {{invoice.additionalContact.titleAr}}: {{invoice.additionalContact.titleEn}}</td>
+              <td> {{invoice.additionalContact.nameAr}} - {{invoice.additionalContact.nameEn}}</td>
+              <td> Phone /الجوال</td>
+              <td>{{invoice.additionalContact.phone}}</td>
+              <td> Email / البريد الالكترونى</td>
+              <td> {{invoice.additionalContact.email}}</td>
+            </tr>
+          </ng-container>
+
+        </tbody>
+
+
+      </table>
+
+
+    </div>
+
+     <p class="desc text-align multiline-cell" *ngIf="invoice.notes != null && invoice.notes != ''">
+      {{ invoice.notes }}
+    </p>
+
+    <br />
+
+    <div class="res-table">
+      <table>
+        <tr>
+          <td class="table-head">
+            رقم المنتج او الخدمة /
+            Product No
+          </td>
+          <td class="table-head">
+            المنتج او الخدمة /
+            Product or Service
+          </td>
+          <td class="table-head">
+            العدد/ Qty
+          </td>
+          <td class="table-head">
+            Unit Price / القيمة
+          </td>
+
+          <td class="table-head">
+            الخصم / Discount
+          </td>
+          <td class="table-head">
+            المبلغ الخاضع لضريبة القيمة المضافة / Total without VAT
+          </td>
+          <td class="table-head">
+            VAT Percent / نسبة ضريبة القيمة المضافة
+
+          </td>
+          <td class="table-head">
+            VAT total / مبلغ ضريبة القيمة المضافة
+
+          </td>
+
+          <td class="table-head" *ngIf="invoice.taxId == null">
+            Total include VAT / الإجمالي شامل ضريبة القيمة المضافة
+          </td>
+
+        </tr>
+        <tr *ngFor="let product of invoice.invoiceItems; let i = index">
+          <td class="table-head">
+            <ng-container *ngIf="product.productNum == null || product.productNum == ''">{{ i + 1 }}</ng-container>
+            <ng-container *ngIf="product.productNum != null || product.productNum != ''">{{ product.productNum
+              }}</ng-container>
+          </td>
+          <td>
+            {{ product.productDescription }}
+          </td>
+          <td>
+            {{ product.quantity }}
+          </td>
+          <td>
+            {{ product.unitPrice | number:'1.2-2'}}
+          </td>
+          <td>
+            {{ product.discountValue | number:'1.2-2'}}
+            <ng-container *ngIf="product.discountType == 1">%</ng-container>
+          </td>
+          <td>
+            {{ this.calculateService.calculateProductTotalWithoutTax(product) | number:'1.2-2'}}
+          </td>
+          <td>
+            {{ product.tax.taxValue }} %
+          </td>
+          <td>
+            {{ this.calculateService.calculateTaxoneProduct(product)| number:'1.2-2'}}
+          </td>
+          <td *ngIf="invoice.taxId == null">
+            {{ this.calculateService.calculateProductTotalWithTax(product) | number:'1.2-2'}}
+          </td>
+        </tr>
+      </table>
+    </div>
+    <br />
+    <h2 style="color: #14678f">
+      الاجمالى / Total
+    </h2>
+    <br />
+    <div class="res-table">
+      <table>
+        <tr>
+          <td class="table-head">
+            اجمالى الخصم / Total Discount
+          </td>
+          <td class="table-head">
+            المبلغ الخاضع لضريبة القيمة المضاف / Total without VAT
+          </td>
+
+          <td class="table-head">
+            إجمالي ضريبة القيمة المضافة / VAT total
+          </td>
+
+
+        <ng-container *ngIf="invoice.hasPendingMoney && !invoice.calculatePendingMoneyAfterTax" >
+          <td class="table-head" >
+            المبلغ المحتجز قبل الضريبة/ Retention before Tax
+          </td>
+
+
+        </ng-container>
+        <ng-container *ngIf="invoice.hasPendingMoney">
+
+          <td class="table-head">
+            الإجمالي شامل ضريبة القيمة المضافة بعد المحتجز/ Total include VAT with Retention
+          </td>
+
+        </ng-container >
+
+          <td class="table-head">
+            الإجمالي شامل ضريبة القيمة المضافة / Total include VAT
+          </td>
+        <tr>
+
+          <td>  {{ this.calculateService.getTotalDiscount(invoice) | number:'1.2-2'}}</td>
+
+          <td>{{ this.calculateService.getTotalPriceBeforeTax(invoice) | number:'1.2-2'}}</td>
+
+
+          <td>{{ this.calculateService.getTotalTax(invoice) | number:'1.2-2'}}</td>
+          <td *ngIf="invoice.hasPendingMoney">
+
+            {{ this.calculateService.getTotalPendingMoney(invoice) | number:'1.2-2'}}
+            <ng-container *ngIf="invoice.pendingMoneyType == 1">
+                ({{ invoice.pendingMoney | number:'1.2-2'}} %  " نسبة /Ratio "  )
+            </ng-container>
+         </td>
+             <ng-container *ngIf="invoice.hasPendingMoney">
+
+                <td *ngIf="invoice.invoiceNotification == null"> {{ this.calculateService.PendinggetTotalPriceAfterTax(invoice) |
+                  number:'1.2-2' }}
+                  {{ invoice.bank?.currency }}
+                </td>
+             </ng-container>
+
+            <td *ngIf="invoice.invoiceNotification == null"> {{ this.calculateService.getTotalPriceAfterTax(invoice) | number:'1.2-2'}}
+              {{ invoice.bank?.currency }}
+            </td>
+
+
+
+          <!--          <td>-->
+          <!--            {{ getPriceAfterTax() | number:'1.2-2'}}-->
+          <!--          </td>-->
+        </tr>
+      </table>
+    </div>
+
+    <ng-container *ngIf="invoice.bank != null">
+      <br>
+      <h2 style="color: #14678f">
+        تفاصيل الحساب البنكى / Details of Bank Account
+      </h2>
+      <div class="res-table">
+        <table>
+          <tr>
+            <td class="table-head"> Bank Account / اسم البنك</td>
+            <td colspan="3" class="text-center"> {{ invoice.bank.bankName }}</td>
+            <td class="table-head"> Account Name / اسم الحساب</td>
+            <td colspan="3" class="text-center">{{ invoice.bank.bankAccountName}}</td>
+          </tr>
+          <tr>
+            <td class="table-head"> Account Number / رقم الحساب #</td>
+            <td colspan="3" class="text-center">{{invoice.bank.accountNumber}}</td>
+            <td class="table-head"> IBAN / رقم البيان #</td>
+            <td colspan="3" class="text-center"> SA{{invoice.bank.ibanNumber}}</td>
+          </tr>
+          <tr>
+            <td class="table-head"> SWIFT / رقم السويفت #</td>
+            <td colspan="3" class="text-center">{{invoice.bank.swift}}</td>
+            <td class="table-head"> Currency / عملة الحساب #</td>
+            <td colspan="3" class="text-center"> {{invoice.bank.currency}}</td>
+          </tr>
+        </table>
+      </div>
+     
+    </ng-container>
+
+    <div class="res-table">
+      <table>
+        <tr>
+          <td>
+            <p>يعتمد / Certified ...</p>
+            <p class="custom-border"></p>
+          </td>
+          <td>
+
+            <ng-container *ngIf="invoice.user.company.signature">
+              <img style="max-width: 400px; max-height: 100px " src="{{ baseUrl + invoice.user.company.signature }}"
+                alt="">
+            </ng-container>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+  </section>
+
+</div>
+
+</body>
+
+</html>

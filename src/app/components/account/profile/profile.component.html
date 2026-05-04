@@ -1,0 +1,176 @@
+<div class="block-header">
+  <div class="row">
+    <div class="col-lg-12 col-md-8 col-sm-12">
+      <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth"><i
+            class="fa fa-arrow-right"></i></a>{{'home'|translate}}</h2>
+      <ul class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/dashboard"><i class="icon-home"></i></a></li>
+        <li class="breadcrumb-item active">{{ 'Company Profile'|translate }}</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row clearfix">
+  <div class="col-lg-12 col-md-12">
+    <div class="card">
+      <div class="header">
+        <h2> {{'Company Profile'|translate}}</h2>
+      </div>
+      <div class="body">
+        <form [formGroup]="profileForm" (submit)="onSubmit()" enctype="multipart/form-data">
+          <div class="row">
+            <div class="col-md-4 form-group">
+              <label>{{'First Name'|translate}}</label>
+              <app-text-input [label]="'First Name'|translate" formControlName="firstName"></app-text-input>
+            </div>
+            <div class="col-md-4 form-group">
+              <label>{{'Last Name'|translate}}</label>
+              <app-text-input [label]="'Last Name'|translate" formControlName="lastName"></app-text-input>
+            </div>
+            <div class="col-md-4 form-group">
+              <label>{{'Email Address'|translate}}</label>
+              <app-text-input [label]="'Email Address'|translate" formControlName="email"></app-text-input>
+            </div>
+
+            <div class="col-md-6 form-group">
+              <label>{{'Company Name Arabic'|translate}}</label>
+              <app-text-input [label]="'Company Name Arabic'|translate"
+                formControlName="companyNameAr"></app-text-input>
+            </div>
+            <div class="col-md-6 form-group">
+              <label>{{'Company Name English'|translate}}</label>
+              <app-text-input [label]="'Company Name English'|translate"
+                formControlName="companyNameEn"></app-text-input>
+            </div>
+
+            <div class="col-md-6 form-group">
+              <label>{{'Address Arabic'|translate}}</label>
+              <app-text-area [label]="'Address Arabic'|translate" formControlName="companyAddressAr"></app-text-area>
+            </div>
+            <div class="col-md-6 form-group">
+              <label>{{'Address English'|translate}}</label>
+              <app-text-area [label]="'Address English'|translate" formControlName="companyAddressEn"></app-text-area>
+            </div>
+            <div class="col-md-4 form-group" style="height: 35px;">
+              <label>{{'Phone Number'|translate}}</label>
+              <div class="input-group mb-3">
+                <app-text-input [label]="'Phone Number'|translate" formControlName="phoneNumber"
+                  style="width: 75%;"></app-text-input>
+                <div class="input-group-append">
+                  <span class="input-group-text" id="basic-addon2" style="height: 35px;">966+</span>
+                </div>
+              </div>
+            </div>
+            
+           <div class="col-md-6 form-group">
+            <label>{{'tin_10_chars'|translate}}</label>
+            <app-text-input [label]="'tin'|translate" formControlName="tin"></app-text-input>
+          </div> 
+            <div class="col-md-4 form-group">
+              <label>{{'vat_15_chars'|translate}}</label>
+              <app-text-input [label]="'vat'|translate" formControlName="vat"></app-text-input>
+            </div>
+            <div class="col-md-4 form-group">
+              <label>{{'commercialRegNumber_12_chars'|translate}}</label>
+              <app-text-input [label]="'commercialRegNumber'|translate"
+                formControlName="commercialRegNumber"></app-text-input>
+            </div>
+            <div class="col-md-4 form-group">
+              <label>{{'city'|translate}}</label>
+              <select class="form-control" formControlName="cityId">
+                <option [value]="null">{{ 'choose city' | translate }}</option>
+                <option [value]="city.id" *ngFor="let city of cities">{{ city.name }}</option>
+              </select>
+            </div>
+            <div class="col-md-4 form-group">
+              <label>{{'Activity'|translate}}</label>
+              <select class="form-control" formControlName="activityId">
+                <option [value]="null">{{'choose-activity'|translate}}</option>
+                <option [value]="activity.id" *ngFor="let activity of activities">{{activity.name}}</option>
+              </select>
+            </div>
+
+   
+            <div class="col-md-6 form-group">
+              <label>{{'invoiceLast'|translate}}</label>
+              <app-text-input [label]="'invoiceLast'|translate" [disabled]="haveInvoices"
+                formControlName="invoiceLast"></app-text-input>
+
+            </div>
+
+            <div class="col-lg-6 col-md-12">
+              <label>{{'logo'|translate}}
+                <span style="font-size: 11px;color: grey;">{{ 'signature_warning' | translate }} ></span>
+                <br>
+                <a [href]="baseUrl+logoLink" target="_blank" class="text-primary"> ( {{ 'current logo'|translate }} )
+                </a>
+
+                <a class="text-danger h3 DeleteBtn" (click)="Delete(0)" title="Delete / حذف"><i
+                    class="fa fa-trash"></i></a>
+              </label>
+              <app-text-input [type]="'file'" [label]="'logo'|translate" (change)="onLogoChange($event)"
+                formControlName="logo"></app-text-input>
+            </div>
+            <div class="col-lg-6 col-md-12">
+              <label>{{'signature'|translate}}
+                <span style="font-size: 11px;color: grey;">{{ 'signature_warning' | translate }}</span>
+                <br>
+                <a [href]="baseUrl+signatureLink" target="_blank" class="text-primary"> ( {{ 'current
+                  signature'|translate }} ) </a>
+
+
+                <a class="text-danger h3 DeleteBtn" (click)="Delete(1)" title="Delete / حذف"><i
+                    class="fa fa-trash"></i></a>
+              </label>
+              <app-text-input [type]="'file'" [label]="'signature'|translate" (change)="onSignatureChange($event)"
+                formControlName="signature"></app-text-input>
+            </div>
+          </div>
+          <hr />
+
+          <!--          <div class="row">-->
+          <!--            <div class="col-md-12 mb-4">-->
+          <!--              <h6>{{'bank info'|translate}}</h6>-->
+          <!--            </div>-->
+          <!--            <div class="col-md-4 form-group">-->
+          <!--              <label>{{'bankName'|translate}}</label>-->
+          <!--              <app-text-input [label]="'bankName'|translate" formControlName="bankName"></app-text-input>-->
+          <!--            </div>-->
+          <!--            <div class="col-md-4 form-group">-->
+          <!--              <label>{{'bankAccountName'|translate}}</label>-->
+          <!--              <app-text-input [label]="'bankAccountName'|translate" formControlName="bankAccountName"></app-text-input>-->
+          <!--            </div>-->
+          <!--            <div class="col-md-4 form-group">-->
+          <!--              <label>{{'accountNumber'|translate}}</label>-->
+          <!--              <app-text-input [label]="'accountNumber'|translate" formControlName="accountNumber"></app-text-input>-->
+          <!--            </div>-->
+          <!--            <div class="col-md-6 form-group">-->
+          <!--              <label>{{'ibanNumber'|translate}}</label>-->
+          <!--              <app-text-input [label]="'ibanNumber'|translate" formControlName="ibanNumber"></app-text-input>-->
+          <!--            </div>-->
+          <!--            <div class="col-md-6 form-group">-->
+          <!--              <label>{{'swift'|translate}}</label>-->
+          <!--              <app-text-input [label]="'swift'|translate" formControlName="swift"></app-text-input>-->
+          <!--            </div>-->
+          <!--            <div class="col-md-12 form-group">-->
+          <!--              <label>{{'currency'|translate}}</label>-->
+          <!--              <app-text-input [label]="'currency'|translate" formControlName="currency"></app-text-input>-->
+          <!--            </div>-->
+          <!--          </div>-->
+
+
+          <div class="input-group-prepend">
+            <button class="btn btn-outline-success ml-1" type="submit">
+              <i class="fa fa-edit"></i>
+              {{'Save'|translate}}
+            </button>
+            <a class="btn btn-warning" routerLink="/dashboard/renew-payment"><i class="fa fa-credit-card-alt"
+                aria-hidden="true"></i> {{'Renew Payment'|translate}}</a>
+
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,65 @@
+<div class="block-header">
+    <div class="row">
+      <div class="col-lg-6 col-md-8 col-sm-12">
+        <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth"><i
+              class="fa fa-arrow-right"></i></a>{{'home'|translate}}</h2>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a routerLink="/dashboard"><i class="icon-home"></i></a></li>
+          <li class="breadcrumb-item active">{{ 'companiesreports'|translate }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="row clearfix">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="header">
+          <h2>{{'companiesreports'|translate}}</h2>
+          <br />
+        </div>
+
+        <div class="body">
+          <div class="table-responsive">
+            <tr>
+              <th></th>
+              <th>
+                <select class="form-control" (ngModelChange)="submitFilter()" [(ngModel)]="searchstatus">
+                  <option  disabled selected  [value]=null >{{ 'subscribe'|translate }}</option>
+                  <option value="0">{{ 'neverunsubscribe'|translate }}</option>
+                  <option value="1">{{ 'unsubscribe'|translate }}</option>
+                  <option value="5">{{ 'unsuscribewithMonth'|translate }}</option>
+                  <option value="2">{{ 'newsubscribeMoreThan30'|translate }}</option>
+                  <option value="3">{{ 'subscribeLessThan30'|translate }}</option>
+                 
+                </select>
+              </th>
+
+              <th>
+                <label> </label>
+                <a class="btn btn-primary ml-1" (click)="exportcompanies()" ><i class="fa fa-print"></i> {{'export'|translate}} Excel
+                 </a>
+              </th>
+              <th></th>
+            </tr>
+            <table datatable [dtOptions]="dtOptions" class="table table-hover dataTable table-custom">
+              <thead class="thead-light">
+                <tr>
+
+                  <th>#</th>
+                  <th>{{'Company Name'|translate}}</th>
+                  <th>{{'Activity'|translate}}</th>
+                  <th>{{'Company phone'|translate}}</th>
+                  <th>{{'company email'|translate}}</th>
+                  <th>{{'Client CreatedDate'|translate}}</th>
+                  <th>{{'commercial Reg Number'|translate}}</th>
+                  <th>{{'Operations'|translate}}</th>
+                </tr>
+              </thead>
+
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

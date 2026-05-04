@@ -1,0 +1,152 @@
+<div class="block-header">
+  <div class="row">
+    <div class="col-lg-12 col-md-8 col-sm-12">
+      <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth"><i
+            class="fa fa-arrow-right"></i></a>{{'home'|translate}}</h2>
+      <ul class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/dashboard"><i class="icon-home"></i></a></li>
+        <li class="breadcrumb-item"><a routerLink="/dashboard/clients">{{'Clients'|translate}}</a></li>
+        <li class="breadcrumb-item active">{{ 'Add New'|translate }}</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row clearfix">
+  <div class="col-lg-12 col-md-12">
+    <div class="card">
+      <div class="header">
+        <h2> {{'Add New'|translate}}</h2>
+      </div>
+      <div class="body">
+        <form [formGroup]="clientForm" (submit)="onSubmit()">
+          <div class="row">
+            <div class="col-md-6 form-group">
+              <label>{{'Name Arabic'|translate}}<span style="color: red"> * </span></label>
+              <app-text-input [label]="'Name Arabic'|translate" formControlName="nameAr"></app-text-input>
+            </div>
+            <div class="col-md-6 form-group">
+              <label>{{'Name English'|translate}}</label>
+              <app-text-input [label]="'Name English'|translate" formControlName="nameEn"></app-text-input>
+            </div>
+            <div class="col-md-6 form-group">
+              <label>{{'administratorNameAr'|translate}}</label>
+              <app-text-input [label]="'administratorNameAr'|translate"
+                formControlName="administratorNameAr"></app-text-input>
+            </div>
+            <div class="col-md-6 form-group">
+              <label>{{'administratorNameEn'|translate}}</label>
+              <app-text-input [label]="'administratorNameEn'|translate"
+                formControlName="administratorNameEn"></app-text-input>
+            </div>
+            <div class="col-md-6 form-group">
+              <label>{{'addressAr'|translate}} <span style="color: red"> * </span></label>
+              <app-text-input [label]="'addressAr'|translate" formControlName="addressAr"></app-text-input>
+            </div>
+            <div class="col-md-6 form-group">
+              <label>{{'addressEn'|translate}}</label>
+              <app-text-input [label]="'addressEn'|translate" formControlName="addressEn"></app-text-input>
+            </div>
+
+           
+          
+            <!-- <div class="col-md-6 form-group">
+              <label>{{'Country'|translate}}</label>
+              <app-text-input [label]="'Country'|translate" formControlName="country"></app-text-input>
+            </div>-->
+
+            <div class="col-md-4 form-group">
+              <label>{{'Country'|translate}}</label>
+              <select class="form-control" formControlName="countryId">
+                <option [value]="null">{{ 'Country' | translate }}</option>
+                <option [value]="country.id" *ngFor="let country of countries">{{ country.name }}</option>
+              </select>
+            </div>
+            <div class="col-md-4 form-group">
+              <label>{{'city'|translate}}</label>
+              <select class="form-control" formControlName="cityId">
+                <option [value]="null">{{ 'choose city' | translate }}</option>
+                <option [value]="city.id" *ngFor="let city of cities">{{ city.name }}</option>
+              </select>
+            </div>
+
+            <div class="col-md-4 form-group">
+              <label>{{'CountrySubentity'|translate}}</label>
+
+              <select class="form-control" formControlName="countrySubentity">
+                <option value="Makkah">{{ 'Makkah' | translate }}</option>
+                <option value="Riyadh">{{ 'Riyadh' | translate }}</option>
+                <option value="Eastern">{{ 'Eastern' | translate }}</option>
+                <option value="Madinah">{{ 'Madinah' | translate }}</option>
+                <option value="Al Baha">{{ 'Al Baha' | translate }}</option>
+                <option value="Al Jawf">{{ 'Al Jawf' | translate }}</option>
+                <option value="Qassim">{{ 'Qassim' | translate }}</option>
+                <option value="Hail">{{ 'Hail' | translate }}</option>
+                <option value="Tabuk">{{ 'Tabuk' | translate }}</option>
+                <option value="Asir">{{ 'Asir' | translate }}</option>
+                <option value="Jazan">{{ 'Jazan' | translate }}</option>
+                <option value="Najran">{{ 'Najran' | translate }}</option>
+                <option value="Northern Borders">{{ 'Northern Borders' | translate }}</option>
+                <option value="Other">{{ 'Other' | translate }}</option>
+              </select>
+              
+            
+<!-- 
+              <app-text-input [label]="'CountrySubentity'|translate" formControlName="countrySubentity"></app-text-input> -->
+            </div>
+            <div class="col-md-4 form-group">
+              <label>{{'BuildingNumber'|translate}}</label>
+              <app-text-input [label]="'BuildingNumber'|translate" formControlName="buildingNumber"></app-text-input>
+            </div>
+            <div class="col-md-4 form-group">
+              <label>{{'PlotIdentification'|translate}}</label>
+              <app-text-input [label]="'PlotIdentification'|translate" formControlName="plotIdentification"></app-text-input>
+            </div>
+            <div class="col-md-4 form-group">
+              <label>{{'PostalZone'|translate}}</label>
+              <app-text-input [label]="'PostalZone'|translate" formControlName="postalZone"></app-text-input>
+            </div>
+            <div class="col-md-6 form-group">
+              <label>{{'CitySubdivisionName'|translate}}</label>
+              <app-text-input [label]="'CitySubdivisionName'|translate" formControlName="citySubdivisionName"></app-text-input>
+            </div>
+            <div class="col-md-6 form-group">
+              <label>{{'StreetName'|translate}}</label>
+              <app-text-input [label]="'StreetName'|translate" formControlName="streetName"></app-text-input>
+            </div>
+
+            <div class="col-md-6 form-group">
+              <label>{{'email'|translate}}</label>
+              <app-text-input [label]="'email'|translate" formControlName="email"></app-text-input>
+            </div>
+            <div class="col-md-4 form-group">
+              <label>{{'phone'|translate}}</label>
+              <app-text-input [label]="'phone'|translate" formControlName="phone"></app-text-input>
+            </div>
+            <div class="col-md-4 form-group">
+              <!-- <label>{{'commercial Reg Number'|translate}}</label> -->
+              <label>{{'tin'|translate}}</label>
+              <app-text-input type="app-text-input" [label]="'vat'|translate" formControlName="tin"></app-text-input>
+            </div>
+            <div class="col-md-4 form-group">
+             <label>{{'commercial Reg Number'|translate}}</label>
+            
+              <app-text-input type="number" [label]="'commercial Reg Number'|translate" formControlName="commercialRegNumber"></app-text-input>
+            </div>
+            <div class="col-md-4 form-group">
+              <!-- <label>{{'commercial Reg Number'|translate}}</label> -->
+              <label>{{'ClientNum'|translate}}</label>
+              <app-text-input [label]="'ClientNum'|translate" formControlName="clientNum"></app-text-input>
+            </div>
+          </div>
+          <br>
+          <div class="input-group-prepend">
+            <button class="btn btn-outline-success ml-1" type="submit"
+              [disabled]="!clientForm.valid">{{'Save'|translate}}</button>
+            <button class="btn btn-default" routerLink="/dashboard/clients">{{'Back'|translate}}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,1194 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="ar" *ngIf="invoice">
+
+<head>
+  <!-- Required meta tags -->
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>الفاتوره الالكترونيه</title>
+   <style>
+    @media print {
+      body {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        margin: 0;
+        padding: 0;
+        height: auto !important;
+      }
+
+      ::-webkit-scrollbar {
+        display: none;
+      }
+
+      .bill {
+        page-break-inside: avoid;
+        border: none !important;
+        width: 100% !important;
+      }
+
+      img {
+        max-width: 100% !important;
+        height: auto !important;
+      }
+
+      .table-one td {
+        border: none !important;
+      }
+
+      /* QR code print clarity fix */
+      .qr-code-container {
+        width: 220px !important;
+        height: 220px !important;
+        min-width: 220px !important;
+        min-height: 220px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      .qr-code-container qrcode,
+      .qr-code-container img,
+      .qr-code-container canvas {
+        width: 220px !important;
+        height: 220px !important;
+        min-width: 220px !important;
+        min-height: 220px !important;
+        display: block !important;
+        margin: 0 auto !important;
+      }
+
+      /* QR Code container should inherit size from base styles for consistency */
+
+      table {
+        border-collapse: collapse !important;
+        width: 100% !important;
+        table-layout: fixed !important;
+      }
+
+      td, th {
+        border: 1px solid #000 !important;
+        padding: 4px !important;
+      }
+
+      .table-head {
+        background-color: #14678f !important;
+        color: white !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .label-cell,
+      .label-cell-wide {
+        white-space: nowrap !important;
+        overflow: visible !important;
+      }
+
+      .value-cell {
+        white-space: pre-line !important;
+        overflow: visible !important;
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        color: #000 !important;
+        line-height: 1.4 !important;
+      }
+
+      .number-cell {
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        font-size: 14px !important;
+        font-weight: 600 !important;
+        color: #000 !important;
+        text-align: center !important;
+        padding: 4px !important;
+        min-width: 80px !important;
+        width: auto !important;
+        display: table-cell !important;
+        vertical-align: middle !important;
+      }
+
+      .number-cell span {
+        display: inline-block !important;
+        text-align: center !important;
+      }
+
+      .notes-cell {
+        white-space: pre-line !important;
+        overflow: visible !important;
+        word-wrap: break-word !important;
+      }
+
+      .terms-cell {
+        white-space: pre-line !important;
+        overflow: visible !important;
+      }
+    }
+
+    html,
+    body {
+      height: auto;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'dejavu sans', sans-serif;
+      direction: rtl;
+      text-align: right;
+      max-width: 1400px;
+      margin: auto;
+      font-size: 14px;
+      -webkit-print-color-adjust: exact;
+      color-adjust: exact;
+    }
+
+    .bill {
+      overflow-x: hidden;
+      direction: rtl;
+      width: 100%;
+      margin: auto;
+      border: 1px solid #ddd;
+      padding: 10px;
+    }
+
+    .table-one span {
+      line-height: 14px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .table-one {
+      padding: 2px;
+      display: block;
+      border-spacing: 0;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .table-one table {
+      width: 100%;
+      table-layout: fixed;
+      overflow: hidden;
+    }
+
+    .table-one td {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      padding: 4px;
+      vertical-align: top;
+      font-size: 16px;
+      font-weight: 700;
+      color: #000;
+    }
+
+    .table-one img {
+      max-width: 200px;
+      max-height: 150px;
+      display: block;
+      border-spacing: 0;
+    }
+    .qr-section {
+      margin: 0;
+      padding: 0;
+    }
+    .qr-code-container {
+      text-align: center;
+      width: 200px;
+      height: 200px;
+      margin: 0 auto;
+    }
+
+    .qr-code-container ::ng-deep canvas {
+      width: 200px !important;
+      height: 200px !important;
+    }
+
+    .qr-code-container ::ng-deep .qrcode {
+      width: 200px !important;
+      height: 200px !important;
+    }
+
+    .qr-code-container ::ng-deep qrcode {
+      width: 200px !important;
+      height: 200px !important;
+    }
+    .table-head {
+      background-color: #14678f;
+      color: white;
+      font-size: 12px;
+      padding: 4px;
+      text-align: center;
+    }
+
+    table {
+      width: 100%;
+      text-align: right;
+      border-collapse: collapse;
+      margin: 5px 0;
+      table-layout: fixed;
+    }
+
+    table tr {
+      overflow-x: hidden;
+    }
+
+    table td {
+      padding: 6px;
+      border: 1px solid #ddd;
+      font-size: 15px;
+    }
+
+    .label-cell {
+      width: 30%;
+      min-width: 180px;
+      white-space: nowrap;
+    }
+
+    .label-cell-wide {
+      width: 25%;
+      min-width: 150px;
+      white-space: nowrap;
+    }
+
+    .value-cell {
+      width: 35%;
+      font-size: 16px;
+      font-weight: 700;
+      color: #000;
+    }
+
+    .notes-cell {
+      white-space: pre-line;
+      max-width: 100%;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+      word-break: break-word;
+    }
+
+    .desc {
+      border: 1px solid #ddd;
+      padding: 4px;
+      min-height: 50px;
+      margin-top: 10px;
+    }
+
+    .res-table {
+      overflow-x: auto;
+      border: none;
+      overflow: hidden;
+      margin: 0;
+      width: 100%;
+    }
+
+    .res-table table {
+      width: 100%;
+      table-layout: fixed;
+      border-collapse: collapse;
+    }
+
+    .multiline-cell {
+      white-space: pre-line;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 20px;
+      margin: 5px 0;
+    }
+
+    h2 {
+      font-size: 16px;
+      margin: 5px 0;
+    }
+
+    h3 {
+      font-size: 14px;
+      margin: 3px 0;
+    }
+
+    .custom-border {
+      border-bottom: 1px solid #000;
+      width: 200px;
+      margin-top: 40px;
+    }
+
+    .terms-cell {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      min-height: 100px;
+    }
+
+    .number {
+      font-family: monospace;
+      white-space: nowrap;
+      color: #000;
+      font-size: 14px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+
+    .number2 {
+      font-family: monospace;
+      white-space: nowrap;
+      color: #000;
+      text-align: center;
+      font-size: 14px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+    }
+
+    .total-value {
+      font-weight: bold;
+      color: #000;
+      font-family: monospace;
+      white-space: nowrap;
+      font-size: 14px;
+      text-align: center;
+      padding: 6px 4px;
+      letter-spacing: 0.5px;
+    }
+
+    .account-number {
+      font-family: monospace;
+      letter-spacing: 1px;
+      font-size: 16px;
+      color: #000;
+      font-weight: 700;
+    }
+
+    .product-description {
+      text-align: center;
+      padding: 6px 4px;
+      color: #000;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .product-cell {
+      text-align: center;
+      font-size: 14px;
+      padding: 6px 4px;
+      border: 1px solid #000;
+      vertical-align: middle;
+      font-weight: 700;
+      color: #000;
+    }
+
+    /* Number formatting for display and print */
+    .number, 
+    .number2,
+    td[style*="text-align: center"],
+    .product-cell,
+    .total-value,
+    [class*="total"],
+    [class*="amount"],
+    [class*="price"],
+    [class*="quantity"],
+    [class*="qty"],
+    [class*="discount"],
+    [class*="tax"],
+    [class*="vat"] {
+      font-family: 'Courier New', monospace;
+      text-align: center;
+      white-space: nowrap;
+      font-weight: 700;
+      font-size: 12pt;
+      letter-spacing: 0.5px;
+      padding: 2mm 1mm;
+      color: #000;
+    }
+
+    /* Product table styles */
+    .product-table td,
+    table[class*="product"] td {
+      border: 1px solid #dee2e6;
+      padding: 2mm;
+    }
+
+    .product-table td:not(:nth-child(2)),
+    table[class*="product"] td:not(:nth-child(2)) {
+      text-align: center;
+    }
+
+    /* Totals table styles */
+    .total-table td,
+    table[class*="total"] td,
+    [class*="amount-cell"] {
+      padding: 4mm 2mm;
+      min-width: 120px;
+    }
+
+    .total-table td:last-child,
+    table[class*="total"] td:last-child,
+    [class*="amount-cell"] {
+      text-align: center;
+      font-weight: 600;
+      font-family: 'Courier New', monospace;
+      font-size: 11pt;
+      letter-spacing: 0.5px;
+    }
+
+    /* Currency and decimal alignment */
+    [class*="currency"],
+    [class*="amount"],
+    [class*="price"],
+    [class*="total"] {
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Total discount table specific styles */
+    .total-discount-table {
+      margin-top: 10mm;
+      border-collapse: separate;
+      border-spacing: 0;
+      width: 100%;
+    }
+
+    .total-discount-table td {
+      padding: 4mm 2mm;
+      border: 1px solid #dee2e6;
+      vertical-align: middle;
+      white-space: normal;
+      word-wrap: break-word;
+    }
+
+    .total-discount-header {
+      background-color: #14678f !important;
+      color: white !important;
+      font-weight: bold;
+      text-align: center;
+      font-size: 12pt;
+      padding: 4mm 2mm;
+      min-width: 150px;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    .total-discount-value {
+      text-align: center;
+      font-weight: 600;
+      font-family: 'Courier New', monospace;
+      font-size: 11pt;
+      letter-spacing: 0.5px;
+      padding: 4mm 2mm;
+      background-color: #cbe9f2 !important;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    .address-cell {
+      white-space: normal;
+      word-wrap: break-word;
+      min-width: 200px;
+      font-size: 16px;
+      font-weight: 700;
+      color: #000;
+    }
+
+    .invoice-number {
+      font-family: monospace;
+      white-space: nowrap;
+      color: #000;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .company-info h5 {
+      margin: 3px 0;
+      font-size: 16px;
+      font-weight: 700;
+      color: #000;
+    }
+
+    .company-info h6 {
+      margin: 3px 0;
+      font-size: 16px;
+      color: #000;
+      font-weight: 700;
+    }
+  </style>
+</head>
+
+<body style="font-family: 'Cairo', 'Arial', 'Tahoma', sans-serif; background-color: white !important;">
+
+
+  <section class="bill" *ngIf="invoice" id="PdfDocument" style="background-color: white !important;">
+    <!--=============================== Start Header =========================-->
+    <div class="res-table">
+      <table class="table-one">
+        <tr>
+        
+          <td style="border: none; text-align: center; width: 40%">
+            <ng-container *ngIf="invoice.invoiceNotification == null">
+              <ng-container *ngIf="invoice.invoiceType == 1">
+                <h1 style="font-size: 16px; font-weight: bold; color: #000;">فاتورة ضريبية</h1>
+                <h1 style="font-size: 16px; font-weight: bold; color: #000;">Tax Invoice</h1>
+              </ng-container>
+              <ng-container *ngIf="invoice.invoiceType == 2">
+                <h1 style="font-size: 16px; font-weight: bold; color: #000;">فاتورة ضريبية مبسطة </h1>
+                <h1 style="font-size: 16px; font-weight: bold; color: #000;"> Simplified Tax Invoice</h1>
+              </ng-container>
+            </ng-container>
+            <ng-container *ngIf="invoice.invoiceNotification != null">
+              <ng-container *ngIf="invoice.invoiceNotification.acountantInvoiceType == 1">
+                <h1 style="font-size: 16px; font-weight: bold; color: #000;">اشعار دائن</h1>
+                <h1>Credit Note</h1>
+              </ng-container>
+              <ng-container *ngIf="invoice.invoiceNotification.acountantInvoiceType == 2">
+                <h1 style="font-size: 16px; font-weight: bold; color: #000;">اشعار مدين</h1>
+                <h1 style="font-size: 16px; font-weight: bold; color: #000;"> Debit Note</h1>
+              </ng-container>
+            </ng-container>
+          </td>
+          <td style="width: 30%; border: none; text-align: center;">
+            <img *ngIf="invoice.user.company.logo!=null" src="{{baseUrl+invoice.user.company.logo}}" style="max-width: 200px; max-height: 100px; display: block; margin: 0 auto;" alt="Company Logo">
+          </td>
+        </tr>
+
+        <tr>
+          <td style="border: none; width: 120px;">
+            <div class="qr-code-container" style="text-align: center;">
+              <ng-container *ngIf="invoice.invoiceNotification == null">
+                <ng-container *ngIf="!invoice.zatcaVerified">
+                  <img style="display: block; image-rendering: crisp-edges; image-rendering: -webkit-optimize-contrast; image-rendering: pixelated;" [src]="invoice.googleGenerateQrCode" /> 
+                </ng-container>
+                <ng-container *ngIf="invoice.zatcaVerified">
+                  <qrcode [qrdata]="invoice.googleGenerateQrCode" [errorCorrectionLevel]="'M'" [scale]="8" [margin]="1"></qrcode>
+                </ng-container>
+              </ng-container>
+              <ng-container *ngIf="invoice.invoiceNotification != null">
+                <ng-container *ngIf="!invoice.invoiceNotification.zatcaVerified">
+                  <img style="display: block; image-rendering: crisp-edges; image-rendering: -webkit-optimize-contrast; image-rendering: pixelated;" [src]="invoice.invoiceNotification.googleGenerateQrCode" /> 
+                </ng-container>
+                <ng-container *ngIf="invoice.invoiceNotification.zatcaVerified">
+                  <qrcode [qrdata]="invoice.invoiceNotification.googleGenerateQrCode" [errorCorrectionLevel]="'M'" [scale]="8" [margin]="1"></qrcode>
+                </ng-container>
+              </ng-container>
+            </div>
+          </td>
+         
+          <td style="border: none; width: 70%; vertical-align: top; padding-left: 5px;">
+            <div style="margin-top: 20px;">
+              <table style="border-spacing: 0px; width: 100%; font-size: 13px; line-height: 1.4; table-layout: fixed; text-align: right;">
+                <tr *ngIf="invoice.user.company.id==144">
+                  <td style="width: 25%; font-weight: bold;">رقم المرجع</td>
+                  <td style="width: 50%; text-align: center;">{{ invoice.notes }}</td>
+                  <td style="width: 25%; font-weight: bold; text-align: left;">Reference No</td>
+                </tr>
+                <tr>
+                  <td style="width: 25%; font-weight: bold;">رقم الفاتورة</td>
+                  <td style="width: 50%; text-align: center;" class="invoice-number">{{ invoice.invoiceNum }}</td>
+                  <td style="width: 25%; font-weight: bold; text-align: left;">Invoice No</td>
+                </tr>
+                <tr *ngIf="invoice.poNumber != null">
+                  <ng-container *ngIf="invoice.poNumberNum == 0">
+                    <td style="width: 25%; font-weight: bold;">رقم أمر شراء</td>
+                    <td style="width: 50%; text-align: center;">{{ invoice.poNumber }}</td>
+                    <td style="width: 25%; font-weight: bold; text-align: left;">LPO Number</td>
+                  </ng-container>
+                  <ng-container *ngIf="invoice.poNumberNum == 1">
+                    <td style="width: 25%; font-weight: bold;">رقم المطالبة المالية</td>
+                    <td style="width: 50%; text-align: center;">{{ invoice.poNumber }}</td>
+                    <td style="width: 25%; font-weight: bold; text-align: left;">Financial claims No</td>
+                  </ng-container>
+                  <ng-container *ngIf="invoice.poNumberNum == 2">
+                    <td style="width: 25%; font-weight: bold;">اخري</td>
+                    <td style="width: 50%; text-align: center;">{{ invoice.poNumber }}</td>
+                    <td style="width: 25%; font-weight: bold; text-align: left;">other</td>
+                  </ng-container>
+                </tr>
+                <tr>
+                  <td style="width: 25%; font-weight: bold;">تاريخ الفاتورة</td>
+                  <td style="width: 50%; white-space: nowrap; text-align: center;">{{ invoice.date |date: "yyyy-MM-dd HH:mm:ss" }}</td>
+                  <td style="width: 25%; font-weight: bold; text-align: left;">Invoice Date</td>
+                </tr>
+                <tr *ngIf="invoice.dateOfSupply != null">
+                  <td style="width: 25%; font-weight: bold;">تاريخ التوريد</td>
+                  <td style="width: 50%; white-space: nowrap; text-align: center;">{{ invoice.dateOfSupply | date: "yyyy-MM-dd" }}</td>
+                  <td style="width: 25%; font-weight: bold; text-align: left;">Date Of Supply</td>
+                </tr>
+                <tr *ngIf="invoice.invoiceNotification != null">
+                  <td style="width: 25%; font-weight: bold;">تاريخ اشعار الفاتورة</td>
+                  <td style="width: 50%; white-space: nowrap; text-align: center;">{{ invoice.invoiceNotification.date | date: "yyyy-MM-dd HH:mm:ss" }}</td>
+                  <td style="width: 25%; font-weight: bold; text-align: left;">invoice Notification Date</td>
+                </tr>
+              </table>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <!--=============================== End Header =========================-->
+
+    <div style="height: 15px"></div>
+
+    <!--  &lt;!&ndash;=============================== Start Body =========================&ndash;&gt;-->
+    <!--  &lt;!&ndash;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; date &#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&ndash;&gt;-->
+    <div class="res-table">
+      <table *ngIf="invoice.invoiceType == 2">
+        <tr>
+          <td colspan="6" class="table-head"> المورد / Seller</td>
+        </tr>
+        <tbody>
+          <tr>
+            <td class="label-cell">الاسم / Name</td>
+            <td colspan="2" class="value-cell"style="text-align: center;">
+              <ng-container *ngIf="invoice.user.company.companyNameAr !== invoice.user.company.companyNameEn">
+                {{invoice.user.company.companyNameAr}}
+                <br>
+                {{invoice.user.company.companyNameEn}}
+              </ng-container>
+              <ng-container *ngIf="invoice.user.company.companyNameAr === invoice.user.company.companyNameEn">
+                {{invoice.user.company.companyNameAr}}
+              </ng-container>
+            </td>
+            <td class="label-cell">العنوان / Address</td>
+            <td colspan="2" class="value-cell" style="text-align: center; white-space: normal; word-wrap: break-word;">
+              <ng-container *ngIf="invoice.user.company.companyAddressAr !== invoice.user.company.companyAddressEn">
+                {{invoice.user.company.companyAddressAr}}
+                <br />
+                {{invoice.user.company.companyAddressEn}}
+              </ng-container>
+              <ng-container *ngIf="invoice.user.company.companyAddressAr === invoice.user.company.companyAddressEn">
+                {{invoice.user.company.companyAddressAr}}
+              </ng-container>
+            </td>
+          </tr>
+          <tr>
+            <td class="label-cell">الرقم الضريبي/VAT</td>
+            <td colspan="5" class="value-cell"style="text-align: center;"> {{invoice.user.company.vat}}</td>
+          </tr>
+          <tr>
+            <td class="label-cell"> السجل التجارى/CRN</td>
+            <td colspan="2" class="value-cell"style="text-align: center;"> {{invoice.user.company.commercialRegNumber}}</td>
+            <td class="label-cell"> البريد الإلكترونى / Email</td>
+            <td colspan="2" class="value-cell"style="text-align: center;"> {{invoice.user.email}}</td>
+          </tr>
+          <tr>
+            <td class="label-cell"> الجوال / Phone</td>
+            <td colspan="5" class="value-cell"style="text-align: center;"> {{invoice.user.phoneNumber}}</td>
+          </tr>
+          <tr *ngIf="invoice.client?.commercialRegNumber">
+            <td class="label-cell"> السجل التجارى للعميل / Client CRN</td>
+            <td colspan="5" class="value-cell" style="text-align: center;"> {{invoice.client.commercialRegNumber}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+
+      <table *ngIf="invoice.invoiceType == 1">
+        <tr>
+          <td colspan="3" class="table-head"style="text-align: center; color:white !important"> العميل / Client</td>
+          <td colspan="3" class="table-head"style="text-align: center; color:white !important"> المورد / Seller</td>
+        </tr>
+        <tbody>
+          <tr>
+            <td class="label-cell" style="width: 15%;">الاسم / Name</td>
+            <td colspan="2" class="value-cell" style="text-align: center; white-space: normal; word-wrap: break-word; max-width: 150px;">
+              <ng-container *ngIf="invoice.client.nameAr !== invoice.client.nameEn">
+                {{ invoice.client.nameAr}}
+                <br>
+                {{invoice.client.nameEn}}
+              </ng-container>
+              <ng-container *ngIf="invoice.client.nameAr === invoice.client.nameEn">
+                {{ invoice.client.nameAr}}
+              </ng-container>
+            </td>
+
+            <td class="label-cell" style="width: 15%;">الاسم / Name</td>
+            <td colspan="2" class="value-cell" style="text-align: center; white-space: normal; word-wrap: break-word; max-width: 150px;">
+              <ng-container *ngIf="invoice.user.company.companyNameAr !== invoice.user.company.companyNameEn">
+                {{invoice.user.company.companyNameAr}}
+                <br>
+                {{invoice.user.company.companyNameEn}}
+              </ng-container>
+              <ng-container *ngIf="invoice.user.company.companyNameAr === invoice.user.company.companyNameEn">
+                {{invoice.user.company.companyNameAr}}
+              </ng-container>
+            </td>
+          </tr>
+          <tr>
+            <td class="label-cell">العنوان / Address</td>
+            <td colspan="2" class="value-cell"style="text-align: center; white-space: normal; word-wrap: break-word;">
+              <ng-container *ngIf="invoice.client.addressAr !== invoice.client.addressEn">
+                {{ invoice.client.addressAr }}
+                <br>
+                {{ invoice.client.addressEn }}
+              </ng-container>
+              <ng-container *ngIf="invoice.client.addressAr === invoice.client.addressEn">
+                {{ invoice.client.addressAr }}
+              </ng-container>
+            </td>
+            <td class="label-cell">العنوان / Address</td>
+            <td colspan="2" class="value-cell"style="text-align: center; white-space: normal; word-wrap: break-word;">
+              <ng-container *ngIf="invoice.user.company.companyAddressAr !== invoice.user.company.companyAddressEn">
+                {{invoice.user.company.companyAddressAr}}
+                <br />
+                {{invoice.user.company.companyAddressEn}}
+              </ng-container>
+              <ng-container *ngIf="invoice.user.company.companyAddressAr === invoice.user.company.companyAddressEn">
+                {{invoice.user.company.companyAddressAr}}
+              </ng-container>
+            </td>
+          </tr>
+          <tr>
+            <td class="label-cell">الرقم الضريبي/VAT</td>
+            <td colspan="2" class="value-cell"style="text-align: center;"> {{invoice.client.tin}}</td>
+            <td class="label-cell">الرقم الضريبي/VAT</td>
+            <td colspan="2" class="value-cell"style="text-align: center;"> {{invoice.user.company.vat}}</td>
+          </tr>
+
+          <tr>
+            <ng-container *ngIf="invoice.client.administratorNameAr!=null && invoice.client.admi!=null">
+              <ng-container *ngIf="invoice.client.administratorNameAr !='' && invoice.client.administratorNameEn!=''">
+                <td class="label-cell">اسم المسؤول / Client Name</td>
+                <td colspan="2" class="value-cell"style="text-align: center;"> {{invoice.client.administratorNameAr}}
+                  <br>{{invoice.client.administratorNameEn}}
+                </td>
+              </ng-container>
+            </ng-container>
+            <td class="label-cell"> السجل التجارى/CRN</td>
+            <td colspan="2" class="value-cell"style="text-align: center;"> {{invoice.client.commercialRegNumber}}</td>
+            <td class="label-cell"> السجل التجارى/CRN</td>
+            <td colspan="2" class="value-cell"style="text-align: center;"> {{invoice.user.company.commercialRegNumber}}</td>
+          </tr>
+          <tr>
+            <td class="label-cell"> البريد الإلكترونى / Email</td>
+            <td colspan="2" class="value-cell"style="text-align: center;"> {{invoice.client.email}}</td>
+            <td class="label-cell"> البريد الإلكترونى / Email</td>
+            <td colspan="2" class="value-cell"style="text-align: center;"> {{invoice.user.email}}</td>
+          </tr>
+          <tr>
+            <td class="label-cell"> الجوال / Phone</td>
+            <td colspan="2" class="value-cell"style="text-align: center;"> {{invoice.client.phone}}</td>
+            <td class="label-cell"> الجوال / Phone</td>
+            <td colspan="2" class="value-cell"style="text-align: center;"> {{invoice.user.phoneNumber}}</td>
+          </tr>
+          <tr *ngIf="invoice.client.clientNum != null && invoice.client.clientNum != ''">
+            <td class="label-cell"> رقم العميل / Client Num</td>
+            <td colspan="5" class="value-cell"style="text-align: center;"> {{invoice.client.clientNum}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+    <div>
+      <table>
+        <tr>
+          <td class="notes-cell" *ngIf="invoice.invoiceNotification == null &&
+      invoice.notes != null && invoice.notes != ''"
+            [style]="this.translate.currentLang === 'en' ? 'text-align: left;': ''">
+            {{ invoice.notes }}
+          </td>
+          <td class="notes-cell" *ngIf="invoice.invoiceNotification != null &&
+      invoice.invoiceNotification.remarks != null && invoice.invoiceNotification.remarks != '' "
+            [style]="this.translate.currentLang === 'en' ? 'text-align: left;': ''">
+            {{ invoice.invoiceNotification.remarks }}
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- <div style="height: 10px"></div> -->
+
+    <div class="res-table">
+      
+
+    </div>
+
+
+
+ 
+    <div class="res-table">
+
+      <table>
+        <tr>
+          <td class="table-head">
+            رقم المنتج او الخدمة /
+            Product No
+          </td>
+          <td class="table-head" style="width: 25%; font-size: 12px; padding: 6px;">
+            المنتج او الخدمة /
+            Product or Service
+          </td>
+          <td class="table-head">
+            العدد/ Qty
+          </td>
+          <td class="table-head">
+            Unit Price / القيمة
+          </td>
+<td *ngIf="isAdvanceDiscountCompany(invoice.user.company.id); else templateName" class="table-head">
+  الخصم من الدفعة المقدمة/  Advance payment discount
+</td>
+            <ng-template #templateName> 
+           <td   class="table-head">
+             الخصم / Discount
+           </td>
+          </ng-template>
+          <td class="table-head">
+            المبلغ الخاضع لضريبة القيمة المضافة / Total without VAT
+          </td>
+          <td class="table-head">
+            VAT Percent / نسبة ضريبة القيمة المضافة
+
+          </td>
+          <td class="table-head">
+            VAT total / مبلغ ضريبة القيمة المضافة
+
+          </td>
+
+          <td class="table-head">
+            Total include VAT / الإجمالي شامل ضريبة القيمة المضافة
+          </td>
+
+        </tr>
+
+        <ng-container *ngIf="invoice.invoiceNotification != null">
+          <tr *ngFor="let product of invoice.invoiceNotification.invoiceNotificationItems; let i = index">
+            <td class="table-head">
+              <ng-container *ngIf="product.productNum == null || product.productNum == ''">{{ i + 1 }}</ng-container>
+              <ng-container *ngIf="product.productNum != null || product.productNum != ''">{{ product.productNum
+                }}</ng-container>
+            </td>
+            <td [style]="this.translate.currentLang === 'en' ? 'text-align: left;': ''" dir="auto" style="width: 25%; font-size: 14px; padding: 6px; font-weight: 500; white-space: normal; word-wrap: break-word; min-height: 50px; vertical-align: middle;">
+              {{ product.productDescription }}
+            </td>
+            <td class="number-cell">
+              <span style="text-align:center;">{{ product.quantity }}</span>
+            </td>
+            <td  class="number-cell">
+              <span style="text-align:center;">{{ product.unitPrice | number:'1.02-2'}}</span>
+            </td>
+            <td class="number-cell">
+              <span style="text-align:center;">{{ product.discountValue | number:'1.02-2'}}
+              <ng-container *ngIf="product.discountType == 1">%</ng-container></span>
+            </td>
+            <td class="number-cell">
+              <span style="text-align:center;">{{ this.calculateService.calculateProductTotalWithoutTax(product) | number:'1.2-2'}}</span>
+              <ng-container *ngIf="product.discountValue > 0 ">
+                <span style="font-size: 12px; text-align:center; color: #666; display: block;"> After Dicount/بعد الخصم </span>
+              </ng-container>
+            </td>
+            <td class="number-cell">
+              <span style="text-align:center;">{{ product.tax.taxValue }} %</span>
+            </td>
+            <td class="number-cell">
+              <span style="text-align:center;"  >{{ this.calculateService.calculateTaxoneProduct(product)| number:'1.02-2'}}</span>
+            </td>
+            <td class="number-cell">
+              <span style="text-align: center;">{{ this.calculateService.calculateProductTotalWithTax(product) | number:'1.02-2'}}</span>
+            </td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="invoice.invoiceNotification == null">
+
+          <tr *ngFor="let product of invoice.invoiceItems let i = index">
+            <td class="table-head">
+              <ng-container *ngIf="product.productNum == null || product.productNum == ''">{{ i + 1 }}</ng-container>
+              <ng-container *ngIf="product.productNum != null || product.productNum != ''">{{ product.productNum
+                }}</ng-container>
+            </td>
+            <td  [style]="this.translate.currentLang === 'en' ? 'text-align: left;': ''" dir="auto" style="width: 35%; font-size: 16px; padding: 10px; font-weight: 500; white-space: normal; word-wrap: break-word; min-height: 50px; vertical-align: middle;">
+              {{ product.productDescription }}
+            </td>
+            <td style="text-align: center;" class="number-cell">
+              <span style="text-align:center;" >{{ product.quantity }}</span>
+            </td>
+            <td style="text-align: center;"class="number-cell">
+              <span style="text-align: center;">{{ product.unitPrice | number:'1.02-2'}}</span>
+            </td>
+            <td style="text-align: center;"class="number-cell">
+              <span style="text-align:center;">{{ product.discountValue | number:'1.02-2'}}
+              <ng-container *ngIf="product.discountType == 1">%</ng-container></span>
+            </td>
+            <td style="text-align: center;"class="number-cell">
+              <span style="text-align:center;">{{ this.calculateService.calculateProductTotalWithoutTax(product) | number:'1.2-2'}}</span>
+            </td>
+            <td style="text-align: center;"class="number-cell">
+              <span style="text-align: center;">{{ product.tax.taxValue }} %</span>
+            </td>
+            <td style="text-align: center;"class="number-cell">
+              <span style="text-align:center;">{{ this.calculateService.calculateTaxoneProduct(product)| number:'1.02-2'}}</span>
+            </td>
+            <td style="text-align: center;"class="number-cell">
+              <span style="text-align:center;">{{ this.calculateService.calculateProductTotalWithTax(product) | number:'1.02-2'}}</span>
+            </td>
+
+          </tr>
+        </ng-container>
+      </table>
+    </div>
+   
+
+
+    <div *ngIf="invoice.invoiceNotification == null" class="res-table">
+      <table class="total-discount-table">
+        <tr>
+          <td class="total-discount-header" style="min-width: 120px;">إجمالي الخصم / Total Discount</td>
+          <td class="total-discount-header" style="min-width: 180px;">المبلغ الخاضع لضريبة القيمة المضاف / Total without VAT</td>
+          <td class="total-discount-header" style="min-width: 150px;">إجمالي ضريبة القيمة المضافة / VAT total</td>
+          <td class="total-discount-header" style="min-width: 120px;">الإجمالي / Total with VAT</td>
+          <td class="total-discount-header" style="min-width: 120px;">العملة / Currency</td>
+        </tr>
+        <tr>
+          <td class="total-discount-value">
+            <span class="number">{{ calculateService.getTotalDiscount(invoice) | number:'1.02-2'}}</span>
+            <span *ngIf="invoice.bank?.currency =='USD'" style="display: block; margin-top: 2mm; background-color:#fbfbb6;">
+              <span class="number">{{ calculateService.getTotalDiscount(invoice) * 3.7575 | number:'1.02-2'}}</span>
+            </span>
+          </td>
+          <td class="total-discount-value">
+            <span class="number">{{ calculateService.getTotalPriceBeforeTax(invoice) | number:'1.02-2'}}</span>
+            <span *ngIf="invoice.bank?.currency =='USD'" style="display: block; margin-top: 2mm; background-color:#fbfbb6;">
+              <span class="number">{{ calculateService.getTotalPriceBeforeTax(invoice) * 3.7575 | number:'1.02-2'}}</span>
+            </span>
+          </td>
+          <td class="total-discount-value">
+            <span class="number2">{{ calculateService.getTotalTax(invoice) | number:'1.2-2'}}</span>
+            <span *ngIf="invoice.bank?.currency =='USD'" style="display: block; margin-top: 2mm; background-color:#fbfbb6;">
+              <span class="number">{{ calculateService.getTotalTax(invoice) * 3.7575 | number:'1.02-2'}}</span>
+            </span>
+          </td>
+          <td class="total-discount-value">
+            <span class="number">{{ calculateService.getTotalPriceAfterTax(invoice) | number:'1.2-2'}}</span>
+            <span *ngIf="invoice.bank?.currency =='USD'" style="display: block; margin-top: 2mm; background-color:#fbfbb6;">
+              <span class="number">{{ calculateService.getTotalPriceAfterTax(invoice) * 3.7575 | number:'1.02-2'}}</span>
+            </span>
+          </td>
+          <td class="total-discount-value">
+         
+           
+            <ng-container *ngIf="invoice.bank?.currency=='USD'">
+              <td style="width: 15%;">{{invoice.bank?.currency}} / {{ invoice.bank?.currency | translate }}</td>
+             
+            </ng-container>
+             <span>
+                ريال سعودي/ SAR
+              </span>
+             
+          </td>
+        </tr>
+        <ng-container *ngIf="invoice.hasPendingMoney && invoice.calculatePendingMoneyAfterTax">
+          <tr>
+            <td class="table-head2">المبلغ المحتجز بعد الضريبة/ Retention after Tax</td>
+            <td style="text-align: center;">
+              {{ this.calculateService.getTotalPendingMoney(invoice) | number:'1.02-2'}}
+              <span *ngIf="invoice.pendingMoneyType == 1">
+                ({{ invoice.pendingMoney | number:'1.02-2'}} % " نسبة /Ratio " )
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td class="table-head2">الصافي بعد المبلغ المحتجز/ Net Amount after Retention</td>
+            <td style="text-align: center;">
+              {{ this.calculateService.getTotalPriceAfterTax(invoice) - this.calculateService.getTotalPendingMoney(invoice) | number:'1.02-2'}}
+            </td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="invoice.hasPendingMoney && !invoice.calculatePendingMoneyAfterTax">
+          <tr>
+            <td class="table-head2">المبلغ المحتجز قبل الضريبة/ Retention before Tax</td>
+            <td style="text-align: center;">
+              {{ this.calculateService.getTotalPendingMoney(invoice) | number:'1.02-2'}}
+              <span *ngIf="invoice.pendingMoneyType == 1">
+                ({{ invoice.pendingMoney | number:'1.02-2'}} % " نسبة /Ratio " )
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td class="table-head2">الصافي بعد المبلغ المحتجز/ Net Amount after Retention</td>
+            <td style="text-align: center;">
+              {{ this.calculateService.getTotalPriceAfterTax(invoice) - this.calculateService.getTotalPendingMoney(invoice) | number:'1.02-2'}}
+            </td>
+          </tr>
+        </ng-container>
+      </table>
+    </div>
+
+
+    <div *ngIf="invoice.invoiceNotification != null" class="res-table">
+      <table class="total-discount-table">
+        <tr>
+          <td class="total-discount-header" style="min-width: 120px;">إجمالي الخصم / Total Discount</td>
+          <td class="total-discount-header" style="min-width: 180px;">المبلغ الخاضع لضريبة القيمة المضاف / Total without VAT</td>
+          <td class="total-discount-header" style="min-width: 150px;">إجمالي ضريبة القيمة المضافة / VAT total</td>
+          <td class="total-discount-header" style="min-width: 120px;">الإجمالي / Total with VAT</td>
+          <td class="total-discount-header" style="min-width: 120px;">العملة / Currency</td>
+        </tr>
+        <tr>
+          <td class="total-discount-value">
+            <span class="number">{{ calculateService.getNotificationTotalDiscount(invoice) | number:'1.02-2'}}</span>
+            <span *ngIf="invoice.bank?.currency =='USD'" style="display: block; margin-top: 2mm; background-color:#fbfbb6;">
+              <span class="number">{{ calculateService.getTotalDiscount(invoice) * 3.7575 | number:'1.02-2'}}</span>
+            </span>
+          </td>
+          <td class="total-discount-value">
+            <span class="number">{{ calculateService.getNotificationTotalPriceBeforeTax(invoice) | number:'1.02-2'}}</span>
+            <span *ngIf="invoice.bank?.currency =='USD'" style="display: block; margin-top: 2mm; background-color:#fbfbb6;">
+              <span class="number">{{ calculateService.getNotificationTotalPriceBeforeTax(invoice) * 3.7575 | number:'1.02-2'}}</span>
+            </span>
+          </td>
+          <td class="total-discount-value">
+            <span class="number2">{{ calculateService.getNotificationTotalTax(invoice) | number:'1.02-2'}}</span>
+            <span *ngIf="invoice.bank?.currency =='USD'" style="display: block; margin-top: 2mm; background-color:#fbfbb6;">
+              <span class="number">{{ calculateService.getNotificationTotalTax(invoice) * 3.7575 | number:'1.02-2'}}</span>
+            </span>
+          </td>
+          <td class="total-discount-value">
+            <span class="number">{{ calculateService.getNotificationTotalPriceAfterTax(invoice) | number:'1.02-2'}}</span>
+            <span *ngIf="invoice.bank?.currency =='USD'" style="display: block; margin-top: 2mm; background-color:#fbfbb6;">
+              <span class="number">{{ calculateService.getNotificationTotalPriceAfterTax(invoice) * 3.7575 | number:'1.02-2'}}</span>
+            </span>
+          </td>
+          <td class="total-discount-value">
+           
+            <span>
+              ريال سعودي/ SAR
+            </span>
+          </td>
+        </tr>
+        <ng-container *ngIf="invoice.hasPendingMoney && invoice.calculatePendingMoneyAfterTax">
+          <tr>
+            <td class="table-head2">المبلغ المحتجز بعد الضريبة/ Retention after Tax</td>
+            <td style="text-align: center;">
+              {{ this.calculateService.getTotalPendingMoney(invoice) | number:'1.02-2'}}
+              <span *ngIf="invoice.pendingMoneyType == 1">
+                ({{ invoice.pendingMoney | number:'1.02-2'}} % " نسبة /Ratio " )
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td class="table-head2">الصافي بعد المبلغ المحتجز/ Net Amount after Retention</td>
+            <td style="text-align: center;">
+              {{ this.calculateService.getNotificationTotalPriceAfterTax(invoice) - this.calculateService.getTotalPendingMoney(invoice) | number:'1.02-2'}}
+            </td>
+          </tr>
+        </ng-container>
+        <ng-container *ngIf="invoice.hasPendingMoney && !invoice.calculatePendingMoneyAfterTax">
+          <tr>
+            <td class="table-head2">المبلغ المحتجز قبل الضريبة/ Retention before Tax</td>
+            <td style="text-align: center;">
+              {{ this.calculateService.getTotalPendingMoney(invoice) | number:'1.02-2'}}
+              <span *ngIf="invoice.pendingMoneyType == 1">
+                ({{ invoice.pendingMoney | number:'1.02-2'}} % " نسبة /Ratio " )
+              </span>
+            </td>
+          </tr>
+          <tr>
+            <td class="table-head2">الصافي بعد المبلغ المحتجز/ Net Amount after Retention</td>
+            <td style="text-align: center;">
+              {{ this.calculateService.getNotificationTotalPriceAfterTax(invoice) - this.calculateService.getTotalPendingMoney(invoice) | number:'1.02-2'}}
+            </td>
+          </tr>
+        </ng-container>
+      </table>
+    </div>
+
+
+
+    <div class="res-table">
+      <table>
+        <tbody>
+          <ng-container *ngIf="invoice.branchId != null">
+            <tr>
+              <td colspan="6" class="table-head"> الفرع / Branch</td>
+            </tr>
+            <tr>
+              <td>اسم الفرع / Branch Name</td>
+              <td style="text-align:center;" colspan="2">{{invoice.branch.branchName}}</td>
+              <td>عنوان الفرع / Branch Address</td>
+              <td style="text-align: center;" colspan="2">{{invoice.branch.address}}</td>
+            </tr>
+          </ng-container>
+
+          <ng-container *ngIf="invoice.additionalContactId != null">
+            <tr>
+              <td colspan="6" class="table-head"> معلومات اتصال اضافيه / Additional Contacts</td>
+            </tr>
+            <tr>
+              <td> : {{invoice.additionalContact.titleAr}}: {{invoice.additionalContact.titleEn}}</td>
+              <td> {{invoice.additionalContact.nameAr}} - {{invoice.additionalContact.nameEn}}</td>
+              <td> Phone /الجوال</td>
+              <td>{{invoice.additionalContact.phone}}</td>
+              <td> Email / البريد الالكترونى</td>
+              <td> {{invoice.additionalContact.email}}</td>
+            </tr>
+          </ng-container>
+
+        </tbody>
+      </table>
+    </div>
+
+    <ng-container *ngIf="invoice.bank != null">
+      <h2 style="color: #14678f; text-align:center">
+        تفاصيل الحساب البنكى / Details of Bank Account
+      </h2>
+      <div class="res-table">
+        <table>
+          <tr>
+            <td class="table-head"> Bank Account / اسم البنك</td>
+            <td colspan="3" class="text-center"> {{ invoice.bank.bankName }}</td>
+            <td class="table-head"> Account Name / اسم الحساب</td>
+            <td colspan="3" class="text-center">{{ invoice.bank.bankAccountName}}</td>
+          </tr>
+          <tr>
+            <td class="table-head"> Account Number / رقم الحساب #</td>
+            <td colspan="3" class="text-center">{{invoice.bank.accountNumber}}</td>
+            <td class="table-head"> IBAN / رقم البيان #</td>
+            <td colspan="3" class="text-center"> SA{{invoice.bank.ibanNumber}}</td>
+          </tr>
+         
+         
+         
+        </table>
+      </div>
+
+    </ng-container>
+  
+        <table *ngIf="invoice.user.privacy!=null">
+          <tr>
+            <td colspan="6" class="table-head"> الشروط والأحكام / Terms And Condition</td>
+          </tr>
+          <tr>
+            <td colspan="6" class="terms-cell">
+              <div *ngIf="invoice.user.privacy.nameAr!=null" style="text-align: right;">
+                {{invoice.user.privacy.nameAr}}
+              </div>
+              <div *ngIf="invoice.user.privacy.nameEn!=null" style="text-align: left;">
+                {{invoice.user.privacy.nameEn}}
+              </div>
+            </td>
+          </tr>
+        </table>
+    <div class="res-table">
+      <table style="height:100px;">
+        <tr>
+          <td>
+            <p>يعتمد / Certified ...</p>
+            <p class="custom-border"></p>
+          </td>
+
+          <td>
+
+            <ng-container *ngIf="invoice.user.company.signature">
+              <img style="max-width: 400px; max-height: 100px " src="{{baseUrl+invoice.user.company.signature }}"
+                alt="">
+            </ng-container>
+          </td>
+        
+        
+          
+
+      
+      </table>
+    </div>
+    
+
+  </section>
+</body>
+
+</html>

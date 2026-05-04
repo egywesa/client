@@ -1,0 +1,94 @@
+<div class="block-header">
+  <div class="row">
+    <div class="col-lg-12 col-md-8 col-sm-12">
+      <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth"><i class="fa fa-arrow-right"></i></a>{{'home'|translate}}</h2>
+      <ul class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/dashboard"><i class="icon-home"></i></a></li>
+        <li class="breadcrumb-item active">{{ 'Company Profile'|translate }}</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row clearfix">
+    <div class="col-lg-12 col-md-12" *ngIf="(accountService.currentUser$ | async).roles.includes('User')">
+      <div class="card border border-light-success">
+        <div class="row">
+          <div class="col-12">
+            <div class="bg-light-info p-3">
+              <div class="text-center text-dark">
+                <h6 *ngIf="currentPayment != null">
+                  {{'Current Payment'|translate}} : <span style="font-weight: bolder">{{ currentPayment.invoicesLimit | number }} {{ 'invoices monthly' | translate }}</span>
+                  || {{ 'Current Invoice Number'|translate }} : <span style="font-weight: bolder">{{ currentPayment.currentInvoicesLimit | number }} {{ 'invoices monthly' | translate }}</span>
+                  || {{ 'Start Payment At' | translate }} : <span style="font-weight: bolder">{{ currentPayment.startAt | date }}</span>
+                  || {{ 'End Payment At' | translate }} : <span style="font-weight: bolder">{{ currentPayment.endAt | date }}</span>
+                </h6>
+                <h6 *ngIf="currentPayment == null">
+                  {{'there is no payment exists'|translate}}
+                </h6>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <div class="col-lg-12 col-md-12" *ngIf="(accountService.currentUser$ | async).roles.includes('Admin')">
+    <div class="card border border-light-success">
+      <div class="row">
+        <div class="col-12">
+          <div class="bg-light-info p-3">
+            <div class="text-center text-dark">
+              <h6 style="font-weight: bolder"> {{ 'Unlimited Subscription' | translate }} </h6>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <div class="col-lg-4 col-md-6" *ngFor="let price of prices">
+        <div class="card border border-light-success">
+            <div class="row">
+                <div class="col-12">
+                    <div class="bg-light-info p-3">
+                        <div class="text-center text-dark ">
+                          {{ price.plan }}
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group">
+                          <p class="text-dark-info text-center font-20 font-weight-bold">
+                            <span>{{ price.invoice | number }}</span> {{ 'invoices monthly' | translate }}
+                          </p>
+                        </div>
+                        <hr/>
+                        <div class="list-group">
+                          <p class="text-dark-info text-center font-20 font-weight-bold">
+                            <span>{{ price.priceMonthly | number }}</span> {{ 'monthly' | translate }}
+                          </p>
+                        </div>
+                        <hr/>
+                        <div class="list-group">
+                          <p class="text-dark-info text-center font-20 font-weight-bold">
+                            <span>{{ price.priceAnnual | number }}</span> {{ 'yearly' | translate }}
+                          </p>
+                        </div>
+                        <hr>
+                        <div class="list-group">
+                          <div class="row">
+                              <button type="button" (click)="redirectToPaymentForm(price.priceMonthly)" class="col-5 ml-1 mr-2 btn btn-outline-success btn-rounded">
+                                {{ 'subscribe monthly' | translate }}
+                              </button>
+                              <button type="button" (click)="redirectToPaymentForm(price.priceAnnual)" class="col-6 mr-1 btn btn-outline-success btn-rounded">
+                                {{ 'subscribe yearly' | translate }}
+                              </button>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

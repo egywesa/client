@@ -1,0 +1,22 @@
+@import '../shared/invoice-styles.scss';
+
+:host {
+  display: block;
+  background-color: white;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+#PdfDocument {
+  background-color: white;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.3;
+  color: #000;
+}

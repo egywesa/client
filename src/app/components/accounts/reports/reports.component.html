@@ -1,0 +1,48 @@
+<div class="block-header">
+  <div class="row">
+    <div class="col-lg-6 col-md-8 col-sm-12">
+      <h2>
+        <a
+          href="javascript:void(0);"
+          class="btn btn-xs btn-link btn-toggle-fullwidth"
+          ><i class="fa fa-arrow-right"></i></a
+        >{{ "home" | translate }}
+      </h2>
+      <ul class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a routerLink="/dashboard"><i class="icon-home"></i></a>
+        </li>
+        <li class="breadcrumb-item active">
+          {{ "reports.title" | translate }}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<mat-tab-group>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <i class="fa fa-line-chart mx-2"></i>
+      {{ "reports.profit-and-loss" | translate }}
+    </ng-template>
+
+    <app-profit-and-loss></app-profit-and-loss>
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <i class="fa fa-money mx-2"></i>
+      {{ "reports.balance-sheet" | translate }}
+    </ng-template>
+
+    <app-balance-sheet></app-balance-sheet>
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <i class="fa fa-file-text-o mx-2"></i>
+      {{ "reports.account-statement" | translate }}
+    </ng-template>
+
+    <app-account-statement></app-account-statement>
+  </mat-tab>
+</mat-tab-group>

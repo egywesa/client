@@ -1,0 +1,348 @@
+<div
+  id="left-sidebar"
+  class="sidebar"
+  *ngIf="accountService.currentUser$ | async as user"
+>
+  <div class="sidebar-scroll">
+    <div class="user-account">
+      <img
+        src="assets/images/man.png"
+        class="rounded-circle user-photo"
+        alt="User Profile Picture"
+        *ngIf="logo == null"
+      />
+      <img
+        src="{{ baseUrl + logo }}"
+        class="rounded-circle user-photo"
+        alt="User Profile Picture"
+        *ngIf="logo != null"
+      />
+      <div class="dropdown">
+        <span>{{ "Welcome" | translate }},</span>
+        <a
+          href="javascript:void(0);"
+          class="dropdown-toggle user-name"
+          data-toggle="dropdown"
+        >
+          <strong>{{ email }}</strong>
+        </a>
+        <ul
+          class="dropdown-menu dropdown-menu-right account animated flipInY"
+          style="left: unset; right: 0"
+        >
+          <li>
+            <a routerLink="/dashboard/profile"
+              ><i class="icon-user"></i>{{ "My Profile" | translate }}</a
+            >
+          </li>
+          <li class="divider"></li>
+          <li>
+            <a href="javascript:void(0)" (click)="accountService.logout()"
+              ><i class="icon-power"></i> {{ "Logout" | translate }}</a
+            >
+          </li>
+        </ul>
+      </div>
+    </div>
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link active" data-toggle="tab" href="#hr_menu">{{
+          "main" | translate
+        }}</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#accounts_menu">{{
+          "accounts" | translate
+        }}</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#sub_menu">{{
+          "website" | translate
+        }}</a>
+      </li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content p-l-0 p-r-0">
+      <div class="tab-pane animated fadeIn active" id="hr_menu">
+        <nav class="sidebar-nav">
+          <ul class="main-menu metismenu">
+            <li routerLink="/dashboard">
+              <a href="javascript:void(0)"
+                ><i class="fa fa-home" aria-hidden="true"></i>
+                <span>{{ "home" | translate }}</span></a
+              >
+            </li>
+
+            <li routerLink="/dashboard/profile" routerLinkActive="active">
+              <a href="javascript:void(0)"
+                ><i class="fa fa-list-alt" aria-hidden="true"></i>
+                <span>{{ "User / Company Data" | translate }}</span></a
+              >
+            </li>
+            <li routerLink="/dashboard/designs" routerLinkActive="active">
+              <a href="javascript:void(0)"
+                ><i class="fa fa-newspaper-o" aria-hidden="true"></i>
+                <span>{{ "designs" | translate }}</span></a
+              >
+            </li>
+
+            <li routerLink="/dashboard/invoices" routerLinkActive="active">
+              <a href="javascript:void(0)"
+                ><i class="fa fa-file-text-o" aria-hidden="true"></i>
+                <span>{{ "Invoices" | translate }}</span></a
+              >
+            </li>
+
+            <li routerLink="/dashboard/payments" routerLinkActive="active">
+              <a href="javascript:void(0)"
+                ><i class="fa fa-money" aria-hidden="true"></i>
+                <span>{{ "Payments" | translate }}</span></a
+              >
+            </li>
+
+            <li routerLink="/dashboard/cities" routerLinkActive="active">
+              <a href="javascript:void(0)"
+                ><i class="icon-flag"></i>
+                <span>{{ "Cities" | translate }}</span></a
+              >
+            </li>
+
+            <li routerLink="/dashboard/activities" routerLinkActive="active">
+              <a href="javascript:void(0)"
+                ><i class="icon-bulb"></i>
+                <span>{{ "Activities" | translate }}</span></a
+              >
+            </li>
+
+            <li
+              routerLink="/dashboard/additional-contacts"
+              routerLinkActive="active"
+            >
+              <a href="javascript:void(0)"
+                ><i class="icon-book-open"></i>
+                <span>{{ "AdditionalContacts" | translate }}</span></a
+              >
+            </li>
+
+            <li
+              routerLink="/dashboard/zatacenterylist"
+              routerLinkActive="active"
+            >
+              <a href="javascript:void(0)"
+                ><i class="icon-book-open"></i>
+                <span>{{ "zatacsetting" | translate }}</span></a
+              >
+            </li>
+
+            <li routerLink="/dashboard/taxes" routerLinkActive="active">
+              <a href="javascript:void(0)"
+                ><i class="fa fa-clipboard" aria-hidden="true"></i>
+                <span>{{ "Taxes" | translate }}</span></a
+              >
+            </li>
+
+            <li routerLink="/dashboard/banks" routerLinkActive="active">
+              <a href="javascript:void(0)"
+                ><i class="fa fa-university" aria-hidden="true"></i>
+                <span>{{ "Banks" | translate }}</span></a
+              >
+            </li>
+
+            <li routerLink="/dashboard/products" routerLinkActive="active">
+              <a href="javascript:void(0)"
+                ><i class="fa fa-archive" aria-hidden="true"></i>
+                <span>{{ "Products" | translate }}</span></a
+              >
+            </li>
+
+            <li routerLink="/dashboard/clients" routerLinkActive="active">
+              <a href="javascript:void(0)"
+                ><i class="icon-users"></i>
+                <span>{{ "Clients" | translate }}</span></a
+              >
+            </li>
+
+            <li routerLink="/dashboard/prices" routerLinkActive="active">
+              <a href="javascript:void(0)"
+                ><i class="fa fa-dollar"></i>
+                <span>{{ "Prices" | translate }}</span></a
+              >
+            </li>
+
+            <li routerLink="/dashboard/branches" routerLinkActive="active">
+              <a href="javascript:void(0)"
+                ><i class="fa fa-code-fork" aria-hidden="true"></i>
+                <span>{{ "Branches" | translate }}</span></a
+              >
+            </li>
+
+            <li
+              routerLink="/dashboard/change-password"
+              routerLinkActive="active"
+            >
+              <a href="javascript:void(0)"
+                ><i class="fa fa-key" aria-hidden="true"></i>
+                <span>{{ "Password" | translate }}</span></a
+              >
+            </li>
+
+            <li routerLink="/dashboard/companies" routerLinkActive="active">
+              <a href="javascript:void(0)"
+                ><i class="fa fa-building" aria-hidden="true"></i>
+                <span>{{ "Companies" | translate }}</span></a
+              >
+            </li>
+            <li
+              routerLink="/dashboard/companiesreports"
+              routerLinkActive="active"
+            >
+              <a href="javascript:void(0)"
+                ><i class="fa fa-building" aria-hidden="true"></i>
+                <span>{{ "companiesreports" | translate }}</span></a
+              >
+            </li>
+
+            <li
+              routerLink="/dashboard/another-systems"
+              routerLinkActive="active"
+            >
+              <a href="javascript:void(0)"
+                ><i class="fa fa-desktop" aria-hidden="true"></i>
+                <span>{{ "anotherSystems" | translate }}</span></a
+              >
+            </li>
+
+            <li routerLink="/dashboard" routerLinkActive="active">
+              <a href="javascript:void(0)"
+                ><i class="fa-solid fa-empty-set"></i>
+                <span>{{ "nothing" | translate }}</span></a
+              >
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <div class="tab-pane animated fadeIn" id="accounts_menu">
+        <nav class="sidebar-nav">
+          <ul class="main-menu metismenu">
+            <li
+              routerLink="/dashboard/chart-of-accounts"
+              routerLinkActive="active"
+            >
+              <a href="javascript:void(0)"
+                ><i class="icon-wallet"></i>
+                <span>{{ "chartOfAccounts.title" | translate }}</span></a
+              >
+            </li>
+            <li routerLink="/dashboard/suppliers" routerLinkActive="active">
+              <a href="javascript:void(0)"
+                ><i class="icon-users"></i>
+                <span>{{ "suppliers.title" | translate }}</span></a
+              >
+            </li>
+            <li routerLink="/dashboard/journal-entry" routerLinkActive="active">
+              <a href="javascript:void(0)"
+                ><i class="icon-docs"></i>
+                <span>{{ "journal-entry.title" | translate }}</span></a
+              >
+            </li>
+            <li
+              routerLink="/dashboard/manual-balance-entry"
+              routerLinkActive="active"
+            >
+              <a href="javascript:void(0)"
+                ><i class="fa fa-plus-square-o"></i>
+                <span>{{ "manual-entry.title" | translate }}</span></a
+              >
+            </li>
+            <li
+              routerLink="/dashboard/payment-voucher"
+              routerLinkActive="active"
+            >
+              <a href="javascript:void(0)"
+                ><i class="fa fa-money"></i>
+                <span>{{ "payment-voucher.title" | translate }}</span></a
+              >
+            </li>
+            <li
+              routerLink="/dashboard/receipt-voucher"
+              routerLinkActive="active"
+            >
+              <a href="javascript:void(0)"
+                ><i class="fa fa-usd"></i>
+                <span>{{ "receipt-voucher.title" | translate }}</span></a
+              >
+            </li>
+            <li routerLink="/dashboard/reports" routerLinkActive="active">
+              <a href="javascript:void(0)"
+                ><i class="fa fa-bar-chart"></i>
+                <span>{{ "reports.title" | translate }}</span></a
+              >
+            </li>
+            <li routerLink="/dashboard/documents" routerLinkActive="active">
+              <a href="javascript:void(0)"
+                ><i class="fa fa-book"></i>
+                <span>{{ "documents.title" | translate }}</span></a
+              >
+            </li>
+            <br />
+            <br />
+            <br />
+          </ul>
+        </nav>
+      </div>
+      <div class="tab-pane animated fadeIn" id="sub_menu">
+        <nav class="sidebar-nav">
+          <ul class="main-menu metismenu">
+            <li
+              routerLink="/dashboard/termsAndCondition"
+              routerLinkActive="active"
+            >
+              <a href="javascript:void(0)"
+                ><i class="icon-shield"></i>
+                <span>{{ "Terms and Conditions" | translate }}</span></a
+              >
+            </li>
+            <li routerLink="/dashboard/sliders" routerLinkActive="active">
+              <a href="javascript:void(0)"
+                ><i class="fa fa-picture-o" aria-hidden="true"></i>
+                <span>{{ "Animated Photos" | translate }}</span></a
+              >
+            </li>
+            <li routerLink="/dashboard/testimonials" routerLinkActive="active">
+              <a href="javascript:void(0)"
+                ><i class="fa fa-drivers-license-o"></i>
+                <span>{{ "Testimonials" | translate }}</span></a
+              >
+            </li>
+            <li routerLink="/dashboard/whoweare" routerLinkActive="active">
+              <a href="javascript:void(0)"
+                ><i class="fa fa-user-circle" aria-hidden="true"></i>
+                <span>{{ "Who Are We" | translate }}</span></a
+              >
+            </li>
+            <li routerLink="/dashboard/setting" routerLinkActive="active">
+              <a href="javascript:void(0)"
+                ><i class="icon-settings"></i>
+                <span>{{ "Website Settings" | translate }}</span></a
+              >
+            </li>
+            <li routerLink="/dashboard/contact" routerLinkActive="active">
+              <a href="javascript:void(0)"
+                ><i class="icon-cloud-download"></i>
+                <span>{{ "Contact Info" | translate }}</span></a
+              >
+            </li>
+            <br />
+            <br />
+            <br />
+          </ul>
+        </nav>
+      </div>
+      <br />
+      <br />
+      <br />
+    </div>
+  </div>
+</div>

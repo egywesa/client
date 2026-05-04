@@ -1,0 +1,268 @@
+<div class="card p-4">
+  <form [formGroup]="documentForm" (ngSubmit)="saveDocument()">
+    <div class="row">
+      <div class="col-lg-6 mb-3">
+        <label class="form-label">{{
+          "form-labels.document-type" | translate
+        }}</label>
+        <ng-select
+          [items]="documentTypes"
+          bindLabel="label"
+          bindValue="value"
+          formControlName="documentType"
+          [searchable]="false"
+          placeholder="{{ 'form-labels.choose-type' | translate }}"
+        ></ng-select>
+        <small
+          class="text-danger"
+          *ngIf="
+            documentForm.get('documentType')?.invalid &&
+            documentForm.get('documentType')?.touched
+          "
+        >
+          {{ "form-validations.required" | translate }}
+        </small>
+      </div>
+
+      <div class="col-lg-6 mb-3">
+        <label class="form-label">{{ "form-labels.client" | translate }}</label>
+        <ng-select
+          [items]="clients"
+          bindLabel="name"
+          bindValue="id"
+          formControlName="clientId"
+          [searchable]="true"
+          placeholder="{{ 'form-labels.choose-account' | translate }}"
+        ></ng-select>
+        <small
+          class="text-danger"
+          *ngIf="
+            documentForm.get('clientId')?.invalid &&
+            documentForm.get('clientId')?.touched
+          "
+        >
+          {{ "form-validations.required" | translate }}
+        </small>
+      </div>
+
+      <div class="col-12 mb-3">
+        <label class="form-label">{{
+          "form-labels.introduction" | translate
+        }}</label>
+        <textarea
+          class="form-control"
+          rows="2"
+          formControlName="introduction"
+        ></textarea>
+      </div>
+
+      <div class="col-12 mb-3">
+        <label class="form-label">{{
+          "form-labels.subject" | translate
+        }}</label>
+        <textarea
+          class="form-control"
+          rows="3"
+          formControlName="subject"
+        ></textarea>
+        <small
+          class="text-danger"
+          *ngIf="
+            documentForm.get('subject')?.invalid &&
+            documentForm.get('subject')?.touched
+          "
+        >
+          {{ "form-validations.required" | translate }}
+        </small>
+      </div>
+    </div>
+
+    <!-- Line Items -->
+    <form class="border line-form p-3">
+      <h5 class="mt-0">{{ "form-labels.document-lines" | translate }}</h5>
+      <div [formGroup]="lineForm" class="row mb-2">
+        <div class="col-12 mb-3">
+          <label class="form-label">{{
+            "form-labels.description" | translate
+          }}</label>
+          <textarea
+            class="form-control"
+            formControlName="description"
+          ></textarea>
+          <small
+            class="text-danger"
+            *ngIf="
+              lineForm.get('description')?.invalid &&
+              lineForm.get('description')?.touched
+            "
+          >
+            {{ "form-validations.required" | translate }}
+          </small>
+        </div>
+
+        <div class="col-3 mb-3">
+          <label class="form-label">{{
+            "form-labels.quantity" | translate
+          }}</label>
+          <input
+            type="number"
+            class="form-control"
+            formControlName="quantity"
+          />
+          <small
+            class="text-danger"
+            *ngIf="
+              lineForm.get('quantity')?.invalid &&
+              lineForm.get('quantity')?.touched
+            "
+          >
+            {{ "form-validations.required" | translate }}
+          </small>
+        </div>
+
+        <div class="col-3 mb-3">
+          <label class="form-label">{{
+            "form-labels.unit-price" | translate
+          }}</label>
+          <input
+            type="number"
+            class="form-control"
+            formControlName="unitPrice"
+          />
+          <small
+            class="text-danger"
+            *ngIf="
+              lineForm.get('unitPrice')?.invalid &&
+              lineForm.get('unitPrice')?.touched
+            "
+          >
+            {{ "form-validations.required" | translate }}
+          </small>
+        </div>
+
+        <div class="col-3 mb-3">
+          <label class="form-label">{{
+            "form-labels.discount" | translate
+          }}</label>
+          <input
+            type="number"
+            class="form-control"
+            formControlName="discount"
+          />
+          <small
+            class="text-danger"
+            *ngIf="
+              lineForm.get('discount')?.invalid &&
+              lineForm.get('discount')?.touched
+            "
+          >
+            {{ "form-validations.required" | translate }}
+          </small>
+        </div>
+
+        <div class="col-3 mb-3">
+          <label class="form-label">{{
+            "form-labels.tax-percent" | translate
+          }}</label>
+          <ng-select
+            [items]="taxis"
+            bindLabel="taxName"
+            bindValue="id"
+            formControlName="taxId"
+            [searchable]="true"
+            placeholder="{{ 'form-labels.choose-tax' | translate }}"
+          >
+          </ng-select>
+          <small
+            class="text-danger"
+            *ngIf="
+              lineForm.get('taxId')?.invalid && lineForm.get('taxId')?.touched
+            "
+          >
+            {{ "form-validations.required" | translate }}
+          </small>
+        </div>
+      </div>
+      <button
+        type="submit"
+        class="btn btn-dark"
+        (click)="addLine(lineForm.value)"
+        [disabled]="lineForm.invalid"
+      >
+        + {{ "form-labels.add-line" | translate }}
+      </button>
+
+      <div class="mt-4" *ngIf="lineItems.length > 0">
+        <table class="table table-bordered table-sm">
+          <thead>
+            <tr>
+              <th>
+                <small>{{ "form-labels.description" | translate }}</small>
+              </th>
+              <th>
+                <small>{{ "form-labels.quantity" | translate }}</small>
+              </th>
+              <th>
+                <small>{{ "form-labels.unit-price" | translate }}</small>
+              </th>
+              <th>
+                <small>{{ "form-labels.discount" | translate }}</small>
+              </th>
+              <th>
+                <small>{{ "form-labels.tax-percent" | translate }}</small>
+              </th>
+              <th>
+                <small>{{ "Operations" | translate }}</small>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let line of lineItems; let i = index">
+              <td>
+                {{ line.description }}
+              </td>
+              <td>
+                {{ line.quantity }}
+              </td>
+              <td>
+                {{ line.unitPrice }}
+              </td>
+              <td>
+                {{ line.discount }}
+              </td>
+              <td>
+                {{ getTaxPercent(line.taxId) }}
+              </td>
+              <td>
+                <button
+                  class="btn btn-sm btn-primary mx-2"
+                  title="{{ 'form-actions.edit' | translate }}"
+                  (click)="editLine(i, line)"
+                >
+                  <i class="fa fa-edit"></i>
+                </button>
+                <button
+                  class="btn btn-sm btn-danger"
+                  title="{{ 'form-actions.delete' | translate }}"
+                  (click)="removeLine(i)"
+                >
+                  <i class="fa fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </form>
+
+    <div class="d-flex gap-2 mt-4">
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="documentForm.invalid || lineItems.length === 0"
+      >
+        {{ "form-actions.save" | translate }}
+      </button>
+    </div>
+  </form>
+</div>

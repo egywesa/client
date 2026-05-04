@@ -1,0 +1,239 @@
+﻿<div class="block-header">
+  <div class="row">
+    <div class="col-lg-6 col-md-8 col-sm-12">
+      <h2>
+        <a
+          href="javascript:void(0);"
+          class="btn btn-xs btn-link btn-toggle-fullwidth"
+          ><i class="fa fa-arrow-right"></i></a
+        >{{ "home" | translate }}
+      </h2>
+      <ul class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a routerLink="/dashboard"><i class="icon-home"></i></a>
+        </li>
+        <li class="breadcrumb-item active">{{ "Invoices" | translate }}</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="row clearfix">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="header row">
+        <div class="col-lg-4">
+          <h2>{{ "Invoices Table" | translate }}</h2>
+          <br />
+          <a
+            class="btn btn-info ml-1"
+            routerLink="/dashboard/invoices/add-or-edit"
+            ><i class="fa fa-plus"></i> {{ "Add New" | translate }}</a
+          >
+        </div>
+
+        <div class="col-lg-7">
+        <br><br>
+          <div class="row">
+            <a  *ngIf="useremail=='Info@kaca.com.sa'" class="btn btn-primary ml-1" (click)="exportSelectedInvoices(0)"
+              ><i class="fa fa-print"></i>
+              {{ "export invoices with products" | translate }} Excel</a
+            >
+            <a class="btn btn-primary ml-1" (click)="exportSelectedInvoices(1)"
+              ><i class="fa fa-print"></i> {{ "export" | translate }} Excel</a
+            >
+            <a class="btn btn-warning" (click)="onImportBtnClick()"
+              ><i class="fa fa-imdb"></i> {{ "import" | translate }}</a
+            >
+            <input
+              hidden
+              type="file"
+              id="importInput"
+              (change)="onImportChange($event)"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="header row">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-1">
+          <div class="form-group">
+            <label>من:</label>
+            <input
+              type="date"
+              class="form-control"
+              [(ngModel)]="searchedDate1"
+            />
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-1">
+          <div class="form-group">
+            <label>الى:</label>
+            <input
+              type="date"
+              class="form-control"
+              [(ngModel)]="searchedDate2"
+            />
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-1">
+          <div class="form-group d-flex flex-column">
+            <label style="visibility: hidden">search</label>
+            <button class="btn btn-primary" (click)="submitFilter()">
+              بحث
+            </button>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-1">
+          <div class="form-group d-flex flex-column">
+            <label style="visibility: hidden">clear</label>
+            <button class="btn btn-primary" (click)="clearFilter()">
+              clear
+            </button>
+          </div>
+        </div>
+        <div *ngIf="useremail=='Info@kaca.com.sa'" class="col-12 col-sm-6 col-md-4 col-lg-3">
+
+          <div class="form-group d-flex flex-column">
+            <label style="visibility: hidden;">excel</label>
+            <button class="btn btn-primary" (click)="Exportbydate(0)">
+              <i class="fa fa-print"></i>
+              {{ "export invoices with products" | translate }} Excel
+            </button>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-2">
+          <div class="form-group d-flex flex-column">
+            <label style="visibility: hidden;">excel</label>
+           <button 
+  class="btn btn-success btn-sm" 
+  (click)="exportInvoicesByDateRange(0)" 
+  [disabled]="!searchedDate1 || !searchedDate2"
+  title="تصدير الفواتير بين التواريخ حسب المنتج">
+  <i class="fas fa-list"></i> {{ "export by product" | translate }} Excel
+</button>
+
+<!-- زر تصدير حسب الفاتورة -->
+<button 
+  class="btn btn-primary btn-sm" 
+  (click)="exportInvoicesByDateRange(1)" 
+  [disabled]="!searchedDate1 || !searchedDate2"
+  title="تصدير الفواتير بين التواريخ حسب الفاتورة">
+  <i class="fas fa-file-invoice"></i> {{ "export" | translate }} Excel
+</button>
+          </div>
+        </div>
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <div class="form-group d-flex flex-column">
+            <label style="visibility: hidden">download</label>
+            <button class="btn btn-primary" (click)="downloadbydate()">
+              <i
+                class="fa fa-download"
+                style="color: white; font-size: 14px"
+              ></i>
+              {{ "download" | translate }}
+              Download Zip
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="body">
+        <div class="row">
+          <div class="col-12 col-md-3">
+            <div class="form-group">
+              <label>{{ "search" | translate }}</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="{{ 'search' | translate }}"
+                (ngModelChange)="submitFilter()"
+                [(ngModel)]="searchId"
+              />
+            </div>
+          </div>
+          <div class="col-12 col-md-3">
+            <div class="form-group">
+              <label>{{ "choose-client" | translate }}</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="{{ 'choose-client' | translate }}"
+                (ngModelChange)="submitFilter()"
+                [(ngModel)]="searchClientId"
+              />
+            </div>
+          </div>
+          <div class="col-12 col-md-2">
+            <div class="form-group">
+              <label>{{ "choose-invoice-type" | translate }}</label>
+              <select
+                class="form-control"
+                (ngModelChange)="submitFilter()"
+                [(ngModel)]="searchInvoiceType"
+              >
+                <option disabled selected [value]="null">
+                  {{ "choose-invoice-type" | translate }}
+                </option>
+                <option value="">{{ "all-invoices" | translate }}</option>
+                <option value="1">{{ "Invoice Tax" | translate }}</option>
+                <option value="2">{{ "Simple Invoice" | translate }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-12 col-md-2">
+            <div class="form-group">
+              <label>{{ "choose-type" | translate }}</label>
+              <select
+                class="form-control"
+                (ngModelChange)="submitFilter()"
+                [(ngModel)]="searchInvoiceFatora"
+              >
+                <option disabled selected [value]="null">
+                  {{ "choose-type" | translate }}
+                </option>
+                <option value="">{{ "all-invoices" | translate }}</option>
+                <option value="false">{{ "invoicetype" | translate }}</option>
+                <option value="true">{{ "isdraft" | translate }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-12 col-md-2">
+            <div class="form-group">
+              <label>{{ "total" | translate }}</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="{{ 'total' | translate }}"
+                (ngModelChange)="submitFilter()"
+                [(ngModel)]="searchTotal"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table
+            datatable
+            [dtOptions]="dtOptions"
+            class="table table-hover dataTable table-custom"
+          >
+            <thead class="thead-light">
+              <tr>
+                <th></th>
+                <th>{{ "Invoice Number" | translate }}</th>
+                <th>{{ "Invoice Date" | translate }}</th>
+                <th>{{ "Invoice Client" | translate }}</th>
+                <th>{{ "InvoiceType" | translate }}</th>
+
+                <th>{{ "Total" | translate }}</th>
+                <th>{{ "TotalWithVat" | translate }}</th>
+                <th>{{ "Operations notification" | translate }}</th>
+                <th>{{ "Operations" | translate }}</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

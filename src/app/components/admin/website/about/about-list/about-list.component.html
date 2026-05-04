@@ -1,0 +1,59 @@
+<div class="block-header">
+    <div class="row">
+      <div class="col-lg-6 col-md-8 col-sm-12">
+        <h2><a href="javascript:void(0);" class="btn btn-xs btn-link btn-toggle-fullwidth"><i class="fa fa-arrow-right"></i></a>{{'home'|translate}}</h2>
+        <ul class="breadcrumb">
+          <li class="breadcrumb-item"><a routerLink="/dashboard"><i class="icon-home"></i></a></li>
+          <li class="breadcrumb-item active">{{ 'abouts.title'|translate }}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="row clearfix">
+    <div class="col-lg-12">
+      <div class="card">
+        <div class="header">
+          <h2>{{'abouts.table'|translate}}</h2>
+          <br/>
+          <a class="btn btn-info" routerLink="/dashboard/whoweare/add-or-edit"><i class="fa fa-plus"></i> {{'Add New'|translate}}</a>
+        </div>
+        <div class="body">
+          <div class="table-responsive" *ngIf="aboutlist?.length > 0">
+
+            <table datatable  class="table table-hover dataTable table-custom">
+              <thead class="thead-light">
+                <tr>
+                  <th>#</th>
+                  <th>{{'Image'|translate}}</th>
+                  <th>{{'title'|translate}}</th>
+                  <th>{{'paragraph1'|translate}}</th>
+                  <th>{{'paragraph2'|translate}}</th>
+                  <th>{{'paragraph3'|translate}}</th>
+                  <th>{{'paragraph4'|translate}}</th>
+                  <th>Action</th>
+              </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let about of aboutlist; let i = index">
+                  <td>{{ i + 1 }}</td>
+                  <td><img src="{{ baseUrl + about.image }}" style="width: 60px; height: 60px;" /></td>
+                  <td>{{ about.title }}</td>
+                  <td >{{ about.paragraph1}}  
+                  </td>
+                  <td>{{ about.paragraph2 }}</td>
+                  <td>{{ about.paragraph3 }}</td>
+                  <td>{{ about.paragraph4 }}</td>
+                  <td>
+                    <a class="btn btn-sm btn-default" routerLink="/dashboard/whoweare/add-or-edit/{{about.id}}"><i class="icon-pencil"></i></a>
+                    <a class="btn btn-sm btn-default" (click)="removeabout(about.id)"><i class="icon-trash"></i></a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <h2 *ngIf="aboutlist?.length == 0">{{'There is no data'|translate}}</h2>
+        </div>
+      </div>
+    </div>
+  </div>
