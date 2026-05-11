@@ -127,8 +127,10 @@ export class ClientListComponent implements OnInit {
         },
         {
           data: 'administratorName',
-          render: function (data) {
-            return data?.length > 20 ? data.slice(0, 20) + '...' : data;
+          defaultContent: '',
+          render: function (data, type, row: any) {
+            const value = data || row.administratorNameAr || row.administratorNameEn || '';
+            return value?.length > 20 ? value.slice(0, 20) + '...' : value;
           },
         },
         { data: 'clientNum' },

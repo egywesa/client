@@ -56,8 +56,21 @@ console.log(this.profile.allowZatacForm);
   initializeClientToEdit(id: number) {
     if (id > 0) {
       this.clientService.getClient(id).subscribe(client => {
-        console.log(client)
-        this.clientForm.patchValue(client);
+        console.log('Edit client response:', client);
+
+        const mappedClient = {
+          ...client,
+          nameAr: client.nameAr ?? client.nameAr ?? null,
+          nameEn: client.nameEn ?? client.nameEn ?? null,
+          administratorNameAr: client.administratorNameAr ?? client.administratorNameAr ?? null,
+          administratorNameEn: client.administratorNameEn ?? client.administratorNameEn ?? null,
+          addressAr: client.addressAr ?? client.addressAr ?? null,
+          addressEn: client.addressEn ?? client.addressEn ?? null,
+          countryId: client.companyId ?? client.companyId ?? null,
+          
+        };
+
+        this.clientForm.patchValue(mappedClient);
         this.client = client;
       });
     }

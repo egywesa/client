@@ -5,6 +5,7 @@ import {IClient, IClientEditOrCreate} from "../../../shared/models/client";
 import {DataTable} from "../../../shared/models/dataTable";
 import {Invoice} from "../../../shared/models/invoice";
 import {retry} from "rxjs";
+import {map} from "rxjs/operators";
 import {IAdditionalContact} from "../../../shared/models/additional-contact";
 
 @Injectable({
@@ -67,7 +68,24 @@ export class ClientService {
   }
 
   getClient(id: number) {
-    return this.http.get<IClientEditOrCreate>(this.baseUrl + 'api/Clients/'+id);
+    return this.http.get<any>(this.baseUrl + 'api/Clients/'+id).pipe(
+      map((client: any) => ({
+        ...client,
+        nameAr: client.nameAr ?? client.name ?? null,
+        nameEn: client.nameEn ?? client.name ?? null,
+        administratorNameAr: client.administratorNameAr ?? client.administratorName ?? null,
+        administratorNameEn: client.administratorNameEn ?? client.administratorName ?? null,
+        addressAr: client.addressAr ?? client.address ?? null,
+        addressEn: client.addressEn ?? client.address ?? null,
+        countryId: client.countryId ?? client.countryID ?? null,
+        cityId: client.cityId ?? client.cityID ?? null,
+        countrySubentity: client.countrySubentity ?? client.countrySubEntity ?? null,
+        plotIdentification: client.plotIdentification ?? null,
+        postalZone: client.postalZone ?? null,
+        streetName: client.streetName ?? null,
+        citySubdivisionName: client.citySubdivisionName ?? null,
+      }))
+    );
   }
 
   addNew(values: any) {
