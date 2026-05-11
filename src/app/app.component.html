@@ -7,7 +7,7 @@
 router.url != '/#contact' && router.url != '/#testomonia' && router.url != '/#price' && router.url != '/#subscription' && router.url != '/#about' &&
   !router.url.includes('/dashboard/invoices/show/') && !router.url.includes('/dashboard/invoices/print/') &&
   !router.url.includes('/dashboard/invoice-notifications/show/') && !router.url.includes('/dashboard/invoices/showdraft/') && !router.url.includes('/dashboard/invoices/printdraft/')
-  &&!router.url.includes('/dashboard/invoices/download/')&&!router.url.includes('/dashboard/invoice-notifications/download/')">
+  &&!router.url.includes('/dashboard/invoices/download/')&&!router.url.includes('/dashboard/invoice-notifications/download/')&& router.url != '/contract-templates'">
   <div id="wrapper">
 
     <app-header></app-header>

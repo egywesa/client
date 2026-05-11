@@ -1,0 +1,303 @@
+<!-- Gallery View -->
+<section class="gallery-view" *ngIf="!isEditorOpen">
+  <div class="gallery-container">
+    <div class="gallery-header">
+      <h1>نموذج العقد</h1>
+      <p>اختر العميل وتاريخ الخطاب، ثم افتح النموذج لتعبئته أو تصديره</p>
+    </div>
+
+    <div class="contract-form-panel">
+      <div class="form-row">
+        <div class="form-control">
+          <label>اسم العميل</label>
+
+          <select [(ngModel)]="selectedClientId">
+            <option [ngValue]="null">اختر العميل</option>
+
+            <option *ngFor="let client of clients" [ngValue]="client.id">
+              {{ client.name }}
+            </option>
+          </select>
+
+          <small *ngIf="isClientsLoading">جاري تحميل العملاء...</small>
+
+          <small *ngIf="!isClientsLoading && clients.length === 0">
+            لا يوجد عملاء متاحون أو تعذر تحميلهم
+          </small>
+        </div>
+
+        <div class="form-control">
+          <label>تاريخ الخطاب</label>
+
+          <input type="date" [(ngModel)]="contractDate" />
+        </div>
+      </div>
+    </div>
+
+    <!-- First Template Only -->
+    <div class="gallery-grid" *ngIf="contractTemplates[0] as template">
+      <div
+        class="tpl-card active"
+        (click)="openDoc(template.id)"
+      >
+        <div class="card-preview">
+          <div class="badge-avail">متوفر</div>
+
+          <div class="mini-doc">
+            <div class="mini-lh">
+              <div class="mini-lh-bar"></div>
+            </div>
+
+            <div class="mini-divider"></div>
+
+            <div class="mini-row">
+              <div class="mc mc-dk"></div>
+              <div class="mc mc-dk"></div>
+            </div>
+
+            <div class="mini-row">
+              <div class="mc mc-yw"></div>
+              <div class="mc mc-yw"></div>
+            </div>
+
+            <div class="mini-row">
+              <div class="mc mc-lt"></div>
+              <div class="mc mc-lt"></div>
+            </div>
+
+            <div class="mini-row">
+              <div class="mc mc-dk"></div>
+              <div class="mc mc-dk"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="card-name">{{ template.title }}</div>
+
+          <div class="card-subtitle">{{ template.subtitle }}</div>
+
+          <div class="card-tags">
+            <span
+              class="tag"
+              *ngFor="let tag of template.tags"
+              [class.tag-green]="tag === 'VAT' || tag === 'ZAKAT' || tag === 'AUDIT' || tag === 'AUP'"
+              [class.tag-blue]="tag === 'ع / EN'"
+            >
+              {{ tag }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Editor View -->
+<section class="editor-view print-root" *ngIf="isEditorOpen">
+  <div class="contract-toolbar no-print">
+    <div class="toolbar-info">
+      <h2>{{ selectedTemplate.title }}</h2>
+
+      <p>
+        العميل:
+        <b>{{ clientName }}</b>
+        —
+        التاريخ:
+        <b>{{ contractDate }}</b>
+      </p>
+    </div>
+
+    <div class="contract-toolbar-actions">
+      <button
+        type="button"
+        class="btn-light"
+        (click)="showGallery()"
+        [disabled]="isExporting"
+      >
+        رجوع
+      </button>
+
+      <button
+        type="button"
+        class="btn-outline"
+        (click)="handleSave()"
+        [disabled]="isExporting"
+      >
+        حفظ البيانات
+      </button>
+
+      <button
+        type="button"
+        class="btn-outline"
+        (click)="exportContractAsImages()"
+        [disabled]="isExporting"
+      >
+        حفظ صور
+      </button>
+
+      <button
+        type="button"
+        class="btn-primary"
+        (click)="exportContractAsPdf()"
+        [disabled]="isExporting"
+      >
+        حفظ PDF
+      </button>
+    </div>
+  </div>
+
+  <div class="exporting-note" *ngIf="isExporting">
+    جاري تجهيز العقد...
+  </div>
+
+  <div class="editor-wrap">
+    <div
+      class="doc-page"
+      *ngFor="let page of selectedTemplate.pages; let pageIndex = index"
+    >
+      <div class="brand-header" *ngIf="pageIndex === 0">
+        <div class="brand-mark">
+          <div class="brand-mark-box">
+            <span class="brand-k">K</span>
+            <span class="brand-a">A</span>
+          </div>
+        </div>
+
+        <div class="brand-copy">
+          <div class="brand-ar">الشلاحي محاسبون قانونيون</div>
+          <div class="brand-en">AlShalahi Chartered Accountants</div>
+        </div>
+      </div>
+
+      <div
+        class="doc-body"
+        [class.doc-body-with-top-space]="pageIndex !== 0"
+      >
+        <div class="ref-line" *ngIf="pageIndex === 0">
+          <span>
+            Ref:-
+            <span class="f" contenteditable="true" spellcheck="false">202</span>
+          </span>
+          <span></span>
+        </div>
+
+        <table class="bi" *ngIf="pageIndex === 0">
+          <tr>
+            <td class="en">
+              Date:
+              <span class="f" contenteditable="true" spellcheck="false">
+                {{ contractDate }}
+              </span>
+              &nbsp;&nbsp; Corresponding to:
+              <span class="f" contenteditable="true" spellcheck="false">
+                ………………
+              </span>
+            </td>
+
+            <td class="ar">
+              التاريخ:
+              <span class="f" contenteditable="true" spellcheck="false">
+                {{ contractDate }}
+              </span>
+              &nbsp;&nbsp; الموافق:
+              <span class="f" contenteditable="true" spellcheck="false">
+                ………………
+              </span>
+            </td>
+          </tr>
+
+          <tr class="r-conf">
+            <td class="en">Private and confidential</td>
+            <td class="ar">خاص وسري</td>
+          </tr>
+
+          <tr>
+            <td class="en">
+              <b>Mr / </b>
+              <span class="f" contenteditable="true" spellcheck="false">
+                {{ clientName }}
+              </span>
+              <br />
+              <b>General Manager</b>
+              <br />
+              <span class="f" contenteditable="true" spellcheck="false">
+                {{ clientName }}
+              </span>
+              <br />
+              Riyadh
+              <br />
+              Kingdom of Saudi Arabia
+            </td>
+
+            <td class="ar">
+              <b>السيد /</b>
+              <span class="f" contenteditable="true" spellcheck="false">
+                {{ clientName }}
+              </span>
+              <b>الموقر</b>
+              <br />
+              المدير العام
+              <br />
+              <span class="f" contenteditable="true" spellcheck="false">
+                {{ clientName }}
+              </span>
+              <br />
+              الرياض
+              <br />
+              المملكة العربية السعودية
+            </td>
+          </tr>
+
+          <tr>
+            <td class="en">&nbsp;</td>
+            <td class="ar">&nbsp;</td>
+          </tr>
+
+          <tr>
+            <td class="en"><b>Dear Sir,</b></td>
+            <td class="ar"><b>بعد التحية والاحترام،</b></td>
+          </tr>
+        </table>
+
+        <ng-container *ngFor="let row of page.rows">
+          <table class="bi" *ngIf="row.en || row.ar">
+            <tr
+              [class.r-head]="row.head"
+              [class.r-title]="row.title"
+            >
+              <td
+                class="en"
+                contenteditable="true"
+                spellcheck="false"
+                [innerHTML]="applyVariables(row.en)"
+              ></td>
+
+              <td
+                class="ar"
+                contenteditable="true"
+                spellcheck="false"
+                [innerHTML]="applyVariables(row.ar)"
+              ></td>
+            </tr>
+          </table>
+
+          <div
+            class="full-row"
+            *ngIf="row.full"
+            contenteditable="true"
+            spellcheck="false"
+            [innerHTML]="applyVariables(row.full)"
+          ></div>
+        </ng-container>
+      </div>
+
+      <div class="page-footer-strip">
+        <div class="footer-email">info@kaca.com.sa</div>
+        <div class="footer-info">
+          طريق أبو بكر الصديق، التعاون | ترخيص رقم 538 | ص.ب 84287 الرياض 11671 | هاتف: +966 11 297 0011
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

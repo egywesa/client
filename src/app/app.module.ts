@@ -123,6 +123,7 @@ import { EntryListComponent } from './components/accounts/manual-entry/entry-lis
 import { DocumentsComponent } from './components/accounts/documents/documents.component';
 import { AddDocumentComponent } from './components/accounts/documents/add-document/add-document.component';
 import { DocumentListComponent } from './components/accounts/documents/document-list/document-list.component';
+import { ContractTemplatesComponent } from './contract-templates/contract-templates.component';
 
 @NgModule({
   declarations: [
@@ -238,6 +239,7 @@ import { DocumentListComponent } from './components/accounts/documents/document-
     DocumentsComponent,
     AddDocumentComponent,
     DocumentListComponent,
+    ContractTemplatesComponent,
   ],
   imports: [
     BrowserModule,
