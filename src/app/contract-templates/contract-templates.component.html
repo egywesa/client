@@ -1,91 +1,137 @@
-<!-- Gallery View -->
+<!-- ═══════════════════════════════════════════
+     Gallery View
+═══════════════════════════════════════════ -->
 <section class="gallery-view" *ngIf="!isEditorOpen">
   <div class="gallery-container">
+
     <div class="gallery-header">
-      <h1>نموذج العقد</h1>
-      <p>اختر العميل وتاريخ الخطاب، ثم افتح النموذج لتعبئته أو تصديره</p>
+      <h1>نماذج العقود والخطابات</h1>
+      <p>اختر نموذجاً لعرضه وتعبئة بياناته</p>
     </div>
 
-    <div class="contract-form-panel">
-      <div class="form-row">
-        <div class="form-control">
-          <label>اسم العميل</label>
+    <div class="contract-filter-panel">
+      <div class="contract-filter-grid">
 
-          <select [(ngModel)]="selectedClientId">
-            <option [ngValue]="null">اختر العميل</option>
-
-            <option *ngFor="let client of clients" [ngValue]="client.id">
-              {{ client.name }}
-            </option>
-          </select>
-
-          <small *ngIf="isClientsLoading">جاري تحميل العملاء...</small>
-
-          <small *ngIf="!isClientsLoading && clients.length === 0">
-            لا يوجد عملاء متاحون أو تعذر تحميلهم
-          </small>
+        <div class="contract-filter-field client-field">
+          <div class="client-dd-wrap" [class.dd-open]="isClientDropdownOpen">
+            <div class="dd-trigger" (click)="toggleClientDropdown()">
+              <span class="dd-icon-user">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                </svg>
+              </span>
+              <span class="dd-label" [class.dd-placeholder]="!selectedClientId">{{ selectedClient?.name || 'اختر العميل' }}</span>
+              <span class="dd-chevron">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </span>
+            </div>
+            <div class="dd-panel" *ngIf="isClientDropdownOpen">
+              <div class="dd-search-wrap">
+                <svg class="dd-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <input class="dd-search-input" [(ngModel)]="clientSearchTerm" [ngModelOptions]="{standalone: true}"
+                  placeholder="ابحث عن عميل..." (click)="$event.stopPropagation()"/>
+              </div>
+              <div class="dd-list">
+                <div class="dd-item" *ngFor="let client of filteredClients"
+                  [class.dd-selected]="client.id === selectedClientId" (click)="selectClient(client)">
+                  <span class="dd-item-dot"></span>
+                  <span class="dd-item-label">{{ client.name }}</span>
+                  <svg *ngIf="client.id === selectedClientId" class="dd-check" width="14" height="14"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                </div>
+                <div class="dd-empty" *ngIf="filteredClients.length === 0">لا توجد نتائج</div>
+              </div>
+            </div>
+          </div>
+          <small class="filter-hint" *ngIf="isClientsLoading">جاري تحميل العملاء...</small>
         </div>
 
-        <div class="form-control">
-          <label>تاريخ الخطاب</label>
-
-          <input type="date" [(ngModel)]="contractDate" />
+        <div class="contract-filter-field date-field">
+          <input class="contract-filter-input" type="date" [(ngModel)]="contractDate" aria-label="تاريخ الخطاب"/>
         </div>
+
       </div>
     </div>
 
-    <!-- First Template Only -->
-    <div class="gallery-grid" *ngIf="contractTemplates[0] as template">
-      <div
-        class="tpl-card active"
-        (click)="openDoc(template.id)"
-      >
+    <div class="gallery-grid">
+      <div class="tpl-card active" (click)="openDoc('vat')">
         <div class="card-preview">
-          <div class="badge-avail">متوفر</div>
-
-          <div class="mini-doc">
-            <div class="mini-lh">
-              <div class="mini-lh-bar"></div>
-            </div>
-
-            <div class="mini-divider"></div>
-
-            <div class="mini-row">
-              <div class="mc mc-dk"></div>
-              <div class="mc mc-dk"></div>
-            </div>
-
-            <div class="mini-row">
-              <div class="mc mc-yw"></div>
-              <div class="mc mc-yw"></div>
-            </div>
-
-            <div class="mini-row">
-              <div class="mc mc-lt"></div>
-              <div class="mc mc-lt"></div>
-            </div>
-
-            <div class="mini-row">
-              <div class="mc mc-dk"></div>
-              <div class="mc mc-dk"></div>
-            </div>
+          <img src="../../assets/images/contract/Screenshot 2026-05-13 131711.png" alt="VAT" class="card-img"/>
+          <div class="card-img-overlay"></div>
+          <button class="card-open-btn" tabindex="-1">فتح النموذج</button>
+        </div>
+        <div class="card-body">
+          <div class="card-name">خطاب تعيين — ضريبة القيمة المضافة</div>
+          <div class="card-tags">
+            <span class="badge-avail-inline">متوفر</span>
+            <span class="tag tag-amber">VAT</span>
+            <span class="badge-pages"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>6 صفحات</span>
           </div>
         </div>
-
+      </div>
+      <div class="tpl-card active" (click)="openDoc('zakat')">
+        <div class="card-preview">
+          <img src="../../assets/images/contract/Screenshot 2026-05-13 131438.png" alt="Zakat" class="card-img"/>
+          <div class="card-img-overlay"></div>
+          <button class="card-open-btn" tabindex="-1">فتح النموذج</button>
+        </div>
         <div class="card-body">
-          <div class="card-name">{{ template.title }}</div>
-
-          <div class="card-subtitle">{{ template.subtitle }}</div>
-
+          <div class="card-name">خطاب تعيين — إقرار زكوي</div>
           <div class="card-tags">
-            <span
-              class="tag"
-              *ngFor="let tag of template.tags"
-              [class.tag-green]="tag === 'VAT' || tag === 'ZAKAT' || tag === 'AUDIT' || tag === 'AUP'"
-              [class.tag-blue]="tag === 'ع / EN'"
-            >
-              {{ tag }}
-            </span>
+            <span class="badge-avail-inline">متوفر</span>
+            <span class="tag tag-amber">زكاة</span>
+            <span class="badge-pages"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>4 صفحات</span>
+          </div>
+        </div>
+      </div>
+      <div class="tpl-card active" (click)="openDoc('income-tax')">
+        <div class="card-preview">
+          <img src="../../assets/images/contract/Screenshot 2026-05-13 131844.png" alt="Income Tax" class="card-img"/>
+          <div class="card-img-overlay"></div>
+          <button class="card-open-btn" tabindex="-1">فتح النموذج</button>
+        </div>
+        <div class="card-body">
+          <div class="card-name">خطاب تعيين — ضريبة الدخل</div>
+          <div class="card-tags">
+            <span class="badge-avail-inline">متوفر</span>
+            <span class="tag tag-amber">دخل</span>
+            <span class="badge-pages"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>4 صفحات</span>
+          </div>
+        </div>
+      </div>
+      <div class="tpl-card active" (click)="openDoc('audit')">
+        <div class="card-preview">
+          <img src="../../assets/images/contract/Screenshot 2026-05-13 132041.png" alt="Audit" class="card-img"/>
+          <div class="card-img-overlay"></div>
+          <button class="card-open-btn" tabindex="-1">فتح النموذج</button>
+        </div>
+        <div class="card-body">
+          <div class="card-name">خطاب تعيين — مراجعة القوائم المالية</div>
+          <div class="card-tags">
+            <span class="badge-avail-inline">متوفر</span>
+            <span class="tag tag-amber">مراجعة</span>
+            <span class="badge-pages"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>6 صفحات</span>
+          </div>
+        </div>
+      </div>
+      <div class="tpl-card active" (click)="openDoc('agreed-procedures')">
+        <div class="card-preview">
+          <img src="../../assets/images/contract/Screenshot 2026-05-13 132201.png" alt="AUP" class="card-img"/>
+          <div class="card-img-overlay"></div>
+          <button class="card-open-btn" tabindex="-1">فتح النموذج</button>
+        </div>
+        <div class="card-body">
+          <div class="card-name">خطاب ارتباط — إجراءات متفق عليها</div>
+          <div class="card-tags">
+            <span class="badge-avail-inline">متوفر</span>
+            <span class="tag tag-amber">AUP</span>
+            <span class="badge-pages"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>3 صفحات</span>
           </div>
         </div>
       </div>
@@ -93,211 +139,156 @@
   </div>
 </section>
 
-<!-- Editor View -->
+<!-- ═══════════════════════════════════════════
+     Editor View  — Word-accurate layout
+═══════════════════════════════════════════ -->
 <section class="editor-view print-root" *ngIf="isEditorOpen">
+
+  <!-- Toolbar (no-print) -->
   <div class="contract-toolbar no-print">
-    <div class="toolbar-info">
+    <div>
       <h2>{{ selectedTemplate.title }}</h2>
-
-      <p>
-        العميل:
-        <b>{{ clientName }}</b>
-        —
-        التاريخ:
-        <b>{{ contractDate }}</b>
-      </p>
+      <p>العميل: <b>{{ clientName }}</b> — التاريخ: <b>{{ contractDate }}</b></p>
     </div>
-
     <div class="contract-toolbar-actions">
-      <button
-        type="button"
-        class="btn-light"
-        (click)="showGallery()"
-        [disabled]="isExporting"
-      >
-        رجوع
-      </button>
-
-      <button
-        type="button"
-        class="btn-outline"
-        (click)="handleSave()"
-        [disabled]="isExporting"
-      >
-        حفظ البيانات
-      </button>
-
-      <button
-        type="button"
-        class="btn-outline"
-        (click)="exportContractAsImages()"
-        [disabled]="isExporting"
-      >
-        حفظ صور
-      </button>
-
-      <button
-        type="button"
-        class="btn-primary"
-        (click)="exportContractAsPdf()"
-        [disabled]="isExporting"
-      >
-        حفظ PDF
-      </button>
+      <button type="button" class="btn-light"   (click)="showGallery()"            [disabled]="isExporting">رجوع للنماذج</button>
+      <button type="button" class="btn-outline" (click)="handleSave()"             [disabled]="isExporting">حفظ البيانات</button>
+      <button type="button" class="btn-outline" (click)="exportContractAsImages()" [disabled]="isExporting">حفظ صور</button>
+      <button type="button" class="btn-primary" (click)="exportContractAsPdf()"    [disabled]="isExporting">حفظ PDF</button>
     </div>
   </div>
 
-  <div class="exporting-note" *ngIf="isExporting">
-    جاري تجهيز العقد...
-  </div>
+  <div class="exporting-note no-print" *ngIf="isExporting">جاري تجهيز العقد...</div>
 
   <div class="editor-wrap">
-    <div
-      class="doc-page"
-      *ngFor="let page of selectedTemplate.pages; let pageIndex = index"
-    >
-      <div class="brand-header" *ngIf="pageIndex === 0">
-        <div class="brand-mark">
-          <div class="brand-mark-box">
-            <span class="brand-k">K</span>
-            <span class="brand-a">A</span>
+
+    <div class="doc-page" [class.doc-page-first]="pageIndex === 0" [class.doc-page-inner]="pageIndex > 0" *ngFor="let page of selectedTemplate.pages; let pageIndex = index">
+      <!-- ══ HEADER  (every page) ══════════════════════════════════ -->
+      <div class="doc-brand" [class.doc-brand-first]="pageIndex === 0" [class.doc-brand-inner]="pageIndex > 0">
+        <img
+          *ngIf="pageIndex === 0"
+          class="brand-img brand-img-first"
+          src="../../assets/images/contract/logo-first-page.png"
+          alt="AlShalahy Chartered Accountants"
+        />
+        <img
+          *ngIf="pageIndex > 0"
+          class="brand-img brand-img-inner"
+          src="../../assets/images/contract/logo-inner-page.png"
+          alt="AlShalahy Chartered Accountants"
+        />
+      </div>
+
+      <img
+        class="doc-watermark"
+        src="../../assets/images/contract/watermark-page.png"
+        alt=""
+        aria-hidden="true"
+      />
+
+      <!-- ══ BODY ═══════════════════════════════════════════════════ -->
+      <div class="doc-body">
+
+        <!-- Page 1 only: Ref → Date/Moafiq → Addressee → Salutation -->
+        <ng-container *ngIf="pageIndex === 0">
+
+          <!-- Ref line -->
+          <p class="ref-p">
+            <span class="ref-label">Ref :-</span>
+            <span class="f" contenteditable="true" spellcheck="false">{{ refNumber }}</span>
+          </p>
+
+          <!-- Date / Moafiq — no border row -->
+          <div class="bi-row bi-row-noborder">
+            <div class="bi-en">
+              Date :&nbsp;<span class="f" contenteditable="true" spellcheck="false">{{ contractDate }}</span>
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              Corresponding to :&nbsp;<span class="f" contenteditable="true" spellcheck="false">…………………</span>
+            </div>
+            <div class="bi-ar">
+              التاريخ :&nbsp;<span class="f" contenteditable="true" spellcheck="false">{{ contractDateAr }}</span>
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              الموافق :&nbsp;<span class="f" contenteditable="true" spellcheck="false">…………………</span>
+            </div>
           </div>
-        </div>
 
-        <div class="brand-copy">
-          <div class="brand-ar">الشلاحي محاسبون قانونيون</div>
-          <div class="brand-en">AlShalahi Chartered Accountants</div>
-        </div>
-      </div>
+          <!-- Private and confidential -->
+          <div class="bi-row bi-row-bold">
+            <div class="bi-en">Private and confidential</div>
+            <div class="bi-ar">خاص وسري</div>
+          </div>
 
-      <div
-        class="doc-body"
-        [class.doc-body-with-top-space]="pageIndex !== 0"
-      >
-        <div class="ref-line" *ngIf="pageIndex === 0">
-          <span>
-            Ref:-
-            <span class="f" contenteditable="true" spellcheck="false">202</span>
-          </span>
-          <span></span>
-        </div>
-
-        <table class="bi" *ngIf="pageIndex === 0">
-          <tr>
-            <td class="en">
-              Date:
-              <span class="f" contenteditable="true" spellcheck="false">
-                {{ contractDate }}
-              </span>
-              &nbsp;&nbsp; Corresponding to:
-              <span class="f" contenteditable="true" spellcheck="false">
-                ………………
-              </span>
-            </td>
-
-            <td class="ar">
-              التاريخ:
-              <span class="f" contenteditable="true" spellcheck="false">
-                {{ contractDate }}
-              </span>
-              &nbsp;&nbsp; الموافق:
-              <span class="f" contenteditable="true" spellcheck="false">
-                ………………
-              </span>
-            </td>
-          </tr>
-
-          <tr class="r-conf">
-            <td class="en">Private and confidential</td>
-            <td class="ar">خاص وسري</td>
-          </tr>
-
-          <tr>
-            <td class="en">
-              <b>Mr / </b>
-              <span class="f" contenteditable="true" spellcheck="false">
-                {{ clientName }}
-              </span>
-              <br />
-              <b>General Manager</b>
-              <br />
-              <span class="f" contenteditable="true" spellcheck="false">
-                {{ clientName }}
-              </span>
-              <br />
-              Riyadh
-              <br />
+          <!-- Addressee -->
+          <div class="bi-row bi-row-addr">
+            <div class="bi-en">
+              <strong>Mr /&nbsp;</strong><span class="f" contenteditable="true" spellcheck="false">{{ clientName }}</span><br>
+              <strong>General Manager</strong><br>
+              <span class="f" contenteditable="true" spellcheck="false">{{ clientName }}</span><br>
+              Riyadh<br>
               Kingdom of Saudi Arabia
-            </td>
-
-            <td class="ar">
-              <b>السيد /</b>
-              <span class="f" contenteditable="true" spellcheck="false">
-                {{ clientName }}
-              </span>
-              <b>الموقر</b>
-              <br />
-              المدير العام
-              <br />
-              <span class="f" contenteditable="true" spellcheck="false">
-                {{ clientName }}
-              </span>
-              <br />
-              الرياض
-              <br />
+            </div>
+            <div class="bi-ar">
+              <strong>سعادة الاستاذ /&nbsp;</strong><span class="f" contenteditable="true" spellcheck="false">{{ clientName }}</span><strong>&nbsp;الموقر</strong><br>
+              المدير العام<br>
+              <span class="f" contenteditable="true" spellcheck="false">{{ clientName }}</span><br>
+              الرياض<br>
               المملكة العربية السعودية
-            </td>
-          </tr>
+            </div>
+          </div>
 
-          <tr>
-            <td class="en">&nbsp;</td>
-            <td class="ar">&nbsp;</td>
-          </tr>
+          <!-- Empty spacer row (blank row in Word) -->
+          <div class="bi-row bi-row-spacer">
+            <div class="bi-en">&nbsp;</div>
+            <div class="bi-ar">&nbsp;</div>
+          </div>
 
-          <tr>
-            <td class="en"><b>Dear Sir,</b></td>
-            <td class="ar"><b>بعد التحية والاحترام،</b></td>
-          </tr>
-        </table>
+          <!-- Dear Sir -->
+          <div class="bi-row bi-row-bold">
+            <div class="bi-en">Dear Sir,</div>
+            <div class="bi-ar">بعد التحية والاحترام،</div>
+          </div>
 
-        <ng-container *ngFor="let row of page.rows">
-          <table class="bi" *ngIf="row.en || row.ar">
-            <tr
-              [class.r-head]="row.head"
-              [class.r-title]="row.title"
-            >
-              <td
-                class="en"
-                contenteditable="true"
-                spellcheck="false"
-                [innerHTML]="applyVariables(row.en)"
-              ></td>
-
-              <td
-                class="ar"
-                contenteditable="true"
-                spellcheck="false"
-                [innerHTML]="applyVariables(row.ar)"
-              ></td>
-            </tr>
-          </table>
-
-          <div
-            class="full-row"
-            *ngIf="row.full"
-            contenteditable="true"
-            spellcheck="false"
-            [innerHTML]="applyVariables(row.full)"
-          ></div>
         </ng-container>
+        <!-- /page 1 extras -->
+
+        <!-- ── Template rows ─────────────────────────────────── -->
+        <ng-container *ngFor="let row of page.rows">
+
+          <!-- Bilingual row -->
+          <div class="bi-row"
+               *ngIf="row.en !== undefined || row.ar !== undefined"
+               [class.bi-row-head]="row.head"
+               [class.bi-row-title]="row.title">
+            <div class="bi-en"
+                 contenteditable="true" spellcheck="false"
+                 [innerHTML]="applyVariables(row.en || '', false)"></div>
+            <div class="bi-ar"
+                 contenteditable="true" spellcheck="false"
+                 [innerHTML]="applyVariables(row.ar || '', true)"></div>
+          </div>
+
+          <!-- Full-width Arabic row (AUP) -->
+          <div class="full-row"
+               *ngIf="row.full !== undefined"
+               contenteditable="true" spellcheck="false"
+               [innerHTML]="applyVariables(row.full || '', true)"></div>
+
+        </ng-container>
+
+      </div><!-- /doc-body -->
+
+      <!-- ══ FOOTER (every page) ════════════════════════════════════ -->
+      <div class="doc-footer">
+        <div class="footer-email">info@kaca.com.sa</div>
+       <div class="footer-info">
+  طريق أبو بكر الصديق، التعاون |
+  ترخيص رقم ٥٣٨ |
+  ص.ب ٨٤٢٨٧ الرياض ١١٦٧١ |
+  هاتف:
+  <span class="phone-ltr">+966 11 297 0011</span>
+</div>
       </div>
 
-      <div class="page-footer-strip">
-        <div class="footer-email">info@kaca.com.sa</div>
-        <div class="footer-info">
-          طريق أبو بكر الصديق، التعاون | ترخيص رقم 538 | ص.ب 84287 الرياض 11671 | هاتف: +966 11 297 0011
-        </div>
-      </div>
-    </div>
-  </div>
+    </div><!-- /doc-page -->
+  </div><!-- /editor-wrap -->
 </section>
