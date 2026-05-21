@@ -73,6 +73,7 @@ import { ReceiptVoucherComponent } from './components/accounts/receipt-voucher/r
 import { ManualEntryComponent } from './components/accounts/manual-entry/manual-entry.component';
 import { DocumentsComponent } from './components/accounts/documents/documents.component';
 import { ContractTemplatesComponent } from './contract-templates/contract-templates.component';
+import { BillClaimsComponent } from './components/accounts/bill-claims/bill-claims.component';
 
 const routes: Routes = [
   { path: '', component: LandingpageComponent },
@@ -633,6 +634,12 @@ const routes: Routes = [
   path: 'contract-templates',
   component: ContractTemplatesComponent,
   pathMatch: 'full'
+},
+{
+  path: 'bill-claims',
+  component: BillClaimsComponent,
+  pathMatch: 'full',
+  canActivate: [AuthGuard],
 }
     ],
   },

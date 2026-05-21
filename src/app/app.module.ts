@@ -124,6 +124,7 @@ import { DocumentsComponent } from './components/accounts/documents/documents.co
 import { AddDocumentComponent } from './components/accounts/documents/add-document/add-document.component';
 import { DocumentListComponent } from './components/accounts/documents/document-list/document-list.component';
 import { ContractTemplatesComponent } from './contract-templates/contract-templates.component';
+import { BillClaimsComponent } from './components/accounts/bill-claims/bill-claims.component';
 
 @NgModule({
   declarations: [
@@ -240,6 +241,7 @@ import { ContractTemplatesComponent } from './contract-templates/contract-templa
     AddDocumentComponent,
     DocumentListComponent,
     ContractTemplatesComponent,
+    BillClaimsComponent,
   ],
   imports: [
     BrowserModule,
