@@ -7,15 +7,357 @@ $border:      #c8d8e4;
 $text-main:   #1a1a1a;
 $text-sub:    #555;
 
-// ==================== SCREEN ====================
+// ==================== SCREEN DETAIL VIEW ====================
+// When claimPrintArea is inside .no-print (detail view), show all inv-* elements
 
 .no-print {
-  display: block;
+  #claimPrintArea {
+    display: block;
+    direction: rtl;
+    font-family: 'Cairo', 'Tahoma', 'Arial', sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+
+    .inv-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 6px 0 14px;
+      margin-bottom: 14px;
+      border-bottom: 3px solid $brand;
+    }
+
+    .inv-header-logo {
+      min-width: 120px;
+      display: flex;
+      align-items: center;
+    }
+
+    .company-logo {
+      max-height: 70px;
+      max-width: 160px;
+      object-fit: contain;
+    }
+
+    .inv-header-title {
+      flex: 1;
+      text-align: right;
+
+      h2 {
+        margin: 0 0 4px;
+        font-size: 26px;
+        font-weight: 800;
+        color: $text-main;
+      }
+
+      span {
+        display: block;
+        font-size: 11px;
+        color: $brand;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+      }
+    }
+
+    .inv-claim-info-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 14px;
+
+      td {
+        border: 1px solid $border;
+        padding: 8px 12px;
+        font-size: 13px;
+        text-align: center;
+      }
+
+      .claim-label {
+        background-color: $brand-light;
+        color: $brand-dark;
+        font-weight: 700;
+      }
+    }
+
+    .parties-section {
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      background: $brand;
+      color: #fff;
+      text-align: center;
+      padding: 8px 12px;
+      font-size: 14px;
+      font-weight: 700;
+      border-radius: 4px 4px 0 0;
+    }
+
+    .parties-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      padding: 12px;
+      border: 1px solid $border;
+      border-top: 0;
+      background: #fff;
+    }
+
+    .party-card {
+      border: 1px solid $border;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .party-card-title {
+      background: $brand-light;
+      color: $brand-dark;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 8px 10px;
+      border-bottom: 1px solid $border;
+    }
+
+    .party-compact-table {
+      width: 100%;
+      border-collapse: collapse;
+
+      td {
+        border: 1px solid #d9e3ea;
+        padding: 8px 10px;
+        font-size: 13px;
+        vertical-align: middle;
+      }
+
+      .party-label {
+        width: 35%;
+        background: #f4f8fb;
+        color: #5a6671;
+        font-weight: 700;
+        text-align: center;
+      }
+
+      .party-value {
+        text-align: center;
+        font-weight: 600;
+
+        .en-line {
+          direction: ltr;
+          font-family: 'Courier New', monospace;
+          font-size: 12px;
+          color: #666;
+          margin-top: 2px;
+        }
+      }
+
+      .ltr-value {
+        direction: ltr;
+        text-align: center;
+        font-family: 'Courier New', monospace;
+        font-size: 13px;
+        font-weight: 600;
+      }
+    }
+
+    .client-link-number {
+      grid-column: 1 / -1;
+      width: 48%;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 38% 62%;
+      border: 1px solid $border;
+      border-radius: 4px;
+      overflow: hidden;
+
+      .link-label {
+        background: #f4f8fb;
+        color: #4f5b66;
+        font-weight: 700;
+        text-align: center;
+        padding: 9px 10px;
+        font-size: 13px;
+        border-left: 1px solid $border;
+      }
+
+      .link-value {
+        direction: ltr;
+        font-family: 'Courier New', monospace;
+        font-weight: 700;
+        text-align: center;
+        padding: 9px 10px;
+        font-size: 13px;
+        color: #1f2d3d;
+      }
+    }
+
+    .inv-items-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+
+      thead th {
+        background-color: $brand;
+        color: #fff;
+        text-align: center;
+        padding: 10px 8px;
+        border: 1px solid $brand-dark;
+        font-size: 12px;
+        font-weight: 700;
+
+        small {
+          display: block;
+          font-size: 9px;
+          opacity: 0.85;
+          margin-top: 2px;
+        }
+      }
+
+      tbody tr:nth-child(even) td { background-color: #f7fbfd; }
+
+      tbody td {
+        border: 1px solid $border;
+        padding: 9px 8px;
+        text-align: center;
+        font-size: 13px;
+      }
+
+      .c-num-val { background-color: $brand; color: #fff; font-weight: 700; }
+      .c-name-val { font-weight: 600; }
+      .c-tot-val { font-weight: 700; color: $brand-dark; }
+
+      .c-num   { width: 6%; }
+      .c-name  { width: 22%; }
+      .c-qty   { width: 7%; }
+      .c-price { width: 10%; }
+      .c-disc  { width: 9%; }
+      .c-net   { width: 13%; }
+      .c-vp    { width: 8%; }
+      .c-va    { width: 11%; }
+      .c-tot   { width: 14%; }
+    }
+
+    .inv-bottom-row {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    .bank-side-block { flex: 1; min-width: 0; }
+
+    .inv-financial-block {
+      width: 38%;
+      max-width: 420px;
+      flex: 0 0 38%;
+    }
+
+    .inv-bank-title {
+      background-color: $brand-dark;
+      color: #fff;
+      text-align: center;
+      padding: 8px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 4px 4px 0 0;
+    }
+
+    .inv-bank-table {
+      width: 100%;
+      border-collapse: collapse;
+
+      thead th {
+        background-color: $brand-light;
+        color: $brand-dark;
+        text-align: center;
+        padding: 8px;
+        border: 1px solid $border;
+        font-size: 12px;
+        font-weight: 700;
+
+        small { display: block; font-size: 9px; opacity: 0.75; }
+      }
+
+      tbody td {
+        border: 1px solid $border;
+        padding: 9px 8px;
+        text-align: center;
+        font-size: 12px;
+        vertical-align: middle;
+      }
+
+      .iban-cell {
+        direction: ltr;
+        font-family: 'Courier New', monospace;
+        font-size: 11px;
+        color: $brand-dark;
+        font-weight: 600;
+      }
+    }
+
+    .inv-totals-table {
+      width: 100%;
+      border-collapse: collapse;
+
+      td { border: 1px solid $border; padding: 10px 12px; font-size: 12px; }
+
+      .tl {
+        text-align: center;
+        background-color: $brand-light;
+        font-weight: 700;
+        color: $brand-dark;
+        width: 66%;
+      }
+
+      .tv {
+        text-align: center;
+        font-weight: 700;
+        width: 34%;
+        direction: ltr;
+      }
+
+      .disc { color: #c0392b; }
+
+      tr.tgrand td {
+        background-color: $brand !important;
+        color: #fff !important;
+        font-size: 13px;
+        font-weight: 700;
+      }
+    }
+
+    .inv-notes {
+      background-color: #f9f9f9;
+      border: 1px solid $border;
+      border-right: 3px solid $brand;
+      padding: 8px 12px;
+      font-size: 12px;
+      margin-bottom: 12px;
+      color: $text-sub;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .inv-footer {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      font-size: 11px;
+      color: $text-sub;
+
+      .inv-sig-line {
+        width: 140px;
+        border-top: 1px solid #999;
+        margin-top: 20px;
+      }
+    }
+  }
 }
 
-.print-area {
-  display: none;
-}
+
 
 .card {
   border-radius: 8px;
@@ -633,7 +975,8 @@ $text-sub:    #555;
     font-size: 7.8pt !important;
   }
 }
-/* ===== Shared Client Number between parties ===== */
+
+// ==================== CLIENT LINK NUMBER ====================
 
 .print-area .parties-grid {
   position: relative !important;
@@ -683,7 +1026,8 @@ $text-sub:    #555;
     padding: 5px 7px !important;
   }
 }
-/* ===== ng-select style like form-control ===== */
+
+// ==================== NG-SELECT STYLES ====================
 
 ::ng-deep ng-select.discount-type-select .ng-select-container,
 ::ng-deep ng-select .ng-select-container {
@@ -715,4 +1059,72 @@ $text-sub:    #555;
 ::ng-deep ng-select.discount-type-select .ng-arrow-wrapper {
   padding-left: 10px;
   padding-right: 5px;
+}
+
+
+/* ==================== SHOW SAVED CLAIM ON SCREEN ==================== */
+.print-area.screen-preview {
+  display: block !important;
+  width: min(1120px, calc(100% - 32px)) !important;
+  margin: 0 auto 24px !important;
+  padding: 18px 22px !important;
+  background: #fff !important;
+  border: 1px solid #e0e7ee !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06) !important;
+}
+
+.detail-preview-note {
+  width: min(1120px, 100%);
+  margin: 0 auto 24px;
+  padding: 28px;
+  text-align: center;
+  color: #777;
+  background: #fff;
+  border: 1px solid #e0e7ee;
+  border-radius: 12px;
+}
+
+@media print {
+  .print-area.screen-preview {
+    width: 287mm !important;
+    max-width: 287mm !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+}
+
+
+/* ==================== SAVED CLAIMS SEARCH ==================== */
+
+.saved-claims-card {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.saved-claims-search {
+  padding: 18px 20px;
+  border-bottom: 1px solid #edf1f5;
+  background: #fbfdff;
+}
+
+.saved-claims-search .form-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #444;
+}
+
+.saved-claims-search .form-control {
+  min-height: 44px;
+  font-size: 14px;
+  border-radius: 7px;
+}
+
+.saved-claims-search .btn {
+  min-height: 44px;
+  border-radius: 7px;
+  font-size: 14px;
 }

@@ -28,6 +28,15 @@ export class BillClaimsComponent implements OnInit {
   submitSuccess = false;
   savedClaim: any = null;
 
+  // ==================== NEW: LIST STATE ====================
+  savedClaims: any[] = [];
+  viewMode: 'list' | 'form' | 'detail' = 'list';
+  editingClaimId: string | null = null;
+  currentDetailClaim: any = null;
+
+  claimSearchName: string = '';
+  claimSearchDate: string = '';
+
   invoiceProfile: any = null;
   companyLogoUrl = 'assets/logo.png';
 
@@ -47,7 +56,137 @@ export class BillClaimsComponent implements OnInit {
     this.loadClients();
     this.loadBanks();
     this.loadTaxes();
+    this.loadSavedClaims();
   }
+
+  // ==================== LOCAL STORAGE ====================
+
+  private LS_KEY = 'fin_claims_v1';
+
+  loadSavedClaims(): void {
+    try {
+      const raw = localStorage.getItem(this.LS_KEY);
+      this.savedClaims = raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      this.savedClaims = [];
+    }
+  }
+
+  get filteredSavedClaims(): any[] {
+    const nameSearch = (this.claimSearchName || '').trim().toLowerCase();
+    const dateSearch = (this.claimSearchDate || '').trim();
+
+    return (this.savedClaims || []).filter((claim: any) => {
+      const clientNameAr = claim?.client?.nameAr || '';
+      const clientNameEn = claim?.client?.nameEn || '';
+      const clientName = claim?.clientName || claim?.client?.name || '';
+      const fullName = `${clientNameAr} ${clientNameEn} ${clientName}`.toLowerCase();
+
+      const claimDate = claim?.claimDate ? String(claim.claimDate).slice(0, 10) : '';
+
+      const matchName = !nameSearch || fullName.includes(nameSearch);
+      const matchDate = !dateSearch || claimDate === dateSearch;
+
+      return matchName && matchDate;
+    });
+  }
+
+  clearClaimsSearch(): void {
+    this.claimSearchName = '';
+    this.claimSearchDate = '';
+  }
+
+  private persistClaims(): void {
+    try {
+      localStorage.setItem(this.LS_KEY, JSON.stringify(this.savedClaims));
+    } catch (e) {
+      console.error('Failed to persist claims', e);
+    }
+  }
+
+  // ==================== VIEW NAVIGATION ====================
+
+  showList(): void {
+    this.viewMode = 'list';
+    this.loadSavedClaims();
+    this.editingClaimId = null;
+    this.submitSuccess = false;
+    this.savedClaim = null;
+  }
+
+  showNewForm(): void {
+    this.editingClaimId = null;
+    this.submitSuccess = false;
+    this.savedClaim = null;
+    this.selectedClient = null;
+    this.selectedBank = null;
+    this.initForm();
+    this.viewMode = 'form';
+  }
+
+  showDetail(claim: any): void {
+    this.currentDetailClaim = claim;
+    this.savedClaim = claim;
+    if (claim?.client) this.selectedClient = claim.client;
+    if (claim?.bank) this.selectedBank = claim.bank;
+    this.viewMode = 'detail';
+  }
+
+  openEditClaim(claim: any): void {
+    this.editingClaimId = claim.id;
+    this.submitSuccess = false;
+    this.savedClaim = null;
+    this.selectedClient = null;
+    this.selectedBank = null;
+    this.initForm();
+
+    // Populate form with existing claim data
+    this.form.patchValue({
+      clientId: claim.clientId,
+      bankId: claim.bankId,
+      claimDate: claim.claimDate,
+      notes: claim.notes || '',
+      taxId: claim.taxId,
+      discount: claim.discount || 0,
+      discountType: claim.discountType ?? 0,
+    });
+
+    // Populate items
+    const items = this.form.get('items') as FormArray;
+    items.clear();
+    (claim.items || []).forEach((item: any) => {
+      items.push(this.fb.group({
+        name: [item.name || '', Validators.required],
+        quantity: [item.quantity || 1, [Validators.required, Validators.min(1)]],
+        price: [item.price || 0, [Validators.required, Validators.min(0)]],
+        taxId: [item.taxId || null]
+      }));
+    });
+
+    if (claim.clientId) {
+      this.selectedClient = this.findClient(claim.clientId);
+    }
+    if (claim.bankId) {
+      this.selectedBank = this.findBank(claim.bankId);
+    }
+
+    this.viewMode = 'form';
+  }
+
+  deleteClaimById(id: string): void {
+    this.savedClaims = this.savedClaims.filter(c => c.id !== id);
+    this.persistClaims();
+    this.loadSavedClaims();
+  }
+
+  deleteCurrentDetail(): void {
+    if (this.currentDetailClaim?.id) {
+      this.deleteClaimById(this.currentDetailClaim.id);
+      this.showList();
+    }
+  }
+
+  // ==================== FORM ====================
 
   initForm(): void {
     this.form = this.fb.group({
@@ -114,8 +253,6 @@ export class BillClaimsComponent implements OnInit {
             }
           }
         };
-
-        console.log('PROFILE:', data);
       },
       error: (err) => {
         console.error('Load profile error:', err);
@@ -125,11 +262,9 @@ export class BillClaimsComponent implements OnInit {
   }
 
   loadClients(): void {
-    // تستخدم فقط للـ dropdown، بيانات الطباعة لا تعتمد عليها
     this.http.get<any>(`${environment.baseUrl}api/Clients/Lookup?language=ar`).subscribe({
       next: (data) => {
         this.clients = Array.isArray(data) ? data : (data?.data || data?.items || []);
-        console.log('CLIENTS LOOKUP:', this.clients);
       },
       error: (err) => {
         console.error('Load clients error:', err);
@@ -154,25 +289,26 @@ export class BillClaimsComponent implements OnInit {
     this.http.get<any>(`${environment.baseUrl}api/FinancialClaims/${id}`).subscribe({
       next: (res) => {
         this.applyClaimData(res, fallbackPayload || {});
-
+        this.currentDetailClaim = this.savedClaim;
+        this.viewMode = 'detail';
         this.isLoading = false;
         this.submitSuccess = true;
-
-        console.log('FINANCIAL CLAIM DETAILS:', this.savedClaim);
-        console.log('CLIENT FROM FINANCIAL CLAIM:', this.savedClaim?.client);
-        console.log('CLIENT EN NAME:', this.getClientNameEn());
-        console.log('CLIENT ADDRESS EN:', this.getClientAddressEn());
-        console.log('CLIENT CRN:', this.getClientCrn());
-        console.log('CLIENT VAT:', this.getClientVat());
-        console.log('CLIENT NUMBER:', this.getClientNumber());
+        setTimeout(() => {
+          document.getElementById('claimPrintArea')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
       },
       error: (err) => {
         console.error('Load financial claim details error:', err);
         if (fallbackPayload) {
           this.applyClaimData(fallbackPayload);
         }
+        this.currentDetailClaim = this.savedClaim;
+        this.viewMode = 'detail';
         this.isLoading = false;
         this.submitSuccess = true;
+        setTimeout(() => {
+          document.getElementById('claimPrintArea')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
       }
     });
   }
@@ -181,7 +317,6 @@ export class BillClaimsComponent implements OnInit {
     this.http.get<any>(`${environment.baseUrl}api/Banks/Lookup`).subscribe({
       next: (data) => {
         this.banks = Array.isArray(data) ? data : (data?.data || data?.items || []);
-        console.log('BANKS LOOKUP:', this.banks);
       },
       error: (err) => {
         console.error('Load banks error:', err);
@@ -202,13 +337,10 @@ export class BillClaimsComponent implements OnInit {
     this.http.get<any>(`${environment.baseUrl}api/Banks/${id}`).subscribe({
       next: (res) => {
         const fullBank = res?.data || res?.result || res;
-
         this.selectedBank = this.mergeWithoutEmptyValues(
           this.findBank(id) || {},
           fullBank
         );
-
-        console.log('FULL BANK DETAILS:', this.selectedBank);
       },
       error: (err) => {
         console.error('Load bank details error:', err);
@@ -221,7 +353,6 @@ export class BillClaimsComponent implements OnInit {
     this.http.get<any>(`${environment.baseUrl}api/Taxis`).subscribe({
       next: (data) => {
         this.taxes = Array.isArray(data) ? data : (data?.data || data?.items || []);
-        console.log('TAXES:', this.taxes);
       },
       error: (err) => {
         console.error('Load taxes error:', err);
@@ -240,7 +371,6 @@ export class BillClaimsComponent implements OnInit {
       return;
     }
 
-    // فقط للعرض قبل الحفظ أو للـ dropdown. بيانات الطباعة تأتي من FinancialClaims/{id}
     this.selectedClient = this.findClient(clientId);
   }
 
@@ -259,64 +389,36 @@ export class BillClaimsComponent implements OnInit {
   // ==================== HELPERS ====================
 
   private toNumber(value: any): number {
-    if (value === null || value === undefined || value === '') {
-      return 0;
-    }
-
-    if (typeof value === 'string') {
-      value = value.replace('%', '').trim();
-    }
-
+    if (value === null || value === undefined || value === '') return 0;
+    if (typeof value === 'string') value = value.replace('%', '').trim();
     const num = Number(value);
     return isNaN(num) ? 0 : num;
   }
 
   private toNullableNumber(value: any): number | null {
-    if (value === null || value === undefined || value === '') {
-      return null;
-    }
-
+    if (value === null || value === undefined || value === '') return null;
     const num = Number(value);
     return isNaN(num) ? null : num;
   }
 
   private cleanValue(value: any): string {
-    if (
-      value === null ||
-      value === undefined ||
-      value === '' ||
-      value === 'null' ||
-      value === 'undefined'
-    ) {
-      return '—';
-    }
-
+    if (value === null || value === undefined || value === '' || value === 'null' || value === 'undefined') return '—';
     return String(value).trim();
   }
 
   private mergeWithoutEmptyValues(base: any, override: any): any {
     const result = { ...(base || {}) };
-
     Object.keys(override || {}).forEach((key) => {
       const value = override[key];
-
-      if (
-        value !== null &&
-        value !== undefined &&
-        value !== '' &&
-        value !== 'null' &&
-        value !== 'undefined'
-      ) {
+      if (value !== null && value !== undefined && value !== '' && value !== 'null' && value !== 'undefined') {
         result[key] = value;
       }
     });
-
     return result;
   }
 
   private normalizeClaimResponse(res: any, payload: any = {}): any {
     const apiData = res?.data || res?.result || res || {};
-
     return {
       ...payload,
       ...apiData,
@@ -342,124 +444,48 @@ export class BillClaimsComponent implements OnInit {
   private applyClaimData(res: any, payload: any = {}): void {
     this.savedClaim = this.normalizeClaimResponse(res, payload);
 
-    // أهم جزء: بيانات العميل للطباعة من /api/FinancialClaims/{id}
-    if (this.savedClaim?.client) {
-      this.selectedClient = this.savedClaim.client;
-    }
-
-    if (this.savedClaim?.bank) {
-      this.selectedBank = this.savedClaim.bank;
-    }
+    if (this.savedClaim?.client) this.selectedClient = this.savedClaim.client;
+    if (this.savedClaim?.bank) this.selectedBank = this.savedClaim.bank;
 
     if (this.savedClaim?.user) {
-      this.invoiceProfile = {
-        ...this.invoiceProfile,
-        user: this.savedClaim.user
-      };
-
+      this.invoiceProfile = { ...this.invoiceProfile, user: this.savedClaim.user };
       const logo = this.savedClaim?.user?.company?.logo;
-      if (logo) {
-        this.companyLogoUrl = this.buildFileUrl(logo);
-      }
-    }
-  }
-
-  private getPureEnglishValue(...values: any[]): string {
-    for (const value of values) {
-      if (
-        value === null ||
-        value === undefined ||
-        value === '' ||
-        value === 'null' ||
-        value === 'undefined'
-      ) {
-        continue;
-      }
-
-      const text = String(value).trim();
-
-      if (!text) {
-        continue;
-      }
-
-      const hasArabic = /[\u0600-\u06FF]/.test(text);
-
-      if (!hasArabic) {
-        return text;
-      }
+      if (logo) this.companyLogoUrl = this.buildFileUrl(logo);
     }
 
-    return '—';
-  }
-
-  private getArabicOrAnyValue(...values: any[]): string {
-    for (const value of values) {
-      if (
-        value === null ||
-        value === undefined ||
-        value === '' ||
-        value === 'null' ||
-        value === 'undefined'
-      ) {
-        continue;
-      }
-
-      const text = String(value).trim();
-
-      if (text) {
-        return text;
-      }
+    // Save to local list
+    const existingIndex = this.savedClaims.findIndex(c => c.id === this.savedClaim.id);
+    if (existingIndex >= 0) {
+      this.savedClaims[existingIndex] = this.savedClaim;
+    } else {
+      this.savedClaims.unshift(this.savedClaim);
     }
-
-    return '—';
+    this.persistClaims();
   }
 
   private buildFileUrl(path: string): string {
-    if (!path) {
-      return 'assets/logo.png';
-    }
-
-    if (path.startsWith('http://') || path.startsWith('https://')) {
-      return path;
-    }
-
+    if (!path) return 'assets/logo.png';
+    if (path.startsWith('http://') || path.startsWith('https://')) return path;
     const cleanPath = path.startsWith('/') ? path.substring(1) : path;
-
     return `https://demo.saudifatora.com/${cleanPath}`;
   }
 
   private findClient(id: any): any | null {
-    if (!id || !this.clients || !this.clients.length) {
-      return null;
-    }
-
+    if (!id || !this.clients?.length) return null;
     return this.clients.find((client: any) => Number(client.id) === Number(id)) || null;
   }
 
   private findBank(id: any): any | null {
-    if (!id || !this.banks || !this.banks.length) {
-      return null;
-    }
-
+    if (!id || !this.banks?.length) return null;
     return this.banks.find((bank: any) => Number(bank.id) === Number(id)) || null;
   }
 
   private extractCreatedClaimId(res: any): any {
-    if (typeof res === 'number' || typeof res === 'string') {
-      return res;
-    }
-
+    if (typeof res === 'number' || typeof res === 'string') return res;
     return (
-      res?.id ||
-      res?.data?.id ||
-      res?.result?.id ||
-      res?.claimId ||
-      res?.data?.claimId ||
-      res?.result?.claimId ||
-      res?.claimNumber ||
-      res?.data?.claimNumber ||
-      res?.result?.claimNumber ||
-      null
+      res?.id || res?.data?.id || res?.result?.id ||
+      res?.claimId || res?.data?.claimId || res?.result?.claimId ||
+      res?.claimNumber || res?.data?.claimNumber || res?.result?.claimNumber || null
     );
   }
 
@@ -483,24 +509,8 @@ export class BillClaimsComponent implements OnInit {
 
   getTaxRate(taxId: any): number {
     const tax = this.taxes.find((t: any) => Number(t.id) === Number(taxId));
-
-    if (!tax) {
-      return 0;
-    }
-
-    const possibleRate =
-      tax.taxRate ??
-      tax.rate ??
-      tax.percentage ??
-      tax.percent ??
-      tax.taxPercentage ??
-      tax.taxPercent ??
-      tax.taxValue ??
-      tax.taxAmount ??
-      tax.value ??
-      tax.amount ??
-      0;
-
+    if (!tax) return 0;
+    const possibleRate = tax.taxRate ?? tax.rate ?? tax.percentage ?? tax.percent ?? tax.taxPercentage ?? tax.taxValue ?? tax.value ?? 0;
     return this.toNumber(possibleRate);
   }
 
@@ -513,52 +523,35 @@ export class BillClaimsComponent implements OnInit {
     const itemSubtotal = this.toNumber(item.quantity) * this.toNumber(item.price);
     const subtotal = this.getSubtotal();
     const totalDiscount = this.getDiscountAmount();
-
-    if (itemSubtotal <= 0 || subtotal <= 0 || totalDiscount <= 0) {
-      return 0;
-    }
-
+    if (itemSubtotal <= 0 || subtotal <= 0 || totalDiscount <= 0) return 0;
     return (itemSubtotal / subtotal) * totalDiscount;
   }
 
   getItemTotalBeforeVatAfterDiscount(item: any): number {
     const itemSubtotal = this.toNumber(item.quantity) * this.toNumber(item.price);
     const itemDiscount = this.getItemDiscountAmount(item);
-
     return Math.max(itemSubtotal - itemDiscount, 0);
   }
 
   getItemVatAmount(item: any): number {
     const apiVat = this.toNumber(item?.taxAmount);
-    if (apiVat > 0) {
-      return apiVat;
-    }
-
+    if (apiVat > 0) return apiVat;
     const amountBeforeVat = this.getItemTotalBeforeVatAfterDiscount(item);
     const rate = this.getTaxRate(item.taxId);
-
     return (amountBeforeVat * rate) / 100;
   }
 
   getItemTotalWithVat(item: any): number {
     const apiTotal = this.toNumber(item?.grandTotal || item?.totalWithVat);
-    if (apiTotal > 0) {
-      return apiTotal;
-    }
-
-    const amountBeforeVat = this.getItemTotalBeforeVatAfterDiscount(item);
-    const vatAmount = this.getItemVatAmount(item);
-
-    return amountBeforeVat + vatAmount;
+    if (apiTotal > 0) return apiTotal;
+    return this.getItemTotalBeforeVatAfterDiscount(item) + this.getItemVatAmount(item);
   }
 
   getSubtotal(): number {
     if (this.savedClaim?.total !== undefined && this.savedClaim?.total !== null) {
       return this.toNumber(this.savedClaim.total);
     }
-
     const claimItems = this.savedClaim?.items || this.form.get('items')?.value || [];
-
     return claimItems.reduce((sum: number, item: any) => {
       return sum + (this.toNumber(item.quantity) * this.toNumber(item.price));
     }, 0);
@@ -568,15 +561,8 @@ export class BillClaimsComponent implements OnInit {
     const discount = this.toNumber(this.savedClaim?.discount ?? this.form.get('discount')?.value);
     const discountType = this.toNumber(this.savedClaim?.discountType ?? this.form.get('discountType')?.value);
     const subtotal = this.savedClaim ? this.toNumber(this.savedClaim.total) : this.getSubtotal();
-
-    if (discount <= 0) {
-      return 0;
-    }
-
-    if (discountType === 1) {
-      return (subtotal * discount) / 100;
-    }
-
+    if (discount <= 0) return 0;
+    if (discountType === 1) return (subtotal * discount) / 100;
     return discount;
   }
 
@@ -588,19 +574,14 @@ export class BillClaimsComponent implements OnInit {
     if (this.savedClaim?.taxAmount !== undefined && this.savedClaim?.taxAmount !== null) {
       return this.toNumber(this.savedClaim.taxAmount);
     }
-
     const claimItems = this.savedClaim?.items || this.form.get('items')?.value || [];
-
-    return claimItems.reduce((sum: number, item: any) => {
-      return sum + this.getItemVatAmount(item);
-    }, 0);
+    return claimItems.reduce((sum: number, item: any) => sum + this.getItemVatAmount(item), 0);
   }
 
   getTotalBeforeVat(): number {
     if (this.savedClaim?.netTotal !== undefined && this.savedClaim?.netTotal !== null) {
       return this.toNumber(this.savedClaim.netTotal);
     }
-
     return this.getSubtotal() - this.getDiscountAmount();
   }
 
@@ -608,7 +589,6 @@ export class BillClaimsComponent implements OnInit {
     if (this.savedClaim?.grandTotal !== undefined && this.savedClaim?.grandTotal !== null) {
       return this.toNumber(this.savedClaim.grandTotal);
     }
-
     return this.getTotalBeforeVat() + this.getTotalVat();
   }
 
@@ -628,349 +608,119 @@ export class BillClaimsComponent implements OnInit {
   getUserFullName(): string {
     const user = this.savedClaim?.user || this.invoiceProfile?.user || this.invoiceProfile;
     const fullName = `${user?.firstName || ''} ${user?.lastName || ''}`.trim();
-
-    return this.cleanValue(
-      fullName ||
-      user?.fullName ||
-      user?.name ||
-      user?.userName ||
-      ''
-    );
+    return this.cleanValue(fullName || user?.fullName || user?.name || user?.userName || '');
   }
 
   getUserEmail(): string {
     const user = this.savedClaim?.user || this.invoiceProfile?.user || this.invoiceProfile;
-
-    return this.cleanValue(
-      user?.email ||
-      user?.emailAddress ||
-      ''
-    );
+    return this.cleanValue(user?.email || user?.emailAddress || '');
   }
 
   getCompanyNameAr(): string {
     const seller = this._seller;
-
-    return this.cleanValue(
-      seller?.companyNameAr ||
-      seller?.nameAr ||
-      seller?.arabicName ||
-      seller?.companyArabicName ||
-      seller?.nameArabic ||
-      seller?.companyName ||
-      seller?.name ||
-      ''
-    );
+    return this.cleanValue(seller?.companyNameAr || seller?.nameAr || seller?.arabicName || seller?.companyName || seller?.name || '');
   }
 
   getCompanyNameEn(): string {
     const seller = this._seller;
-
-    return this.cleanValue(
-      seller?.companyNameEn ||
-      seller?.nameEn ||
-      seller?.englishName ||
-      seller?.companyEnglishName ||
-      seller?.nameEnglish ||
-      ''
-    );
+    return this.cleanValue(seller?.companyNameEn || seller?.nameEn || seller?.englishName || '');
   }
 
   getCompanyAddress(): string {
     const seller = this._seller;
-
-    return this.cleanValue(
-      seller?.companyAddressAr ||
-      seller?.addressAr ||
-      seller?.arabicAddress ||
-      seller?.addressArabic ||
-      seller?.companyAddress ||
-      seller?.address ||
-      seller?.cityName ||
-      seller?.city ||
-      ''
-    );
+    return this.cleanValue(seller?.companyAddressAr || seller?.addressAr || seller?.companyAddress || seller?.address || seller?.cityName || '');
   }
 
   getCompanyAddressEn(): string {
     const seller = this._seller;
-
-    return this.cleanValue(
-      seller?.companyAddressEn ||
-      seller?.addressEn ||
-      seller?.englishAddress ||
-      seller?.addressEnglish ||
-      seller?.companyAddressEnglish ||
-      seller?.cityNameEn ||
-      seller?.cityEn ||
-      ''
-    );
+    return this.cleanValue(seller?.companyAddressEn || seller?.addressEn || seller?.cityNameEn || '');
   }
 
   getCompanyCity(): string {
     const seller = this._seller;
-
-    return this.cleanValue(
-      seller?.cityName ||
-      seller?.city ||
-      seller?.cityAr ||
-      seller?.cityNameAr ||
-      ''
-    );
+    return this.cleanValue(seller?.cityName || seller?.city || '');
   }
 
   getCompanyVat(): string {
     const seller = this._seller;
-
-    return this.cleanValue(
-      seller?.vat ||
-      seller?.vatNumber ||
-      seller?.taxNumber ||
-      seller?.taxId ||
-      seller?.taxRegistrationNumber ||
-      seller?.taxRegistrationNo ||
-      ''
-    );
+    return this.cleanValue(seller?.vat || seller?.vatNumber || seller?.taxNumber || seller?.taxRegistrationNumber || '');
   }
 
   getCompanyTin(): string {
     const seller = this._seller;
-
-    return this.cleanValue(
-      seller?.commercialRegNumber ||
-      seller?.crn ||
-      seller?.commercialRegistrationNo ||
-      seller?.commercialRecord ||
-      seller?.commercialNumber ||
-      seller?.registrationNumber ||
-      seller?.commercialRegistration ||
-      seller?.tin ||
-      ''
-    );
+    return this.cleanValue(seller?.commercialRegNumber || seller?.crn || seller?.tin || '');
   }
 
   getCompanyPhone(): string {
     const seller = this._seller;
     const user = this.savedClaim?.user || this.invoiceProfile?.user || this.invoiceProfile;
-
-    return this.cleanValue(
-      seller?.phone ||
-      seller?.companyPhone ||
-      seller?.phoneNumber ||
-      seller?.mobile ||
-      seller?.mobileNumber ||
-      user?.phone ||
-      user?.phoneNumber ||
-      user?.mobile ||
-      ''
-    );
+    return this.cleanValue(seller?.phone || seller?.companyPhone || seller?.phoneNumber || user?.phone || user?.phoneNumber || '');
   }
 
   // ==================== CLIENT GETTERS ====================
 
   private get _client(): any {
-    // الأولوية دائمًا لداتا العميل القادمة من /api/FinancialClaims/{id}
-    if (this.savedClaim?.client) {
-      return this.savedClaim.client;
-    }
-
-    if (this.selectedClient) {
-      return this.selectedClient;
-    }
-
+    if (this.savedClaim?.client) return this.savedClaim.client;
+    if (this.selectedClient) return this.selectedClient;
     const id = this.savedClaim?.clientId ?? this.form.get('clientId')?.value;
-
-    if (!id) {
-      return null;
-    }
-
+    if (!id) return null;
     return this.findClient(id);
   }
 
-  getClientName(): string {
-    return this.getClientNameAr();
-  }
+  getClientName(): string { return this.getClientNameAr(); }
 
   getClientNameAr(): string {
     const client = this._client;
-
-    return this.cleanValue(
-      client?.nameAr ||
-      client?.client?.nameAr ||
-      client?.clientNameAr ||
-      client?.arabicName ||
-      client?.nameArabic ||
-      client?.arName ||
-      client?.name ||
-      client?.clientName ||
-      ''
-    );
+    return this.cleanValue(client?.nameAr || client?.arabicName || client?.name || client?.clientName || '');
   }
 
   getClientNameEn(): string {
     const client = this._client;
-
-    return this.cleanValue(
-      client?.nameEn ||
-      client?.client?.nameEn ||
-      client?.clientNameEn ||
-      client?.englishName ||
-      client?.nameEnglish ||
-      client?.enName ||
-      client?.foreignName ||
-      client?.latinName ||
-      ''
-    );
+    return this.cleanValue(client?.nameEn || client?.englishName || client?.foreignName || '');
   }
 
   getClientAddressAr(): string {
     const client = this._client;
-
-    return this.cleanValue(
-      client?.addressAr ||
-      client?.client?.addressAr ||
-      client?.clientAddressAr ||
-      client?.arabicAddress ||
-      client?.addressArabic ||
-      client?.cityNameAr ||
-      client?.cityAr ||
-      client?.address ||
-      client?.cityName ||
-      client?.city ||
-      ''
-    );
+    return this.cleanValue(client?.addressAr || client?.address || client?.cityName || '');
   }
 
   getClientAddressEn(): string {
     const client = this._client;
-
-    return this.cleanValue(
-      client?.addressEn ||
-      client?.client?.addressEn ||
-      client?.clientAddressEn ||
-      client?.englishAddress ||
-      client?.addressEnglish ||
-      client?.foreignAddress ||
-      client?.latinAddress ||
-      ''
-    );
+    return this.cleanValue(client?.addressEn || client?.englishAddress || '');
   }
 
   getClientVat(): string {
     const client = this._client;
-
-    return this.cleanValue(
-      client?.tin ||
-      client?.client?.tin ||
-      client?.vat ||
-      client?.client?.vat ||
-      client?.vatNumber ||
-      client?.taxNumber ||
-      client?.taxId ||
-      client?.taxRegistrationNumber ||
-      client?.taxRegistrationNo ||
-      ''
-    );
+    return this.cleanValue(client?.tin || client?.vat || client?.vatNumber || client?.taxNumber || '');
   }
 
   getClientCrn(): string {
     const client = this._client;
-
-    return this.cleanValue(
-      client?.crn ||
-      client?.client?.crn ||
-      client?.commercialRegNumber ||
-      client?.client?.commercialRegNumber ||
-      client?.commercialRegistrationNo ||
-      client?.commercialRecord ||
-      client?.commercialNumber ||
-      client?.registrationNumber ||
-      client?.commercialRegistration ||
-      client?.clientCommercialRegistrationNo ||
-      client?.clientCommercialNumber ||
-      client?.commercialRegister ||
-      client?.commercialRegisterNo ||
-      client?.commercialRegistry ||
-      client?.companyRegistrationNo ||
-      client?.registerNo ||
-      client?.registrationNo ||
-      client?.registrationCode ||
-      client?.regNo ||
-      client?.crNumber ||
-      ''
-    );
+    return this.cleanValue(client?.crn || client?.commercialRegNumber || client?.registrationNumber || '');
   }
 
   getClientEmail(): string {
     const client = this._client;
-
-    return this.cleanValue(
-      client?.email ||
-      client?.client?.email ||
-      client?.clientEmail ||
-      client?.emailAddress ||
-      ''
-    );
+    return this.cleanValue(client?.email || client?.emailAddress || '');
   }
 
   getClientPhone(): string {
     const client = this._client;
-
-    return this.cleanValue(
-      client?.phone ||
-      client?.client?.phone ||
-      client?.mobile ||
-      client?.phoneNumber ||
-      client?.clientPhone ||
-      client?.mobileNumber ||
-      ''
-    );
+    return this.cleanValue(client?.phone || client?.mobile || client?.phoneNumber || '');
   }
 
   getClientNumber(): string {
     const client = this._client;
-
-    return this.cleanValue(
-      client?.clientNum ||
-      client?.client?.clientNum ||
-      client?.clientNumber ||
-      client?.clientNo ||
-      client?.clientCode ||
-      client?.customerNumber ||
-      client?.customerNo ||
-      client?.customerCode ||
-      client?.accountNumber ||
-      client?.code ||
-      client?.number ||
-      client?.serial ||
-      client?.serialNumber ||
-      client?.referenceNumber ||
-      client?.referenceNo ||
-      client?.externalCode ||
-      client?.externalId ||
-      client?.clientReference ||
-      client?.customerReference ||
-      ''
-    );
+    return this.cleanValue(client?.clientNum || client?.clientNumber || client?.customerNumber || client?.code || '');
   }
 
   // ==================== BANK GETTERS ====================
 
   private get _bank(): any {
-    if (this.savedClaim?.bank) {
-      return this.savedClaim.bank;
-    }
-
-    if (this.selectedBank) {
-      return this.selectedBank;
-    }
-
+    if (this.savedClaim?.bank) return this.savedClaim.bank;
+    if (this.selectedBank) return this.selectedBank;
     const id = this.savedClaim?.bankId ?? this.form.get('bankId')?.value;
-
-    if (!id) {
-      return null;
-    }
-
+    if (!id) return null;
     return this.findBank(id);
   }
 
@@ -979,30 +729,15 @@ export class BillClaimsComponent implements OnInit {
   }
 
   getBankAccountName(): string {
-    return this.cleanValue(
-      this._bank?.bankAccountName ||
-      this._bank?.accountName ||
-      this._bank?.nameOnAccount ||
-      ''
-    );
+    return this.cleanValue(this._bank?.bankAccountName || this._bank?.accountName || '');
   }
 
   getBankAccountNumber(): string {
-    return this.cleanValue(
-      this._bank?.accountNumber ||
-      this._bank?.bankAccountNumber ||
-      this._bank?.accountNo ||
-      ''
-    );
+    return this.cleanValue(this._bank?.accountNumber || this._bank?.bankAccountNumber || '');
   }
 
   getBankIban(): string {
-    return this.cleanValue(
-      this._bank?.ibanNumber ||
-      this._bank?.iban ||
-      this._bank?.ibanNo ||
-      ''
-    );
+    return this.cleanValue(this._bank?.ibanNumber || this._bank?.iban || '');
   }
 
   // ==================== SUBMIT ====================
@@ -1014,7 +749,6 @@ export class BillClaimsComponent implements OnInit {
     }
 
     this.isLoading = true;
-
     const formValue = this.form.value;
 
     const payload = {
@@ -1033,20 +767,35 @@ export class BillClaimsComponent implements OnInit {
       }))
     };
 
+    // If editing an existing local claim, update it locally first
+    if (this.editingClaimId) {
+      const localClaimIndex = this.savedClaims.findIndex(c => c.id === this.editingClaimId);
+      if (localClaimIndex >= 0) {
+        const updatedClaim = { ...this.savedClaims[localClaimIndex], ...payload };
+        this.savedClaims[localClaimIndex] = updatedClaim;
+        this.persistClaims();
+      }
+    }
+
     this.http.post(`${environment.baseUrl}api/FinancialClaims`, payload).subscribe({
       next: (res: any) => {
         const createdId = this.extractCreatedClaimId(res);
-
-        console.log('RAW SAVE RESPONSE:', res);
-        console.log('CREATED CLAIM ID:', createdId);
 
         if (createdId) {
           this.loadFinancialClaimDetails(createdId, payload);
         } else {
           this.applyClaimData(res, payload);
+          this.currentDetailClaim = this.savedClaim;
+          this.viewMode = 'detail';
           this.isLoading = false;
           this.submitSuccess = true;
+          setTimeout(() => {
+            document.getElementById('claimPrintArea')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 100);
         }
+
+        this.viewMode = 'detail';
+        this.editingClaimId = null;
       },
       error: (err) => {
         console.error('Financial claim error:', err);
@@ -1059,43 +808,17 @@ export class BillClaimsComponent implements OnInit {
 
   async exportPdf(): Promise<void> {
     const originalElement = document.getElementById('claimPrintArea');
-
-    if (!originalElement) {
-      console.error('Print area not found');
-      return;
-    }
+    if (!originalElement) { console.error('Print area not found'); return; }
 
     let cloneWrapper: HTMLDivElement | null = null;
 
     try {
       this.isExporting = true;
-
       const clonedElement = originalElement.cloneNode(true) as HTMLElement;
 
       cloneWrapper = document.createElement('div');
-      cloneWrapper.style.position = 'fixed';
-      cloneWrapper.style.left = '-100000px';
-      cloneWrapper.style.top = '0';
-      cloneWrapper.style.width = '1200px';
-      cloneWrapper.style.background = '#ffffff';
-      cloneWrapper.style.zIndex = '-99999';
-      cloneWrapper.style.opacity = '1';
-      cloneWrapper.style.pointerEvents = 'none';
-      cloneWrapper.style.overflow = 'hidden';
-
-      clonedElement.style.display = 'block';
-      clonedElement.style.width = '1200px';
-      clonedElement.style.maxWidth = '1200px';
-      clonedElement.style.minHeight = 'auto';
-      clonedElement.style.height = 'auto';
-      clonedElement.style.background = '#ffffff';
-      clonedElement.style.position = 'relative';
-      clonedElement.style.left = 'auto';
-      clonedElement.style.top = 'auto';
-      clonedElement.style.transform = 'none';
-      clonedElement.style.opacity = '1';
-      clonedElement.style.overflow = 'hidden';
-      clonedElement.style.boxSizing = 'border-box';
+      cloneWrapper.style.cssText = 'position:fixed;left:-100000px;top:0;width:1200px;background:#ffffff;z-index:-99999;opacity:1;pointer-events:none;overflow:hidden';
+      clonedElement.style.cssText = 'display:block;width:1200px;max-width:1200px;min-height:auto;height:auto;background:#ffffff;position:relative;left:auto;top:auto;transform:none;opacity:1;overflow:hidden;box-sizing:border-box';
 
       cloneWrapper.appendChild(clonedElement);
       document.body.appendChild(cloneWrapper);
@@ -1103,13 +826,9 @@ export class BillClaimsComponent implements OnInit {
       await new Promise(resolve => setTimeout(resolve, 400));
 
       const canvas = await html2canvas(clonedElement, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: '#ffffff',
-        logging: false,
-        scrollX: 0,
-        scrollY: 0,
+        scale: 2, useCORS: true, allowTaint: true,
+        backgroundColor: '#ffffff', logging: false,
+        scrollX: 0, scrollY: 0,
         width: clonedElement.scrollWidth,
         height: clonedElement.scrollHeight,
         windowWidth: clonedElement.scrollWidth,
@@ -1117,12 +836,9 @@ export class BillClaimsComponent implements OnInit {
       });
 
       const imgData = canvas.toDataURL('image/jpeg', 0.98);
-
       const pdf = new jsPDF('l', 'mm', 'a4');
-
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
-
       const margin = 5;
       const availableWidth = pageWidth - margin * 2;
       const availableHeight = pageHeight - margin * 2;
@@ -1135,21 +851,13 @@ export class BillClaimsComponent implements OnInit {
         imgWidth = (canvas.width * imgHeight) / canvas.height;
       }
 
-      const x = (pageWidth - imgWidth) / 2;
-      const y = margin;
-
-      pdf.addImage(imgData, 'JPEG', x, y, imgWidth, imgHeight);
-
-      const fileName = `financial-claim-${this.savedClaim?.id || 'new'}.pdf`;
-      pdf.save(fileName);
+      pdf.addImage(imgData, 'JPEG', (pageWidth - imgWidth) / 2, margin, imgWidth, imgHeight);
+      pdf.save(`financial-claim-${this.savedClaim?.id || 'new'}.pdf`);
 
     } catch (error) {
       console.error('PDF export error:', error);
     } finally {
-      if (cloneWrapper && cloneWrapper.parentNode) {
-        cloneWrapper.parentNode.removeChild(cloneWrapper);
-      }
-
+      if (cloneWrapper?.parentNode) cloneWrapper.parentNode.removeChild(cloneWrapper);
       this.isExporting = false;
     }
   }
@@ -1159,6 +867,8 @@ export class BillClaimsComponent implements OnInit {
     this.savedClaim = null;
     this.selectedBank = null;
     this.selectedClient = null;
+    this.editingClaimId = null;
     this.initForm();
+    this.viewMode = 'form';
   }
 }

@@ -78,14 +78,6 @@
                 <span>{{ "Invoices" | translate }}</span></a
               >
             </li>
-
-            <li routerLink="/dashboard/contract-templates" routerLinkActive="active">
-              <a href="javascript:void(0)">
-                <i class="icon-docs"></i>
-                <span>نماذج العقود</span>
-              </a>
-            </li>
-
             <li routerLink="/dashboard/payments" routerLinkActive="active">
               <a href="javascript:void(0)"
                 ><i class="icon-bell"></i>
@@ -281,18 +273,25 @@
                 <span>{{ "reports.title" | translate }}</span></a
               >
             </li>
-            <li routerLink="/dashboard/documents" routerLinkActive="active">
+            <!-- <li routerLink="/dashboard/documents" routerLinkActive="active">
               <a href="javascript:void(0)"
                 ><i class="fa fa-book"></i>
                 <span>{{ "documents.title" | translate }}</span></a
               >
+            </li> -->
+
+            <li routerLink="/dashboard/contract-templates" routerLinkActive="active">
+              <a href="javascript:void(0)">
+                <i class="icon-docs"></i>
+                <span>النماذج </span>
+              </a>
             </li>
             <li routerLink="/dashboard/bill-claims" routerLinkActive="active">
-  <a href="javascript:void(0)"
-    ><i class="fa fa-file-text-o"></i>
-    <span>مطالبة مالية</span></a
-  >
-</li>
+            <a href="javascript:void(0)"
+            ><i class="fa fa-file-text-o"></i>
+            <span>مطالبة مالية</span></a
+            >
+            </li>
             <br />
             <br />
             <br />
