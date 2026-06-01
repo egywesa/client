@@ -1,4 +1,14 @@
-// ==================== SCREEN STYLES ====================
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
+
+$brand:       #14678f;
+$brand-dark:  #0f4f70;
+$brand-light: #ddeef6;
+$border:      #c8d8e4;
+$text-main:   #1a1a1a;
+$text-sub:    #555;
+
+// ==================== SCREEN ====================
+
 .no-print {
   display: block;
 }
@@ -19,6 +29,7 @@
       font-size: 15px;
       font-weight: 600;
       color: #333;
+      margin: 0;
     }
   }
 }
@@ -32,115 +43,676 @@
 
 .form-control,
 .form-select {
-  font-size: 13px;
-  border-radius: 6px;
+  font-size: 15px;
+  min-height: 46px;
+  padding: 10px 14px;
+  border-radius: 7px;
   border: 1px solid #ced4da;
   direction: rtl;
+  line-height: 1.4;
 
   &:focus {
-    border-color: #0d6efd;
-    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
-  }
-}
-
-table {
-  font-size: 13px;
-
-  thead th {
-    font-weight: 600;
-    background-color: #f8f9fa;
-    color: #444;
-    white-space: nowrap;
-  }
-
-  td {
-    vertical-align: middle;
+    border-color: $brand;
+    box-shadow: 0 0 0 0.2rem rgba(20, 103, 143, 0.15);
   }
 }
 
 .btn-primary {
-  background-color: #0d6efd;
-  border-color: #0d6efd;
+  background-color: $brand;
+  border-color: $brand;
   padding: 8px 24px;
   font-size: 14px;
   font-weight: 500;
+
+  &:hover,
+  &:focus {
+    background-color: $brand-dark;
+    border-color: $brand-dark;
+  }
 }
 
 .table-primary td {
-  background-color: #e7f1ff;
+  background-color: $brand-light;
   font-size: 14px;
 }
 
-// ==================== PRINT STYLES ====================
+// ==================== PRINT AREA ====================
+
+.print-area {
+  display: none;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 18px 22px;
+  background: #fff;
+  color: $text-main;
+  direction: rtl;
+  font-family: 'Cairo', 'Tahoma', 'Arial', sans-serif;
+  font-size: 12px;
+  line-height: 1.45;
+
+  .inv-header,
+  .inv-claim-info-table,
+  .parties-section,
+  .inv-items-table,
+  .inv-bottom-row,
+  .inv-notes,
+  .inv-footer {
+    width: min(1120px, 100%);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  // ==================== HEADER ====================
+
+  .inv-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 6px 0 12px;
+    margin-bottom: 12px;
+    border-bottom: 3px solid $brand;
+  }
+
+  .inv-header-logo {
+    min-width: 170px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .company-logo {
+    max-height: 78px;
+    max-width: 185px;
+    object-fit: contain;
+    display: block;
+  }
+
+  .inv-header-title {
+    flex: 1;
+    text-align: right;
+
+    h2 {
+      margin: 0 0 4px;
+      font-size: 31px;
+      line-height: 1.1;
+      font-weight: 800;
+      color: $text-main;
+    }
+
+    span {
+      display: block;
+      font-size: 11px;
+      color: $brand;
+      font-weight: 700;
+      letter-spacing: 1.3px;
+      text-transform: uppercase;
+    }
+  }
+
+  // ==================== CLAIM INFO TABLE ====================
+
+  .inv-claim-info-table {
+    width: min(980px, 100%);
+    border-collapse: collapse;
+    margin-bottom: 12px;
+    table-layout: fixed;
+
+    td {
+      border: 1px solid $border;
+      padding: 8px 10px;
+      font-size: 12px;
+      text-align: center;
+      line-height: 1.35;
+    }
+
+    .claim-label {
+      background-color: $brand-light;
+      color: $brand-dark;
+      font-weight: 700;
+    }
+  }
+
+  // ==================== PARTIES SECTION ====================
+
+  .parties-section {
+    margin-bottom: 14px;
+  }
+
+  .section-title {
+    background: $brand;
+    color: #fff;
+    text-align: center;
+    padding: 8px 10px;
+    font-size: 14px;
+    font-weight: 800;
+    border-radius: 4px 4px 0 0;
+    border: 1px solid $brand-dark;
+  }
+
+  .parties-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    padding: 12px;
+    border: 1px solid $border;
+    border-top: 0;
+    background: #fff;
+    align-items: stretch;
+  }
+
+  .party-card {
+    border: 1px solid $border;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .party-card-title {
+    background: $brand-light;
+    color: $brand-dark;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 800;
+    padding: 8px 10px;
+    border-bottom: 1px solid $border;
+  }
+
+  .party-compact-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+
+    td {
+      border: 1px solid #d9e3ea;
+      padding: 10px 12px;
+      font-size: 13px;
+      line-height: 1.35;
+      vertical-align: middle;
+      background: #fff;
+    }
+
+    .party-label {
+      width: 34%;
+      background: #f4f8fb;
+      color: #5a6671;
+      font-weight: 700;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .party-value {
+      width: 66%;
+      text-align: center;
+      color: $text-main;
+      font-weight: 700;
+      word-break: break-word;
+    }
+
+    .party-value > div {
+      display: block;
+      width: 100%;
+      text-align: center;
+    }
+
+    .party-value > div:first-child {
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.3;
+      margin-bottom: 2px;
+    }
+
+    .en-line {
+      direction: ltr;
+      text-align: center;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      color: #666;
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    .ltr-value {
+      direction: ltr;
+      text-align: center;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+  }
+
+  // ==================== ITEMS TABLE ====================
+
+  .inv-items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 14px;
+    table-layout: fixed;
+
+    thead tr th {
+      background-color: $brand !important;
+      color: #fff !important;
+      text-align: center;
+      padding: 10px 6px;
+      border: 1px solid $brand-dark;
+      font-size: 12.5px;
+      font-weight: 700;
+      line-height: 1.3;
+      vertical-align: middle;
+
+      small {
+        display: block;
+        font-size: 8px;
+        font-weight: 400;
+        opacity: 0.9;
+        margin-top: 2px;
+      }
+    }
+
+    .c-num   { width: 6%;  }
+    .c-name  { width: 24%; }
+    .c-qty   { width: 7%;  }
+    .c-price { width: 10%; }
+    .c-disc  { width: 9%;  }
+    .c-net   { width: 13%; }
+    .c-vp    { width: 8%;  }
+    .c-va    { width: 11%; }
+    .c-tot   { width: 12%; }
+
+    tbody tr:nth-child(even) td {
+      background-color: #f7fbfd;
+    }
+
+    tbody td {
+      border: 1px solid $border;
+      padding: 9px 6px;
+      text-align: center;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .c-num-val {
+      background-color: $brand !important;
+      color: #fff !important;
+      font-weight: 700;
+      font-size: 12px;
+    }
+
+    .c-name-val {
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .c-tot-val {
+      font-weight: 700;
+      color: $brand-dark;
+    }
+  }
+
+  // ==================== BOTTOM TABLES ====================
+
+  .inv-bottom-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+
+  .bank-side-block {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .inv-financial-block {
+    width: 38%;
+    max-width: 430px;
+    flex: 0 0 38%;
+  }
+
+  .inv-bank-title {
+    background-color: $brand-dark;
+    color: #fff;
+    text-align: center;
+    padding: 8px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 4px 4px 0 0;
+  }
+
+  .inv-bank-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    thead tr th {
+      background-color: $brand-light !important;
+      color: $brand-dark !important;
+      text-align: center;
+      padding: 8px 8px;
+      border: 1px solid $border;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.3;
+
+      small {
+        display: block;
+        font-size: 7px;
+        font-weight: 400;
+        opacity: 0.75;
+      }
+    }
+
+    tbody td {
+      border: 1px solid $border;
+      padding: 9px 8px;
+      text-align: center;
+      font-size: 11px;
+      color: $text-main;
+      vertical-align: middle;
+    }
+
+    .iban-cell {
+      direction: ltr;
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+      letter-spacing: 0.25px;
+      color: $brand-dark;
+      font-weight: 600;
+      text-align: center;
+    }
+  }
+
+  .inv-totals-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    td {
+      border: 1px solid $border;
+      padding: 10px 10px;
+      font-size: 11px;
+    }
+
+    .tl {
+      text-align: center;
+      background-color: $brand-light;
+      font-weight: 700;
+      color: $brand-dark;
+      width: 66%;
+    }
+
+    .tv {
+      text-align: center;
+      font-weight: 700;
+      width: 34%;
+      direction: ltr;
+    }
+
+    .disc {
+      color: #c0392b;
+    }
+
+    tr.tgrand td {
+      background-color: $brand !important;
+      color: #fff !important;
+      font-size: 12px;
+      font-weight: 700;
+    }
+  }
+
+  // ==================== NOTES ====================
+
+  .inv-notes {
+    background-color: #f9f9f9;
+    border: 1px solid $border;
+    border-right: 3px solid $brand;
+    padding: 8px 10px;
+    font-size: 11px;
+    margin-bottom: 10px;
+    color: $text-sub;
+    border-radius: 0 4px 4px 0;
+  }
+
+  // ==================== FOOTER ====================
+
+  .inv-footer {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: 10px;
+    color: $text-sub;
+
+    .inv-sig-line {
+      width: 140px;
+      border-top: 1px solid #999;
+      margin-top: 18px;
+    }
+  }
+}
+
+// ==================== PRINT MEDIA ====================
+
+@page {
+  size: A4 landscape;
+  margin: 5mm;
+}
+
 @media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    box-sizing: border-box !important;
+  }
+
+  html,
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+    width: 297mm !important;
+    min-height: 210mm !important;
+    overflow: visible !important;
+  }
+
   .no-print {
     display: none !important;
   }
 
   .print-area {
     display: block !important;
-    padding: 30px;
-    font-family: 'Arial', sans-serif;
-    direction: rtl;
-    text-align: right;
+    width: 287mm !important;
+    max-width: 287mm !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    font-size: 8pt !important;
+    line-height: 1.25 !important;
+    overflow: visible !important;
   }
 
-  .print-header {
-    text-align: center;
-    border-bottom: 2px solid #333;
-    padding-bottom: 15px;
-    margin-bottom: 20px;
-
-    h2 {
-      font-size: 22px;
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-
-    p {
-      font-size: 13px;
-      color: #555;
-    }
+  .print-area .inv-header,
+  .print-area .inv-claim-info-table,
+  .print-area .parties-section,
+  .print-area .inv-items-table,
+  .print-area .inv-bottom-row,
+  .print-area .inv-notes,
+  .print-area .inv-footer {
+    width: 255mm !important;
+    max-width: 255mm !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
   }
 
-  .print-info-table {
-    width: 100%;
-    margin-bottom: 20px;
-    font-size: 13px;
-
-    td {
-      padding: 6px 10px;
-      border: 1px solid #ddd;
-    }
+  .print-area .inv-header {
+    padding-bottom: 8px !important;
+    margin-bottom: 7px !important;
+    border-bottom-width: 2px !important;
   }
 
-  .print-items-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13px;
-
-    th, td {
-      border: 1px solid #333;
-      padding: 8px 12px;
-      text-align: right;
-    }
-
-    thead th {
-      background-color: #f0f0f0;
-      font-weight: bold;
-    }
-
-    tfoot td {
-      font-weight: 600;
-    }
-
-    .total-row td {
-      background-color: #e8f4e8;
-      font-size: 14px;
-    }
-
-    .text-end {
-      text-align: left;
-    }
+  .print-area .company-logo {
+    max-height: 58px !important;
+    max-width: 155px !important;
   }
+
+  .print-area .inv-header-title h2 {
+    font-size: 20pt !important;
+  }
+
+  .print-area .inv-header-title span {
+    font-size: 7.6pt !important;
+  }
+
+  .print-area .inv-claim-info-table td {
+    font-size: 8.2pt !important;
+    padding: 5px 6px !important;
+  }
+
+  .print-area .section-title {
+    font-size: 8.8pt !important;
+    padding: 5px 8px !important;
+  }
+
+  .print-area .parties-grid {
+    gap: 8px !important;
+    padding: 8px !important;
+  }
+
+  .print-area .party-card-title {
+    font-size: 8.8pt !important;
+    padding: 5px 7px !important;
+  }
+
+  .print-area .party-compact-table td {
+    font-size: 8.8pt !important;
+    padding: 6px 7px !important;
+    line-height: 1.25 !important;
+  }
+
+  .print-area .party-compact-table .party-value > div:first-child {
+    font-size: 9.1pt !important;
+  }
+
+  .print-area .party-compact-table .en-line,
+  .print-area .party-compact-table .ltr-value {
+    font-size: 8.1pt !important;
+  }
+
+  .print-area .inv-items-table thead th {
+    font-size: 8.2pt !important;
+    padding: 6px 4px !important;
+  }
+
+  .print-area .inv-items-table thead th small {
+    font-size: 6pt !important;
+  }
+
+  .print-area .inv-items-table tbody td {
+    font-size: 8.1pt !important;
+    padding: 6px 4px !important;
+  }
+
+  .print-area .inv-bottom-row {
+    gap: 8px !important;
+    margin-bottom: 8px !important;
+  }
+
+  .print-area .inv-bank-title {
+    font-size: 8pt !important;
+    padding: 5px 6px !important;
+  }
+
+  .print-area .inv-bank-table thead th,
+  .print-area .inv-bank-table tbody td,
+  .print-area .inv-totals-table td,
+  .print-area .inv-notes,
+  .print-area .inv-footer {
+    font-size: 7.8pt !important;
+  }
+}
+/* ===== Shared Client Number between parties ===== */
+
+.print-area .parties-grid {
+  position: relative !important;
+}
+
+.print-area .client-link-number {
+  grid-column: 1 / -1 !important;
+  width: 48% !important;
+  margin: 0 auto !important;
+  display: grid !important;
+  grid-template-columns: 38% 62% !important;
+  border: 1px solid #c8d8e4 !important;
+  background: #fff !important;
+  border-radius: 4px !important;
+  overflow: hidden !important;
+}
+
+.print-area .client-link-number .link-label {
+  background: #f4f8fb !important;
+  color: #4f5b66 !important;
+  font-weight: 800 !important;
+  text-align: center !important;
+  padding: 9px 10px !important;
+  font-size: 13px !important;
+  border-left: 1px solid #c8d8e4 !important;
+}
+
+.print-area .client-link-number .link-value {
+  direction: ltr !important;
+  font-family: 'Courier New', monospace !important;
+  font-weight: 800 !important;
+  text-align: center !important;
+  padding: 9px 10px !important;
+  font-size: 13px !important;
+  color: #1f2d3d !important;
+  letter-spacing: 0.2px !important;
+}
+
+@media print {
+  .print-area .client-link-number {
+    width: 46% !important;
+  }
+
+  .print-area .client-link-number .link-label,
+  .print-area .client-link-number .link-value {
+    font-size: 8.3pt !important;
+    padding: 5px 7px !important;
+  }
+}
+/* ===== ng-select style like form-control ===== */
+
+::ng-deep ng-select.discount-type-select .ng-select-container,
+::ng-deep ng-select .ng-select-container {
+  min-height: 46px;
+  border-radius: 7px;
+  border: 1px solid #ced4da;
+  font-size: 15px;
+  direction: rtl;
+}
+
+::ng-deep ng-select.discount-type-select.ng-select-focused .ng-select-container,
+::ng-deep ng-select.ng-select-focused .ng-select-container {
+  border-color: $brand;
+  box-shadow: 0 0 0 0.2rem rgba(20, 103, 143, 0.15);
+}
+
+::ng-deep ng-select.discount-type-select .ng-value-container {
+  padding: 10px 14px;
+  justify-content: flex-end;
+  text-align: right;
+}
+
+::ng-deep ng-select.discount-type-select .ng-placeholder,
+::ng-deep ng-select.discount-type-select .ng-value-label {
+  font-size: 15px;
+  color: #444;
+}
+
+::ng-deep ng-select.discount-type-select .ng-arrow-wrapper {
+  padding-left: 10px;
+  padding-right: 5px;
 }

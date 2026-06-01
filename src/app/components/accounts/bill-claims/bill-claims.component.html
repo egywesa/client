@@ -1,59 +1,248 @@
 <!-- ==================== PRINT AREA ==================== -->
-<div class="print-area" *ngIf="savedClaim">
-  <div class="print-header">
-    <h2>مطالبة فواتير</h2>
-    <p>تاريخ المطالبة: {{ savedClaim.claimDate | slice:0:10 }}</p>
-  </div>
-  <table class="print-info-table">
-    <tr>
-      <td><strong>العميل:</strong> {{ getClientName() }}</td>
-      <td><strong>البنك:</strong> {{ getBankName() }}</td>
-    </tr>
-    <tr>
-      <td colspan="2"><strong>الملاحظات:</strong> {{ savedClaim.notes }}</td>
-    </tr>
-  </table>
+<div class="print-area" id="claimPrintArea" *ngIf="savedClaim" dir="rtl">
 
-  <table class="print-items-table">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>البند</th>
-        <th>الكمية</th>
-        <th>السعر</th>
-        <th>الضريبة</th>
-        <th>الإجمالي</th>
-      </tr>
-    </thead>
+  <!-- HEADER -->
+  <div class="inv-header">
+    <div class="inv-header-logo">
+      <img
+        [src]="getCompanyLogoUrl()"
+        alt="Logo"
+        class="company-logo"
+        crossorigin="anonymous"
+        (error)="onLogoError($event)">
+    </div>
+
+    <div class="inv-header-title">
+      <h2>مطالبة مالية</h2>
+      <span>Financial Claim</span>
+    </div>
+  </div>
+
+  <!-- CLAIM INFO TABLE -->
+  <table class="inv-claim-info-table">
     <tbody>
-      <tr *ngFor="let item of savedClaim.items; let i = index">
-        <td>{{ i + 1 }}</td>
-        <td>{{ item.name }}</td>
-        <td>{{ item.quantity }}</td>
-        <td>{{ item.price | number:'1.2-2' }}</td>
-        <td>{{ getTaxName(item.taxId) }}</td>
-        <td>{{ (item.quantity * item.price) | number:'1.2-2' }}</td>
+      <tr>
+        <td class="claim-label">رقم المطالبة / Claim No</td>
+        <td>{{ savedClaim.id || '—' }}</td>
+
+        <td class="claim-label">تاريخ المطالبة / Claim Date</td>
+        <td>{{ savedClaim.claimDate | slice:0:10 }}</td>
+
+        <td class="claim-label">صادر بواسطة / Issued By</td>
+        <td>{{ getUserFullName() }}</td>
       </tr>
     </tbody>
-    <tfoot>
-      <tr>
-        <td colspan="5" class="text-end"><strong>المجموع الفرعي</strong></td>
-        <td><strong>{{ getSubtotal() | number:'1.2-2' }}</strong></td>
-      </tr>
-      <tr *ngIf="savedClaim.discount > 0">
-        <td colspan="5" class="text-end">
-          <strong>الخصم ({{ savedClaim.discountType === 1 ? savedClaim.discount + '%' : savedClaim.discount }})</strong>
-        </td>
-        <td><strong>{{ getDiscountAmount() | number:'1.2-2' }}</strong></td>
-      </tr>
-      <tr class="total-row">
-        <td colspan="5" class="text-end"><strong>الإجمالي</strong></td>
-        <td><strong>{{ getTotal() | number:'1.2-2' }}</strong></td>
-      </tr>
-    </tfoot>
   </table>
+
+  <!-- PARTIES DETAILS -->
+  <div class="parties-section">
+    <div class="section-title">بيانات الأطراف / Parties Details</div>
+
+    <div class="parties-grid">
+
+      <!-- SELLER -->
+      <div class="party-card">
+        <div class="party-card-title">المورد / Seller</div>
+
+        <table class="party-compact-table">
+          <tbody>
+            <tr>
+              <td class="party-label">الاسم / Name</td>
+              <td class="party-value">
+                <div>{{ getCompanyNameAr() }}</div>
+                <div class="en-line">{{ getCompanyNameEn() }}</div>
+              </td>
+            </tr>
+
+            <tr>
+              <td class="party-label">العنوان / Address</td>
+              <td class="party-value">
+                <div>{{ getCompanyAddress() }}</div>
+                <div class="en-line">{{ getCompanyAddressEn() }}</div>
+              </td>
+            </tr>
+
+            <tr>
+              <td class="party-label">الرقم الضريبي / VAT</td>
+              <td class="party-value ltr-value">{{ getCompanyVat() }}</td>
+            </tr>
+
+            <tr>
+              <td class="party-label">السجل التجاري / CRN</td>
+              <td class="party-value ltr-value">{{ getCompanyTin() }}</td>
+            </tr>
+
+            <tr>
+              <td class="party-label">البريد الإلكتروني / Email</td>
+              <td class="party-value ltr-value">{{ getUserEmail() }}</td>
+            </tr>
+
+            <tr>
+              <td class="party-label">الجوال / Phone</td>
+              <td class="party-value ltr-value">{{ getCompanyPhone() }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- CLIENT -->
+      <div class="party-card">
+        <div class="party-card-title">العميل / Client</div>
+
+        <table class="party-compact-table">
+          <tbody>
+            <tr>
+              <td class="party-label">الاسم / Name</td>
+              <td class="party-value">
+                <div>{{ savedClaim?.client?.nameAr || getClientNameAr() }}</div>
+                <div class="en-line">{{ savedClaim?.client?.nameEn || getClientNameEn() }}</div>
+              </td>
+            </tr>
+
+            <tr>
+              <td class="party-label">العنوان / Address</td>
+              <td class="party-value">
+                <div>{{ savedClaim?.client?.addressAr || getClientAddressAr() }}</div>
+                <div class="en-line">{{ savedClaim?.client?.addressEn || getClientAddressEn() }}</div>
+              </td>
+            </tr>
+
+            <tr>
+              <td class="party-label">الرقم الضريبي / VAT</td>
+              <td class="party-value ltr-value">{{ savedClaim?.client?.tin || getClientVat() }}</td>
+            </tr>
+
+            <tr>
+              <td class="party-label">السجل التجاري / CRN</td>
+              <td class="party-value ltr-value">{{ savedClaim?.client?.crn || getClientCrn() }}</td>
+            </tr>
+
+            <tr>
+              <td class="party-label">البريد الإلكتروني / Email</td>
+              <td class="party-value ltr-value">{{ savedClaim?.client?.email || getClientEmail() }}</td>
+            </tr>
+
+            <tr>
+              <td class="party-label">الجوال / Phone</td>
+              <td class="party-value ltr-value">{{ savedClaim?.client?.phone || getClientPhone() }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- SHARED CLIENT NUMBER BETWEEN SELLER AND CLIENT -->
+      <div class="client-link-number">
+        <span class="link-label">رقم العميل / Client Num</span>
+        <span class="link-value">{{ savedClaim?.client?.clientNum || getClientNumber() }}</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ITEMS TABLE -->
+  <table class="inv-items-table">
+    <thead>
+      <tr>
+        <th class="c-tot">الإجمالي<br><small>Total incl. VAT</small></th>
+        <th class="c-va">مبلغ الضريبة<br><small>VAT Amount</small></th>
+        <th class="c-vp">نسبة الضريبة<br><small>% VAT</small></th>
+        <th class="c-net">قبل الضريبة<br><small>Without VAT</small></th>
+        <th class="c-disc">الخصم<br><small>Discount</small></th>
+        <th class="c-price">السعر<br><small>Unit Price</small></th>
+        <th class="c-qty">الكمية<br><small>Qty</small></th>
+        <th class="c-name">المنتج / الخدمة<br><small>Product or Service</small></th>
+        <th class="c-num">#</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let item of savedClaim.items; let i = index">
+        <td class="c-tot-val">{{ getItemTotalWithVat(item) | number:'1.2-2' }}</td>
+        <td>{{ getItemVatAmount(item) | number:'1.2-2' }}</td>
+        <td>{{ getTaxRateLabel(item.taxId) }}</td>
+        <td>{{ getItemTotalBeforeVatAfterDiscount(item) | number:'1.2-2' }}</td>
+        <td>{{ getItemDiscountAmount(item) | number:'1.2-2' }}</td>
+        <td>{{ item.price | number:'1.2-2' }}</td>
+        <td>{{ item.quantity }}</td>
+        <td class="c-name-val">{{ item.name }}</td>
+        <td class="c-num-val">{{ i + 1 }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- BOTTOM TABLES SIDE BY SIDE -->
+  <div class="inv-bottom-row">
+
+    <!-- BANK DETAILS -->
+    <div class="inv-bank-block bank-side-block" *ngIf="savedClaim.bankId">
+      <div class="inv-bank-title">تفاصيل الحساب البنكي / Bank Account Details</div>
+
+      <table class="inv-bank-table">
+        <thead>
+          <tr>
+            <th>الآيبان<br><small>IBAN</small></th>
+            <th>رقم الحساب<br><small>Acc No</small></th>
+            <th>اسم الحساب<br><small>Account Name</small></th>
+            <th>اسم البنك<br><small>Bank</small></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td class="iban-cell">{{ getBankIban() }}</td>
+            <td>{{ getBankAccountNumber() }}</td>
+            <td>{{ getBankAccountName() }}</td>
+            <td>{{ getBankName() }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- FINANCIAL DETAILS -->
+    <div class="inv-bank-block inv-financial-block">
+      <div class="inv-bank-title">التفاصيل المالية / Financial Details</div>
+
+      <table class="inv-bank-table inv-totals-table">
+        <tbody>
+          <tr *ngIf="getDiscountAmount() > 0">
+            <td class="tv disc">{{ getDiscountAmount() | number:'1.2-2' }}</td>
+            <td class="tl">إجمالي الخصم / Total Discount</td>
+          </tr>
+
+          <tr>
+            <td class="tv">{{ getTotalBeforeVat() | number:'1.2-2' }}</td>
+            <td class="tl">المبلغ قبل الضريبة / Total without VAT</td>
+          </tr>
+
+          <tr>
+            <td class="tv">{{ getTotalVat() | number:'1.2-2' }}</td>
+            <td class="tl">إجمالي الضريبة / VAT Total</td>
+          </tr>
+
+          <tr class="tgrand">
+            <td class="tv">{{ getTotalWithVat() | number:'1.2-2' }} SAR</td>
+            <td class="tl">الإجمالي مع الضريبة / Total with VAT</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- NOTES -->
+  <div class="inv-notes" *ngIf="savedClaim.notes">
+    <strong>ملاحظات:</strong> {{ savedClaim.notes }}
+  </div>
+
+  <!-- FOOTER -->
+  <div class="inv-footer">
+    <span>يعتمد / Certified ...</span>
+    <div class="inv-sig-line"></div>
+  </div>
+
 </div>
 <!-- ==================== END PRINT AREA ==================== -->
+
 
 <!-- ==================== MAIN FORM ==================== -->
 <div class="no-print">
@@ -64,8 +253,10 @@
       <div class="col-12 text-end">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb justify-content-end mb-0">
-            <li class="breadcrumb-item"><a routerLink="/dashboard">الرئيسية</a></li>
-            <li class="breadcrumb-item active">مطالبة فواتير</li>
+            <li class="breadcrumb-item">
+              <a routerLink="/dashboard">الرئيسية</a>
+            </li>
+            <li class="breadcrumb-item active">مطالبة مالية</li>
           </ol>
         </nav>
       </div>
@@ -73,102 +264,162 @@
 
     <!-- Success Message -->
     <div class="alert alert-success d-flex justify-content-between align-items-center" *ngIf="submitSuccess">
-      <span><i class="fa fa-check-circle me-2"></i> تم حفظ المطالبة بنجاح!</span>
+      <span>
+        <i class="fa fa-check-circle me-2"></i>
+        تم حفظ المطالبة بنجاح!
+      </span>
+
       <div>
-        <button class="btn btn-sm btn-outline-success me-2" (click)="printInvoice()">
-          <i class="fa fa-print me-1"></i> طباعة الفاتورة
+        <button
+          class="btn btn-sm btn-outline-success me-2"
+          type="button"
+          (click)="exportPdf()"
+          [disabled]="isExporting">
+
+          <span *ngIf="isExporting" class="spinner-border spinner-border-sm me-1"></span>
+          <i *ngIf="!isExporting" class="fa fa-file-pdf-o me-1"></i>
+          {{ isExporting ? 'جاري التصدير...' : 'تصدير PDF' }}
         </button>
-        <button class="btn btn-sm btn-success" (click)="resetForm()">
-          <i class="fa fa-plus me-1"></i> مطالبة جديدة
+
+        <button
+          class="btn btn-sm btn-success"
+          type="button"
+          (click)="resetForm()"
+          [disabled]="isExporting">
+
+          <i class="fa fa-plus me-1"></i>
+          مطالبة جديدة
         </button>
       </div>
     </div>
 
     <form [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="!submitSuccess">
 
-      <!-- Card 1: البيانات الأساسية -->
+      <!-- BASIC DATA -->
       <div class="card shadow-sm mb-4">
         <div class="card-header bg-white">
           <h5 class="mb-0 text-end">
-            <i class="fa fa-file-text-o me-2 text-primary"></i> البيانات الأساسية
+            <i class="fa fa-file-text-o me-2 text-primary"></i>
+            البيانات الأساسية
           </h5>
         </div>
+
         <div class="card-body">
           <div class="row g-3">
 
-            <!-- العميل -->
+            <!-- CLIENT -->
             <div class="col-md-6">
-              <label class="form-label text-end w-100">العميل <span class="text-danger">*</span></label>
+              <label class="form-label text-end w-100">
+                العميل <span class="text-danger">*</span>
+              </label>
+
               <ng-select
                 formControlName="clientId"
                 [items]="clients"
                 bindLabel="name"
                 bindValue="id"
                 placeholder="اختر العميل"
+                (change)="onClientSelect($event)"
                 [ngClass]="{'is-invalid': form.get('clientId')?.invalid && form.get('clientId')?.touched}">
               </ng-select>
-              <div class="invalid-feedback text-end" *ngIf="form.get('clientId')?.invalid && form.get('clientId')?.touched">
+
+              <div
+                class="invalid-feedback text-end"
+                *ngIf="form.get('clientId')?.invalid && form.get('clientId')?.touched">
                 العميل مطلوب
               </div>
             </div>
 
-            <!-- تاريخ المطالبة -->
+            <!-- CLAIM DATE -->
             <div class="col-md-6">
-              <label class="form-label text-end w-100">تاريخ المطالبة <span class="text-danger">*</span></label>
+              <label class="form-label text-end w-100">
+                تاريخ المطالبة <span class="text-danger">*</span>
+              </label>
+
               <input
                 type="date"
                 class="form-control text-end"
                 formControlName="claimDate"
                 [ngClass]="{'is-invalid': form.get('claimDate')?.invalid && form.get('claimDate')?.touched}">
-              <div class="invalid-feedback text-end">التاريخ مطلوب</div>
+
+              <div class="invalid-feedback text-end">
+                التاريخ مطلوب
+              </div>
             </div>
 
-            <!-- البنك -->
+            <!-- BANK -->
             <div class="col-md-6">
               <label class="form-label text-end w-100">البنك</label>
+
               <ng-select
                 formControlName="bankId"
                 [items]="banks"
                 bindLabel="bankName"
                 bindValue="id"
-                placeholder="اختر البنك">
+                placeholder="اختر البنك"
+                (change)="onBankSelect($event)">
               </ng-select>
             </div>
 
-            <!-- الخصم -->
-            <div class="col-md-4">
+            <!-- DISCOUNT -->
+            <div class="col-md-3">
               <label class="form-label text-end w-100">الخصم</label>
-              <input type="number" class="form-control text-end" formControlName="discount" min="0">
+
+              <input
+                type="number"
+                class="form-control text-end"
+                formControlName="discount"
+                min="0">
             </div>
 
-            <!-- نوع الخصم -->
-            <div class="col-md-4">
-              <label class="form-label text-end w-100">نوع الخصم</label>
-              <select class="form-select text-end" formControlName="discountType">
-                <option *ngFor="let dt of discountTypes" [value]="dt.value">{{ dt.label }}</option>
-              </select>
-            </div>
+          <!-- DISCOUNT TYPE -->
+<div class="col-md-3">
+  <label class="form-label text-end w-100">نوع الخصم</label>
 
-            <!-- الملاحظات -->
+  <ng-select
+    formControlName="discountType"
+    [items]="discountTypes"
+    bindLabel="label"
+    bindValue="value"
+    placeholder="اختر نوع الخصم"
+    [clearable]="false"
+    [searchable]="false"
+    class="discount-type-select">
+  </ng-select>
+</div>
+            <!-- NOTES -->
             <div class="col-12">
               <label class="form-label text-end w-100">ملاحظة</label>
-              <textarea class="form-control text-end" formControlName="notes" rows="3" placeholder="ملاحظة"></textarea>
+
+              <textarea
+                class="form-control text-end"
+                formControlName="notes"
+                rows="3"
+                placeholder="ملاحظة"></textarea>
             </div>
 
           </div>
         </div>
       </div>
 
-      <!-- Card 2: البنود -->
+      <!-- ITEMS -->
       <div class="card shadow-sm mb-4">
         <div class="card-header bg-white d-flex justify-content-between align-items-center">
-          <button type="button" class="btn btn-sm btn-primary" (click)="addItem()">
-            <i class="fa fa-plus me-1"></i> إضافة بند
+          <button
+            type="button"
+            class="btn btn-sm btn-primary"
+            (click)="addItem()">
+
+            <i class="fa fa-plus me-1"></i>
+            إضافة بند
           </button>
+
           <h5 class="mb-0 text-end">
-            <i class="fa fa-list me-2 text-primary"></i> البنود
+            <i class="fa fa-list me-2 text-primary"></i>
+            البنود
           </h5>
         </div>
+
         <div class="card-body p-0">
           <div class="table-responsive">
             <table class="table table-bordered mb-0 text-end">
@@ -183,24 +434,36 @@
                   <th style="width:60px"></th>
                 </tr>
               </thead>
+
               <tbody formArrayName="items">
                 <tr *ngFor="let item of items.controls; let i = index" [formGroupName]="i">
                   <td class="align-middle text-center">{{ i + 1 }}</td>
 
                   <td>
-                    <input type="text" class="form-control form-control-sm text-end" formControlName="name"
+                    <input
+                      type="text"
+                      class="form-control form-control-sm text-end"
+                      formControlName="name"
                       placeholder="اسم البند"
                       [ngClass]="{'is-invalid': item.get('name')?.invalid && item.get('name')?.touched}">
                   </td>
 
                   <td>
-                    <input type="number" class="form-control form-control-sm text-end" formControlName="quantity"
-                      min="1" placeholder="0">
+                    <input
+                      type="number"
+                      class="form-control form-control-sm text-end"
+                      formControlName="quantity"
+                      min="1"
+                      placeholder="0">
                   </td>
 
                   <td>
-                    <input type="number" class="form-control form-control-sm text-end" formControlName="price"
-                      min="0" placeholder="0.00">
+                    <input
+                      type="number"
+                      class="form-control form-control-sm text-end"
+                      formControlName="price"
+                      min="0"
+                      placeholder="0.00">
                   </td>
 
                   <td>
@@ -219,18 +482,23 @@
                   </td>
 
                   <td class="align-middle text-center">
-                    <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeItem(i)"
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-danger"
+                      (click)="removeItem(i)"
                       [disabled]="items.length === 1">
+
                       <i class="fa fa-trash"></i>
                     </button>
                   </td>
                 </tr>
               </tbody>
+
             </table>
           </div>
         </div>
 
-        <!-- Totals -->
+        <!-- Totals Preview -->
         <div class="card-footer bg-white">
           <div class="row justify-content-end">
             <div class="col-md-4">
@@ -239,13 +507,22 @@
                   <td><strong>المجموع الفرعي:</strong></td>
                   <td><strong>{{ getSubtotal() | number:'1.2-2' }}</strong></td>
                 </tr>
+
                 <tr *ngIf="form.get('discount')?.value > 0">
                   <td>الخصم:</td>
-                  <td class="text-danger">- {{ getDiscountAmount() | number:'1.2-2' }}</td>
+                  <td class="text-danger">
+                    - {{ getDiscountAmount() | number:'1.2-2' }}
+                  </td>
                 </tr>
+
+                <tr>
+                  <td>إجمالي الضريبة:</td>
+                  <td>{{ getTotalVat() | number:'1.2-2' }}</td>
+                </tr>
+
                 <tr class="table-primary">
-                  <td><strong>الإجمالي:</strong></td>
-                  <td><strong>{{ getTotal() | number:'1.2-2' }}</strong></td>
+                  <td><strong>الإجمالي شامل الضريبة:</strong></td>
+                  <td><strong>{{ getTotalWithVat() | number:'1.2-2' }}</strong></td>
                 </tr>
               </table>
             </div>
@@ -253,13 +530,24 @@
         </div>
       </div>
 
-      <!-- Buttons -->
+      <!-- BUTTONS -->
       <div class="row">
         <div class="col-12 text-end">
-          <button type="button" class="btn btn-outline-secondary me-2" routerLink="/dashboard">
-            <i class="fa fa-times me-1"></i> إلغاء
+          <button
+            type="button"
+            class="btn btn-outline-secondary me-2"
+            routerLink="/dashboard"
+            [disabled]="isLoading">
+
+            <i class="fa fa-times me-1"></i>
+            إلغاء
           </button>
-          <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="isLoading">
+
             <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-1"></span>
             <i *ngIf="!isLoading" class="fa fa-save me-1"></i>
             {{ isLoading ? 'جاري الحفظ...' : 'حفظ المطالبة' }}
