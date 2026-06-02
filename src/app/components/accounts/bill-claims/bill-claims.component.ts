@@ -817,8 +817,8 @@ export class BillClaimsComponent implements OnInit {
       const clonedElement = originalElement.cloneNode(true) as HTMLElement;
 
       cloneWrapper = document.createElement('div');
-      cloneWrapper.style.cssText = 'position:fixed;left:-100000px;top:0;width:1200px;background:#ffffff;z-index:-99999;opacity:1;pointer-events:none;overflow:hidden';
-      clonedElement.style.cssText = 'display:block;width:1200px;max-width:1200px;min-height:auto;height:auto;background:#ffffff;position:relative;left:auto;top:auto;transform:none;opacity:1;overflow:hidden;box-sizing:border-box';
+      cloneWrapper.style.cssText = 'position:fixed;left:-100000px;top:0;width:794px;background:#ffffff;z-index:-99999;opacity:1;pointer-events:none;overflow:hidden';
+      clonedElement.style.cssText = 'display:block;width:794px;max-width:794px;min-height:auto;height:auto;background:#ffffff;position:relative;left:auto;top:auto;transform:none;opacity:1;overflow:hidden;box-sizing:border-box';
 
       cloneWrapper.appendChild(clonedElement);
       document.body.appendChild(cloneWrapper);
@@ -836,7 +836,7 @@ export class BillClaimsComponent implements OnInit {
       });
 
       const imgData = canvas.toDataURL('image/jpeg', 0.98);
-      const pdf = new jsPDF('l', 'mm', 'a4');
+      const pdf = new jsPDF('p', 'mm', 'a4');
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
       const margin = 5;
@@ -851,7 +851,7 @@ export class BillClaimsComponent implements OnInit {
         imgWidth = (canvas.width * imgHeight) / canvas.height;
       }
 
-      pdf.addImage(imgData, 'JPEG', (pageWidth - imgWidth) / 2, margin, imgWidth, imgHeight);
+      pdf.addImage(imgData, 'JPEG', (pageWidth - imgWidth) / 2, (pageHeight - imgHeight) / 2, imgWidth, imgHeight);
       pdf.save(`financial-claim-${this.savedClaim?.id || 'new'}.pdf`);
 
     } catch (error) {

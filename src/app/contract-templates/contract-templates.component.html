@@ -152,11 +152,91 @@
     </div>
     <div class="contract-toolbar-actions">
       <button type="button" class="btn-light"   (click)="showGallery()"            [disabled]="isExporting">رجوع للنماذج</button>
-      <button type="button" class="btn-outline" (click)="handleSave()"             [disabled]="isExporting">حفظ البيانات</button>
-      <button type="button" class="btn-outline" (click)="exportContractAsImages()" [disabled]="isExporting">حفظ صور</button>
       <button type="button" class="btn-primary" (click)="exportContractAsPdf()"    [disabled]="isExporting">حفظ PDF</button>
     </div>
   </div>
+
+  <!-- Dynamic branding settings (no-print) -->
+  <details class="brand-settings-panel no-print" open>
+    <summary class="brand-settings-summary">
+      <div class="brand-summary-main">
+        <span class="brand-summary-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <polyline points="21 15 16 10 5 21"></polyline>
+          </svg>
+        </span>
+        <span>
+          <strong>إعدادات الهوية </strong>
+          <small>اختيار — ارفع الشعار</small>
+        </span>
+      </div>
+      <span class="brand-summary-chevron">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </span>
+    </summary>
+
+    <div class="brand-settings-content">
+      <div class="brand-upload-row">
+        <label class="brand-upload-card">
+          <input type="file" accept="image/*" (change)="onBrandLogoUpload($event, 'first')" [disabled]="isExporting" />
+          <span class="upload-preview" [class.upload-empty]="!firstPageLogoSrc">
+            <img *ngIf="firstPageLogoSrc" [src]="firstPageLogoSrc" alt="First page logo preview" />
+            <span *ngIf="!firstPageLogoSrc" class="upload-placeholder">لم يتم اختيار شعار
+
+            </span>
+          </span>
+          <span class="upload-text">
+            <strong>شعار
+               الصفحة الأولى</strong>
+            <small>اضغط لاختيار شعار
+               الصفحة الأولى</small>
+          </span>
+          <span class="upload-action">اختيار ملف</span>
+        </label>
+
+        <label class="brand-upload-card">
+          <input type="file" accept="image/*" (change)="onBrandLogoUpload($event, 'inner')" [disabled]="isExporting" />
+          <span class="upload-preview upload-preview-small" [class.upload-empty]="!innerPageLogoSrc">
+            <img *ngIf="innerPageLogoSrc" [src]="innerPageLogoSrc" alt="Inner pages logo preview" />
+            <span *ngIf="!innerPageLogoSrc" class="upload-placeholder">لم يتم اختيار شعار
+
+            </span>
+          </span>
+          <span class="upload-text">
+            <strong>شعار
+               الصفحات الداخلية</strong>
+            <small>يظهر في باقي صفحات العقد</small>
+          </span>
+          <span class="upload-action">اختيار ملف</span>
+        </label>
+      </div>
+
+      <div class="brand-footer-row">
+        <label class="brand-input-field brand-email-field">
+          <span>إيميل الخاتمة</span>
+          <input
+            type="text"
+            [(ngModel)]="footerEmail"
+            [ngModelOptions]="{standalone: true}"
+            placeholder="info@example.com" />
+        </label>
+
+        <label class="brand-input-field brand-footer-field">
+          <span>بيانات الخاتمة</span>
+          <input
+            type="text"
+            [(ngModel)]="footerInfo"
+            [ngModelOptions]="{standalone: true}"
+            placeholder="العنوان | الترخيص | الهاتف" />
+        </label>
+
+      </div>
+    </div>
+  </details>
 
   <div class="exporting-note no-print" *ngIf="isExporting">جاري تجهيز العقد...</div>
 
@@ -166,16 +246,18 @@
       <!-- ══ HEADER  (every page) ══════════════════════════════════ -->
       <div class="doc-brand" [class.doc-brand-first]="pageIndex === 0" [class.doc-brand-inner]="pageIndex > 0">
         <img
-          *ngIf="pageIndex === 0"
+          *ngIf="pageIndex === 0 && firstPageLogoSrc"
           class="brand-img brand-img-first"
-          src="../../assets/images/contract/logo-first-page.png"
-          alt="AlShalahy Chartered Accountants"
+          [src]="firstPageLogoSrc"
+          alt="First page logo"
+          (error)="onBrandLogoError($event, 'first')"
         />
         <img
-          *ngIf="pageIndex > 0"
+          *ngIf="pageIndex > 0 && innerPageLogoSrc"
           class="brand-img brand-img-inner"
-          src="../../assets/images/contract/logo-inner-page.png"
-          alt="AlShalahy Chartered Accountants"
+          [src]="innerPageLogoSrc"
+          alt="Inner pages logo"
+          (error)="onBrandLogoError($event, 'inner')"
         />
       </div>
 
@@ -278,15 +360,9 @@
       </div><!-- /doc-body -->
 
       <!-- ══ FOOTER (every page) ════════════════════════════════════ -->
-      <div class="doc-footer">
-        <div class="footer-email">info@kaca.com.sa</div>
-       <div class="footer-info">
-  طريق أبو بكر الصديق، التعاون |
-  ترخيص رقم ٥٣٨ |
-  ص.ب ٨٤٢٨٧ الرياض ١١٦٧١ |
-  هاتف:
-  <span class="phone-ltr">+966 11 297 0011</span>
-</div>
+      <div class="doc-footer" *ngIf="footerEmail || footerInfo">
+        <div class="footer-email" *ngIf="footerEmail">{{ footerEmail }}</div>
+        <div class="footer-info" *ngIf="footerInfo">{{ footerInfo }}</div>
       </div>
 
     </div><!-- /doc-page -->

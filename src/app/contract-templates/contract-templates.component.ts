@@ -29,6 +29,51 @@ export class ContractTemplatesComponent implements OnInit {
   contractDate       = this.getTodayDate();
   refNumber          = '202';
 
+  firstPageLogoSrc = '';
+  innerPageLogoSrc = '';
+
+  footerEmail = '';
+  footerInfo  = '';
+
+  onBrandLogoUpload(event: Event, target: 'first' | 'inner'): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      input.value = '';
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const imageDataUrl = String(reader.result || '');
+
+      if (target === 'first') {
+        this.firstPageLogoSrc = imageDataUrl;
+      } else {
+        this.innerPageLogoSrc = imageDataUrl;
+      }
+    };
+
+    reader.readAsDataURL(file);
+  }
+
+  onBrandLogoError(event: Event, target: 'first' | 'inner'): void {
+    const img = event.target as HTMLImageElement;
+    img.onerror = null;
+
+    if (target === 'first') {
+      this.firstPageLogoSrc = '';
+    } else {
+      this.innerPageLogoSrc = '';
+    }
+  }
+
   contractTemplates: ContractTemplate[] = [
 
     /* ══════════════════════════════════════════════════════════

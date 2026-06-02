@@ -1774,3 +1774,492 @@ li {
   flex: 1 1 auto !important;
   text-align: right !important;
 }
+
+
+/* ═══════════════════════════════════════════
+   Dynamic branding controls
+   - User-uploaded logos
+   - User-entered footer content
+════════════════════════════════════════════ */
+.brand-settings-panel {
+  width: min(860px, calc(100vw - 28px));
+  margin: 0 auto 14px;
+  padding: 14px 16px 16px;
+  background: #ffffff;
+  border: 1px solid #e1e8ef;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(18, 45, 73, 0.06);
+}
+
+.brand-settings-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.brand-settings-head h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 800;
+  color: #163b5c;
+}
+
+.btn-reset-brand {
+  height: 32px;
+  border: 1px solid #d7e4ee;
+  background: #f7fafc;
+  color: #17658f;
+  border-radius: 999px;
+  padding: 0 13px;
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.brand-settings-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  direction: rtl;
+}
+
+.brand-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.brand-field-wide {
+  grid-column: span 2;
+}
+
+.brand-field span {
+  font-size: 12px;
+  font-weight: 800;
+  color: #4b6478;
+  text-align: right;
+}
+
+.brand-field input[type='text'],
+.brand-field input[type='file'] {
+  width: 100%;
+  height: 40px;
+  border: 1.5px solid #dde6f0;
+  border-radius: 11px;
+  background: #fff;
+  color: #1c2f40;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 0 11px;
+  outline: none;
+  direction: rtl;
+  text-align: right;
+}
+
+.brand-field input[type='file'] {
+  padding: 8px 10px;
+  direction: ltr;
+  text-align: left;
+  font-size: 11px;
+}
+
+.brand-field input:focus {
+  border-color: #1f86bd;
+  box-shadow: 0 0 0 3px rgba(31, 134, 189, 0.1);
+}
+
+/* keep uploaded logos in the same visual style */
+.brand-img {
+  object-fit: contain !important;
+  object-position: center !important;
+}
+
+.footer-email,
+.footer-info {
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 900px) {
+  .brand-settings-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .brand-field-wide {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 560px) {
+  .brand-settings-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .brand-field-wide {
+    grid-column: span 1;
+  }
+}
+
+@media print {
+  .brand-settings-panel {
+    display: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   Clean branding controls override
+   أقل دوشة للمستخدم أثناء إدخال اللوجو والفوتر
+════════════════════════════════════════════ */
+
+.brand-settings-panel {
+  width: min(860px, calc(100vw - 28px)) !important;
+  margin: 0 auto 14px !important;
+  padding: 0 !important;
+  background: #ffffff !important;
+  border: 1px solid #e2ebf3 !important;
+  border-radius: 16px !important;
+  box-shadow: 0 10px 28px rgba(18, 45, 73, 0.07) !important;
+  overflow: hidden !important;
+}
+
+.brand-settings-panel > summary {
+  list-style: none !important;
+}
+
+.brand-settings-panel > summary::-webkit-details-marker {
+  display: none !important;
+}
+
+.brand-settings-summary {
+  min-height: 62px !important;
+  padding: 13px 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 14px !important;
+  cursor: pointer !important;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fbfd 100%) !important;
+  border-bottom: 1px solid #edf2f7 !important;
+}
+
+.brand-summary-main {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  min-width: 0 !important;
+}
+
+.brand-summary-icon {
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 12px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 auto !important;
+  color: #1f86bd !important;
+  background: #eef7fc !important;
+  border: 1px solid #d8edf8 !important;
+}
+
+.brand-summary-main strong {
+  display: block !important;
+  color: #163b5c !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  line-height: 1.35 !important;
+}
+
+.brand-summary-main small {
+  display: block !important;
+  margin-top: 2px !important;
+  color: #7f91a2 !important;
+  font-size: 11.5px !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
+}
+
+.brand-summary-chevron {
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 999px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #7b9ab5 !important;
+  background: #f4f8fb !important;
+  transition: transform 0.2s ease !important;
+  flex: 0 0 auto !important;
+}
+
+.brand-settings-panel[open] .brand-summary-chevron {
+  transform: rotate(180deg) !important;
+}
+
+.brand-settings-content {
+  padding: 16px !important;
+  background: #ffffff !important;
+}
+
+.brand-upload-row {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 12px !important;
+  margin-bottom: 12px !important;
+}
+
+.brand-upload-card {
+  min-height: 88px !important;
+  padding: 12px !important;
+  border: 1.5px dashed #cfe0ed !important;
+  background: #fbfdff !important;
+  border-radius: 14px !important;
+  display: grid !important;
+  grid-template-columns: 68px 1fr auto !important;
+  align-items: center !important;
+  gap: 12px !important;
+  cursor: pointer !important;
+  transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease !important;
+}
+
+.brand-upload-card:hover {
+  border-color: #1f86bd !important;
+  background: #f5fbff !important;
+  box-shadow: 0 6px 18px rgba(31, 134, 189, 0.08) !important;
+}
+
+.brand-upload-card input[type='file'] {
+  display: none !important;
+}
+
+.upload-preview {
+  width: 68px !important;
+  height: 48px !important;
+  border-radius: 10px !important;
+  background: #fff !important;
+  border: 1px solid #e2ebf3 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+}
+
+.upload-preview img {
+  max-width: 58px !important;
+  max-height: 38px !important;
+  object-fit: contain !important;
+  display: block !important;
+}
+
+.upload-preview-small img {
+  max-width: 42px !important;
+  max-height: 34px !important;
+}
+
+.upload-text {
+  min-width: 0 !important;
+  text-align: right !important;
+}
+
+.upload-text strong {
+  display: block !important;
+  color: #1c2f40 !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  margin-bottom: 3px !important;
+}
+
+.upload-text small {
+  display: block !important;
+  color: #8a9aa8 !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.upload-action {
+  height: 30px !important;
+  padding: 0 12px !important;
+  border-radius: 999px !important;
+  background: #eaf5fb !important;
+  color: #17658f !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  white-space: nowrap !important;
+}
+
+.brand-footer-row {
+  display: grid !important;
+  grid-template-columns: 210px 1fr auto !important;
+  gap: 12px !important;
+  align-items: end !important;
+  padding-top: 12px !important;
+  border-top: 1px solid #edf2f7 !important;
+}
+
+.brand-input-field {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+  min-width: 0 !important;
+}
+
+.brand-input-field span {
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  color: #4b6478 !important;
+  text-align: right !important;
+}
+
+.brand-input-field input {
+  width: 100% !important;
+  height: 42px !important;
+  border: 1.5px solid #dde6f0 !important;
+  border-radius: 12px !important;
+  background: #fff !important;
+  color: #1c2f40 !important;
+  font-family: inherit !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  padding: 0 13px !important;
+  outline: none !important;
+  direction: rtl !important;
+  text-align: right !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+.brand-input-field input:focus {
+  border-color: #1f86bd !important;
+  box-shadow: 0 0 0 3px rgba(31, 134, 189, 0.1) !important;
+}
+
+.brand-email-field input {
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+.btn-reset-brand {
+  height: 42px !important;
+  border: 1px solid #d7e4ee !important;
+  background: #f7fafc !important;
+  color: #17658f !important;
+  border-radius: 12px !important;
+  padding: 0 14px !important;
+  font-family: inherit !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease !important;
+}
+
+.btn-reset-brand:hover:not(:disabled) {
+  background: #eef6fb !important;
+  border-color: #b9d4e8 !important;
+  transform: translateY(-1px) !important;
+}
+
+@media (max-width: 900px) {
+  .brand-upload-row,
+  .brand-footer-row {
+    grid-template-columns: 1fr !important;
+  }
+
+  .brand-upload-card {
+    grid-template-columns: 62px 1fr auto !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .brand-settings-summary {
+    align-items: flex-start !important;
+  }
+
+  .brand-summary-main {
+    align-items: flex-start !important;
+  }
+
+  .brand-upload-card {
+    grid-template-columns: 56px 1fr !important;
+  }
+
+  .upload-action {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+  }
+}
+
+@media print {
+  .brand-settings-panel {
+    display: none !important;
+  }
+}
+
+
+/* ═══════════════════════════════════════════
+   User-only branding inputs
+   No default logo/footer values
+═══════════════════════════════════════════ */
+
+.upload-preview.upload-empty {
+  background: #f8fafc;
+  border: 1.5px dashed #cfdbe7;
+  color: #8a99a8;
+  min-height: 52px;
+}
+
+.upload-placeholder {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 42px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #8a99a8;
+  text-align: center;
+}
+
+.brand-footer-row {
+  grid-template-columns: 1fr 1.8fr !important;
+}
+
+.btn-reset-brand {
+  display: none !important;
+}
+
+.doc-brand:empty {
+  visibility: hidden;
+}
+
+.doc-footer:has(.footer-email:only-child),
+.doc-footer:has(.footer-info:only-child) {
+  justify-content: flex-start;
+}
+
+.doc-footer .footer-email:only-child,
+.doc-footer .footer-info:only-child {
+  flex: 1;
+}
+
+@media print {
+  .doc-brand:empty {
+    visibility: hidden !important;
+  }
+
+  .doc-footer .footer-email:only-child,
+  .doc-footer .footer-info:only-child {
+    flex: 1 !important;
+  }
+}

@@ -1128,3 +1128,552 @@ $text-sub:    #555;
   border-radius: 7px;
   font-size: 14px;
 }
+/* ==================== FORCE A4 LANDSCAPE PRINT ==================== */
+
+@page {
+  size: A4 landscape !important;
+  margin: 5mm !important;
+}
+
+@media print {
+  html,
+  body {
+    width: 297mm !important;
+    height: 210mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    background: #fff !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-area {
+    display: block !important;
+    width: 287mm !important;
+    max-width: 287mm !important;
+    height: auto !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    background: #fff !important;
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    transform: none !important;
+    overflow: hidden !important;
+    page-break-inside: avoid !important;
+  }
+
+  .print-area.screen-preview {
+    display: block !important;
+    width: 287mm !important;
+    max-width: 287mm !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  .print-area .inv-header,
+  .print-area .inv-claim-info-table,
+  .print-area .parties-section,
+  .print-area .inv-items-table,
+  .print-area .inv-bottom-row,
+  .print-area .inv-notes,
+  .print-area .inv-footer {
+    width: 277mm !important;
+    max-width: 277mm !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
+
+
+/* =========================================================
+   OFFICIAL A4 PORTRAIT PRINT STYLE
+   شكل طباعة رسمي قريب من النموذج المرجعي
+   ========================================================= */
+
+@page {
+  size: A4 portrait !important;
+  margin: 8mm !important;
+}
+
+@media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    box-sizing: border-box !important;
+  }
+
+  html,
+  body {
+    width: 210mm !important;
+    min-height: 297mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+    overflow: visible !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-area,
+  .print-area.screen-preview {
+    display: block !important;
+    width: 194mm !important;
+    max-width: 194mm !important;
+    min-height: 281mm !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    background: #fff !important;
+    color: #000 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    overflow: hidden !important;
+    font-family: 'Cairo', 'Tahoma', 'Arial', sans-serif !important;
+    font-size: 8.2pt !important;
+    line-height: 1.35 !important;
+    position: relative !important;
+  }
+
+  /* Header رسمي: شعار أعلى + عنوان مركزي */
+  .print-area .inv-header {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: 28mm 1fr 28mm !important;
+    align-items: start !important;
+    border-bottom: 1.5px solid #000 !important;
+    padding: 0 0 3mm !important;
+    margin: 0 0 4mm !important;
+    gap: 3mm !important;
+  }
+
+  .print-area .inv-header-logo {
+    grid-column: 3 !important;
+    justify-content: center !important;
+    align-items: start !important;
+    min-width: 0 !important;
+  }
+
+  .print-area .company-logo {
+    max-width: 22mm !important;
+    max-height: 18mm !important;
+    object-fit: contain !important;
+    filter: grayscale(100%) !important;
+  }
+
+  .print-area .inv-header-title {
+    grid-column: 2 !important;
+    text-align: center !important;
+    align-self: start !important;
+  }
+
+  .print-area .inv-header-title h2 {
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 11pt !important;
+    font-weight: 800 !important;
+    line-height: 1.25 !important;
+    color: #000 !important;
+  }
+
+  .print-area .inv-header-title span {
+    display: block !important;
+    margin-top: 1mm !important;
+    font-size: 7.2pt !important;
+    font-weight: 700 !important;
+    color: #000 !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+  }
+
+  /* بيانات المطالبة أعلى الصفحة مثل خانات النموذج */
+  .print-area .inv-claim-info-table {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-collapse: collapse !important;
+    table-layout: fixed !important;
+    margin: 0 0 4mm !important;
+  }
+
+  .print-area .inv-claim-info-table td {
+    border: 1.2px solid #000 !important;
+    padding: 1.5mm 1mm !important;
+    font-size: 7.3pt !important;
+    line-height: 1.25 !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    color: #000 !important;
+    background: #fff !important;
+  }
+
+  .print-area .inv-claim-info-table .claim-label {
+    background: #e9e9e9 !important;
+    font-weight: 800 !important;
+    color: #000 !important;
+  }
+
+  /* عنوان الأقسام */
+  .print-area .section-title,
+  .print-area .inv-bank-title {
+    background: #d9d9d9 !important;
+    color: #000 !important;
+    border: 1.2px solid #000 !important;
+    border-bottom: 0 !important;
+    border-radius: 0 !important;
+    padding: 1.5mm 2mm !important;
+    font-size: 8pt !important;
+    font-weight: 800 !important;
+    text-align: center !important;
+  }
+
+  .print-area .parties-section {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 0 4mm !important;
+  }
+
+  .print-area .parties-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0 !important;
+    padding: 0 !important;
+    border: 1.2px solid #000 !important;
+    border-top: 0 !important;
+    background: #fff !important;
+  }
+
+  .print-area .party-card {
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: #fff !important;
+    overflow: hidden !important;
+  }
+
+  .print-area .party-card:first-child {
+    border-left: 1.2px solid #000 !important;
+  }
+
+  .print-area .party-card-title {
+    background: #efefef !important;
+    color: #000 !important;
+    border-bottom: 1.2px solid #000 !important;
+    border-radius: 0 !important;
+    padding: 1.3mm 1mm !important;
+    font-size: 7.8pt !important;
+    font-weight: 800 !important;
+    text-align: center !important;
+  }
+
+  .print-area .party-compact-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    table-layout: fixed !important;
+  }
+
+  .print-area .party-compact-table td {
+    border: 1px solid #000 !important;
+    padding: 1.5mm 1mm !important;
+    font-size: 7.2pt !important;
+    line-height: 1.25 !important;
+    vertical-align: middle !important;
+    text-align: center !important;
+    color: #000 !important;
+    background: #fff !important;
+  }
+
+  .print-area .party-compact-table .party-label {
+    width: 36% !important;
+    background: #f2f2f2 !important;
+    font-weight: 800 !important;
+    color: #000 !important;
+    white-space: normal !important;
+  }
+
+  .print-area .party-compact-table .party-value {
+    width: 64% !important;
+    color: #000 !important;
+    font-weight: 700 !important;
+    text-align: center !important;
+  }
+
+  .print-area .party-compact-table .party-value > div,
+  .print-area .party-compact-table .party-value > div:first-child {
+    display: block !important;
+    width: 100% !important;
+    text-align: center !important;
+    font-size: 7.5pt !important;
+    line-height: 1.25 !important;
+    color: #000 !important;
+    font-weight: 700 !important;
+  }
+
+  .print-area .party-compact-table .en-line,
+  .print-area .party-compact-table .ltr-value {
+    direction: ltr !important;
+    text-align: center !important;
+    font-family: 'Courier New', monospace !important;
+    font-size: 6.8pt !important;
+    color: #000 !important;
+    font-weight: 500 !important;
+    margin-top: 0.5mm !important;
+  }
+
+  .print-area .client-link-number {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    display: grid !important;
+    grid-template-columns: 30% 70% !important;
+    border: 0 !important;
+    border-top: 1.2px solid #000 !important;
+    border-radius: 0 !important;
+    overflow: hidden !important;
+    background: #fff !important;
+  }
+
+  .print-area .client-link-number .link-label,
+  .print-area .client-link-number .link-value {
+    border: 0 !important;
+    border-left: 1px solid #000 !important;
+    background: #f2f2f2 !important;
+    color: #000 !important;
+    padding: 1.6mm 1mm !important;
+    font-size: 7.5pt !important;
+    font-weight: 800 !important;
+    text-align: center !important;
+  }
+
+  .print-area .client-link-number .link-value {
+    direction: ltr !important;
+    font-family: 'Courier New', monospace !important;
+    background: #fff !important;
+    font-weight: 700 !important;
+  }
+
+  /* جدول البنود الرئيسي */
+  .print-area .inv-items-table {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-collapse: collapse !important;
+    table-layout: fixed !important;
+    margin: 0 0 4mm !important;
+  }
+
+  .print-area .inv-items-table thead th {
+    background: #d9d9d9 !important;
+    color: #000 !important;
+    border: 1.2px solid #000 !important;
+    padding: 1.6mm 0.8mm !important;
+    font-size: 6.8pt !important;
+    font-weight: 800 !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+  }
+
+  .print-area .inv-items-table thead th small {
+    display: block !important;
+    font-size: 5.4pt !important;
+    font-weight: 600 !important;
+    color: #000 !important;
+    opacity: 1 !important;
+  }
+
+  .print-area .inv-items-table tbody td {
+    border: 1px solid #000 !important;
+    padding: 1.5mm 0.8mm !important;
+    font-size: 7pt !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  .print-area .inv-items-table .c-num-val,
+  .print-area .inv-items-table .c-tot-val,
+  .print-area .inv-items-table .c-name-val {
+    background: #fff !important;
+    color: #000 !important;
+    font-weight: 700 !important;
+    text-align: center !important;
+  }
+
+  /* الجداول السفلية */
+  .print-area .inv-bottom-row {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 3mm !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 0 4mm !important;
+  }
+
+  .print-area .bank-side-block,
+  .print-area .inv-financial-block {
+    flex: 1 1 0 !important;
+    width: auto !important;
+    max-width: none !important;
+  }
+
+  .print-area .inv-bank-table,
+  .print-area .inv-totals-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    table-layout: fixed !important;
+  }
+
+  .print-area .inv-bank-table th,
+  .print-area .inv-bank-table td,
+  .print-area .inv-totals-table td {
+    border: 1px solid #000 !important;
+    padding: 1.5mm 1mm !important;
+    font-size: 6.8pt !important;
+    line-height: 1.2 !important;
+    background: #fff !important;
+    color: #000 !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+  }
+
+  .print-area .inv-bank-table th,
+  .print-area .inv-totals-table .tl {
+    background: #f2f2f2 !important;
+    font-weight: 800 !important;
+  }
+
+  .print-area .inv-bank-table th small {
+    display: block !important;
+    font-size: 5.3pt !important;
+    color: #000 !important;
+  }
+
+  .print-area .inv-totals-table .tv,
+  .print-area .inv-bank-table .iban-cell {
+    direction: ltr !important;
+    font-family: 'Courier New', monospace !important;
+    font-size: 6.7pt !important;
+    color: #000 !important;
+    font-weight: 700 !important;
+  }
+
+  .print-area .inv-totals-table tr.tgrand td {
+    background: #d9d9d9 !important;
+    color: #000 !important;
+    font-weight: 800 !important;
+  }
+
+  .print-area .inv-notes {
+    width: 100% !important;
+    border: 1.2px solid #000 !important;
+    border-right: 1.2px solid #000 !important;
+    border-radius: 0 !important;
+    background: #fff !important;
+    color: #000 !important;
+    padding: 2mm !important;
+    font-size: 7.2pt !important;
+    margin: 0 0 4mm !important;
+  }
+
+  .print-area .inv-footer {
+    width: 100% !important;
+    margin: 0 !important;
+    padding-top: 2mm !important;
+    border-top: 1px solid #000 !important;
+    color: #000 !important;
+    font-size: 6.5pt !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-end !important;
+  }
+
+  .print-area .inv-footer .inv-sig-line {
+    width: 35mm !important;
+    border-top: 1px solid #000 !important;
+    margin-top: 4mm !important;
+  }
+}
+/* ==================== FIX PARTY TABLE ENGLISH TEXT ==================== */
+
+.print-area .party-compact-table {
+  table-layout: fixed !important;
+}
+
+.print-area .party-compact-table .party-label {
+  width: 40% !important;
+  min-width: 40% !important;
+  max-width: 40% !important;
+  white-space: normal !important;
+  word-break: normal !important;
+  overflow: visible !important;
+  text-align: center !important;
+  font-size: 9px !important;
+  line-height: 1.3 !important;
+  padding: 6px 4px !important;
+  color: #333 !important;
+  font-weight: 700 !important;
+}
+
+.print-area .party-compact-table .party-value {
+  width: 60% !important;
+  min-width: 60% !important;
+  max-width: 60% !important;
+  text-align: center !important;
+  padding: 6px 5px !important;
+  overflow: visible !important;
+}
+
+.print-area .party-compact-table .party-value > div:first-child {
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  color: #111 !important;
+  line-height: 1.25 !important;
+}
+
+.print-area .party-compact-table .en-line {
+  display: block !important;
+  direction: ltr !important;
+  text-align: center !important;
+  font-family: 'Courier New', monospace !important;
+  font-size: 8.5px !important;
+  color: #555 !important;
+  font-weight: 600 !important;
+  line-height: 1.2 !important;
+  margin-top: 2px !important;
+  opacity: 1 !important;
+}
+
+.print-area .party-compact-table .ltr-value {
+  direction: ltr !important;
+  text-align: center !important;
+  font-family: 'Courier New', monospace !important;
+  font-size: 9px !important;
+  color: #333 !important;
+  font-weight: 600 !important;
+  letter-spacing: 0 !important;
+  opacity: 1 !important;
+}
+
+/* رقم العميل */
+.print-area .client-link-number {
+  width: 45% !important;
+  grid-template-columns: 40% 60% !important;
+}
+
+.print-area .client-link-number .link-label {
+  font-size: 9px !important;
+  line-height: 1.25 !important;
+  white-space: normal !important;
+  color: #333 !important;
+}
+
+.print-area .client-link-number .link-value {
+  font-size: 9px !important;
+  color: #111 !important;
+}
